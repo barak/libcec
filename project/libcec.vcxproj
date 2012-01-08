@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\cec.h" />
+    <ClInclude Include="..\include\cecc.h" />
+    <ClInclude Include="..\include\cecloader.h" />
+    <ClInclude Include="..\include\cectypes.h" />
+    <ClInclude Include="..\src\lib\AdapterCommunication.h" />
+    <ClInclude Include="..\src\lib\AdapterDetection.h" />
+    <ClInclude Include="..\src\lib\CECProcessor.h" />
+    <ClInclude Include="..\src\lib\devices\CECAudioSystem.h" />
+    <ClInclude Include="..\src\lib\devices\CECBusDevice.h" />
+    <ClInclude Include="..\src\lib\devices\CECPlaybackDevice.h" />
+    <ClInclude Include="..\src\lib\devices\CECRecordingDevice.h" />
+    <ClInclude Include="..\src\lib\devices\CECTuner.h" />
+    <ClInclude Include="..\src\lib\devices\CECTV.h" />
+    <ClInclude Include="..\src\lib\implementations\ANCommandHandler.h" />
+    <ClInclude Include="..\src\lib\implementations\CECCommandHandler.h" />
+    <ClInclude Include="..\src\lib\implementations\SLCommandHandler.h" />
+    <ClInclude Include="..\src\lib\implementations\VLCommandHandler.h" />
+    <ClInclude Include="..\src\lib\LibCEC.h" />
+    <ClInclude Include="..\src\lib\platform\baudrate.h" />
+    <ClInclude Include="..\src\lib\platform\os-dependent.h" />
+    <ClInclude Include="..\src\lib\platform\pthread_win32\pthread.h" />
+    <ClInclude Include="..\src\lib\platform\pthread_win32\sched.h" />
+    <ClInclude Include="..\src\lib\platform\pthread_win32\semaphore.h" />
+    <ClInclude Include="..\src\lib\platform\serialport.h" />
+    <ClInclude Include="..\src\lib\platform\threads.h" />
+    <ClInclude Include="..\src\lib\platform\timeutils.h" />
+    <ClInclude Include="..\src\lib\platform\windows\dlfcn-win32.h" />
+    <ClInclude Include="..\src\lib\platform\windows\os_windows.h" />
+    <ClInclude Include="..\src\lib\util\buffer.h" />
+    <ClInclude Include="..\src\lib\util\StdString.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\lib\AdapterCommunication.cpp" />
+    <ClCompile Include="..\src\lib\AdapterDetection.cpp" />
+    <ClCompile Include="..\src\lib\CECProcessor.cpp" />
+    <ClCompile Include="..\src\lib\devices\CECAudioSystem.cpp" />
+    <ClCompile Include="..\src\lib\devices\CECBusDevice.cpp" />
+    <ClCompile Include="..\src\lib\devices\CECPlaybackDevice.cpp" />
+    <ClCompile Include="..\src\lib\devices\CECRecordingDevice.cpp" />
+    <ClCompile Include="..\src\lib\devices\CECTuner.cpp" />
+    <ClCompile Include="..\src\lib\devices\CECTV.cpp" />
+    <ClCompile Include="..\src\lib\implementations\ANCommandHandler.cpp" />
+    <ClCompile Include="..\src\lib\implementations\CECCommandHandler.cpp" />
+    <ClCompile Include="..\src\lib\implementations\SLCommandHandler.cpp" />
+    <ClCompile Include="..\src\lib\implementations\VLCommandHandler.cpp" />
+    <ClCompile Include="..\src\lib\LibCEC.cpp" />
+    <ClCompile Include="..\src\lib\LibCECC.cpp" />
+    <ClCompile Include="..\src\lib\LibCECDll.cpp" />
+    <ClCompile Include="..\src\lib\platform\threads.cpp" />
+    <ClCompile Include="..\src\lib\platform\windows\dlfcn-win32.cpp" />
+    <ClCompile Include="..\src\lib\platform\windows\os_windows.cpp" />
+    <ClCompile Include="..\src\lib\platform\windows\serialport.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="libcec.rc" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C04B0FB1-667D-4F1C-BDAE-A07CDFFAAAA0}</ProjectGuid>
+    <RootNamespace>libcec</RootNamespace>
+    <ProjectName>libcec</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)..\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>libcec</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ExtensionsToDeleteOnClean>*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.dll</ExtensionsToDeleteOnClean>
+    <IncludePath>$(SolutionDir)..\include;$(IncludePath)</IncludePath>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)..\</OutDir>
+    <TargetName>libcec</TargetName>
+    <TargetExt>.dll</TargetExt>
+    <ExtensionsToDeleteOnClean>*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.dll</ExtensionsToDeleteOnClean>
+    <IncludePath>$(SolutionDir)..\include;$(IncludePath)</IncludePath>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;__STDC_CONSTANT_MACROS;__WINDOWS__;DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\lib\platform\pthread_win32;$(SolutionDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4100;4309;4505</DisableSpecificWarnings>
+      <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(SolutionDir)..\libcec.dll</OutputFile>
+      <AdditionalDependencies>%(AdditionalDependencies);setupapi.lib;$(SolutionDir)..\src\lib\platform\pthread_win32\pthreadVC2.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmtd</IgnoreSpecificDefaultLibraries>
+      <Version>
+      </Version>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\lib\platform\pthread_win32;$(SolutionDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;__STDC_CONSTANT_MACROS;__WINDOWS__;DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4100;4309</DisableSpecificWarnings>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <OutputFile>$(SolutionDir)..\libcec.dll</OutputFile>
+      <AdditionalDependencies>%(AdditionalDependencies);setupapi.lib;$(SolutionDir)..\src\lib\platform\pthread_win32\pthreadVC2.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmt</IgnoreSpecificDefaultLibraries>
+      <Version>
+      </Version>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
