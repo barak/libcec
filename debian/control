@@ -10,6 +10,7 @@ Vcs-Git: git://anonscm.debian.org/collab-maint/libcec.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/libcec.git
 
 Package: libcec-dev
+Multi-Arch: same
 Architecture: any
 Section: libdevel
 Depends: libcec1 (= ${binary:Version}),
