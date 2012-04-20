@@ -1,7 +1,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -30,7 +30,7 @@
  *     http://www.pulse-eight.net/
  */
 
-#include <windows.h>
+#include "platform/os.h"
 
 int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
 {

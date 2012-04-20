@@ -1,7 +1,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -33,7 +33,7 @@
 #include "ANCommandHandler.h"
 #include "../devices/CECBusDevice.h"
 #include "../CECProcessor.h"
-#include "../util/StdString.h"
+#include "../LibCEC.h"
 
 using namespace CEC;
 
@@ -46,7 +46,7 @@ CANCommandHandler::CANCommandHandler(CCECBusDevice *busDevice) :
 
 bool CANCommandHandler::HandleVendorRemoteButtonDown(const cec_command &command)
 {
-  if (m_processor->IsStarted() && command.parameters.size > 0)
+  if (m_processor->IsRunning() && command.parameters.size > 0)
   {
     cec_keypress key;
     key.duration = CEC_BUTTON_TIMEOUT;
@@ -54,21 +54,20 @@ bool CANCommandHandler::HandleVendorRemoteButtonDown(const cec_command &command)
 
     switch (command.parameters[0])
     {
-    case CEC_AN_USER_CONTROL_CODE_RETURN:
-      key.keycode = CEC_USER_CONTROL_CODE_EXIT;
+    case CEC_USER_CONTROL_CODE_AN_RETURN:
+      key.keycode = m_processor->GetClientVersion() >= CEC_CLIENT_VERSION_1_5_0 ?
+        CEC_USER_CONTROL_CODE_AN_RETURN :
+        CEC_USER_CONTROL_CODE_EXIT;
+      break;
+    case CEC_USER_CONTROL_CODE_AN_CHANNELS_LIST:
+      key.keycode = CEC_USER_CONTROL_CODE_AN_CHANNELS_LIST;
       break;
     default:
       break;
     }
 
     if (key.keycode != CEC_USER_CONTROL_CODE_UNKNOWN)
-    {
-      CStdString strLog;
-      strLog.Format("key pressed: %1x", key.keycode);
-      m_busDevice->AddLog(CEC_LOG_DEBUG, strLog);
-
-      m_busDevice->GetProcessor()->AddKey(key);
-    }
+      CLibCEC::AddKey(key);
   }
 
   return true;
@@ -98,4 +97,16 @@ bool CANCommandHandler::HandleCommand(const cec_command &command)
     bHandled = CCECCommandHandler::HandleCommand(command);
 
   return bHandled;
+}
+
+bool CANCommandHandler::PowerOn(const cec_logical_address iInitiator, const cec_logical_address iDestination)
+{
+  if (iDestination == CECDEVICE_AUDIOSYSTEM)
+  {
+    /* Samsung AVR devices need to be woken up with key CEC_USER_CONTROL_CODE_POWER_ON_FUNCTION */
+    return TransmitKeypress(iInitiator, iDestination, CEC_USER_CONTROL_CODE_POWER_ON_FUNCTION) &&
+        TransmitKeyRelease(iInitiator, iDestination);
+  }
+
+  return CCECCommandHandler::PowerOn(iInitiator, iDestination);
 }

@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -31,27 +31,24 @@
  *     http://www.pulse-eight.net/
  */
 
-#include <cectypes.h>
+#include "../../../include/cectypes.h"
 #include <set>
-#include "../platform/threads.h"
-#include "../util/StdString.h"
+#include "../platform/threads/mutex.h"
+#include "../platform/util/StdString.h"
 
 namespace CEC
 {
   class CCECProcessor;
   class CCECCommandHandler;
-  class CSLCommandHandler;
 
   class CCECBusDevice
   {
     friend class CCECProcessor;
-    friend class CSLCommandHandler;
 
   public:
     CCECBusDevice(CCECProcessor *processor, cec_logical_address address, uint16_t iPhysicalAddress = 0);
     virtual ~CCECBusDevice(void);
 
-    virtual void AddLog(cec_log_level level, const CStdString &strMessage);
     virtual bool HandleCommand(const cec_command &command);
     virtual bool PowerOn(void);
     virtual bool Standby(void);
@@ -66,17 +63,20 @@ namespace CEC
     virtual cec_logical_address   GetMyLogicalAddress(void) const;
     virtual uint16_t              GetMyPhysicalAddress(void) const;
     virtual CStdString            GetOSDName(bool bUpdate = false);
-    virtual uint16_t              GetPhysicalAddress(bool bUpdate = false);
+    virtual uint16_t              GetPhysicalAddress(bool bUpdate = false, bool bSuppressPoll = false);
     virtual cec_power_status      GetPowerStatus(bool bUpdate = false);
     virtual CCECProcessor *       GetProcessor(void) const { return m_processor; }
     virtual cec_device_type       GetType(void) const { return m_type; }
     virtual cec_vendor_id         GetVendorId(bool bUpdate = false);
     virtual const char *          GetVendorName(bool bUpdate = false);
     virtual bool                  MyLogicalAddressContains(cec_logical_address address) const;
-    virtual cec_bus_device_status GetStatus(bool bForcePoll = false);
+    virtual cec_bus_device_status GetStatus(bool bForcePoll = false, bool bSuppressPoll = false);
     virtual bool                  IsActiveSource(void) const { return m_bActiveSource; }
     virtual bool                  IsUnsupportedFeature(cec_opcode opcode) const;
     virtual void                  SetUnsupportedFeature(cec_opcode opcode);
+    virtual void                  HandlePoll(cec_logical_address destination);
+    virtual void                  HandlePollFrom(cec_logical_address initiator);
+    virtual bool                  HandleReceiveFailed(void);
 
     virtual void SetInactiveSource(void);
     virtual void SetActiveSource(void);
@@ -95,26 +95,32 @@ namespace CEC
 
     virtual bool TransmitActiveSource(void);
     virtual bool TransmitCECVersion(cec_logical_address dest);
+    virtual bool TransmitImageViewOn(void);
     virtual bool TransmitInactiveSource(void);
     virtual bool TransmitMenuState(cec_logical_address dest);
     virtual bool TransmitOSDName(cec_logical_address dest);
     virtual bool TransmitOSDString(cec_logical_address dest, cec_display_control duration, const char *strMessage);
     virtual bool TransmitPhysicalAddress(void);
+    virtual bool TransmitSetMenuLanguage(cec_logical_address dest);
     virtual bool TransmitPowerState(cec_logical_address dest);
     virtual bool TransmitPoll(cec_logical_address dest);
     virtual bool TransmitVendorID(cec_logical_address dest, bool bSendAbort = true);
     virtual bool TransmitKeypress(cec_user_control_code key, bool bWait = true);
     virtual bool TransmitKeyRelease(bool bWait = true);
 
-  protected:
-    bool ReplaceHandler(bool bInitHandler = true);
+    bool ReplaceHandler(bool bActivateSource = true);
 
-    bool RequestCecVersion(void);
-    bool RequestMenuLanguage(void);
-    bool RequestPowerStatus(void);
-    bool RequestVendorId(void);
-    bool RequestPhysicalAddress(void);
-    bool RequestOSDName(void);
+  protected:
+    void CheckVendorIdRequested(void);
+    void MarkBusy(void);
+    void MarkReady(void);
+
+    bool RequestCecVersion(bool bWaitForResponse = true);
+    bool RequestMenuLanguage(bool bWaitForResponse = true);
+    bool RequestPowerStatus(bool bWaitForResponse = true);
+    bool RequestVendorId(bool bWaitForResponse = true);
+    bool RequestPhysicalAddress(bool bWaitForResponse = true);
+    bool RequestOSDName(bool bWaitForResponse = true);
 
     bool NeedsPoll(void);
 
@@ -132,10 +138,15 @@ namespace CEC
     cec_menu_state        m_menuState;
     bool                  m_bActiveSource;
     uint64_t              m_iLastActive;
+    uint64_t              m_iLastPowerStateUpdate;
     cec_version           m_cecVersion;
     cec_bus_device_status m_deviceStatus;
     std::set<cec_opcode>  m_unsupportedFeatures;
-    CMutex                m_mutex;
-    CMutex                m_handlerMutex;
+    PLATFORM::CMutex      m_mutex;
+    PLATFORM::CMutex      m_handlerMutex;
+    PLATFORM::CEvent      m_replacing;
+    unsigned              m_iHandlerUseCount;
+    bool                  m_bAwaitingReceiveFailed;
+    bool                  m_bVendorIdRequested;
   };
 };

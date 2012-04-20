@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -32,8 +32,8 @@
  */
 
 #include <string>
-#include <cec.h>
-#include "util/buffer.h"
+#include "../../include/cec.h"
+#include "platform/util/buffer.h"
 
 namespace CEC
 {
@@ -47,17 +47,18 @@ namespace CEC
      * ICECAdapter implementation
      */
     //@{
-      CLibCEC(const char *strDeviceName, cec_device_type_list types);
-      CLibCEC(const char *strDeviceName, cec_logical_address iLogicalAddress = CECDEVICE_PLAYBACKDEVICE1, uint16_t iPhysicalAddress = CEC_DEFAULT_PHYSICAL_ADDRESS);
+      CLibCEC(const char *strDeviceName, cec_device_type_list types, uint16_t iPhysicalAddress = 0);
+      CLibCEC(libcec_configuration *configuration);
       virtual ~CLibCEC(void);
 
       virtual bool Open(const char *strPort, uint32_t iTimeout = 10000);
       virtual void Close(void);
+      virtual bool EnableCallbacks(void *cbParam, ICECCallbacks *callbacks);
       virtual int8_t FindAdapters(cec_adapter *deviceList, uint8_t iBufSize, const char *strDevicePath = NULL);
       virtual bool PingAdapter(void);
       virtual bool StartBootloader(void);
 
-      virtual int8_t GetMinLibVersion(void) const{ return CEC_MIN_LIB_VERSION; };
+      virtual int8_t GetMinLibVersion(void) const   { return CEC_MIN_LIB_VERSION; };
       virtual int8_t GetLibVersionMajor(void) const { return CEC_LIB_VERSION_MAJOR; };
       virtual int8_t GetLibVersionMinor(void) const { return CEC_LIB_VERSION_MINOR; };
 
@@ -98,6 +99,15 @@ namespace CEC
       virtual bool EnablePhysicalAddressDetection(void);
       virtual cec_logical_address GetActiveSource(void);
       virtual bool IsActiveSource(cec_logical_address iAddress);
+      virtual bool SetStreamPath(cec_logical_address iAddress);
+      virtual bool SetStreamPath(uint16_t iPhysicalAddress);
+      virtual cec_logical_addresses GetLogicalAddresses(void);
+      virtual bool GetCurrentConfiguration(libcec_configuration *configuration);
+      virtual bool SetConfiguration(const libcec_configuration *configuration);
+      virtual bool CanPersistConfiguration(void);
+      virtual bool PersistConfiguration(libcec_configuration *configuration);
+      virtual void RescanActiveDevices(void);
+      virtual bool IsLibCECActiveSource(void);
 
       const char *ToString(const cec_menu_state state);
       const char *ToString(const cec_version version);
@@ -109,22 +119,38 @@ namespace CEC
       const char *ToString(const cec_system_audio_status mode);
       const char *ToString(const cec_audio_status status);
       const char *ToString(const cec_vendor_id vendor);
+      const char *ToString(const cec_client_version version);
+      const char *ToString(const cec_server_version version);
+      const char *ToString(const cec_device_type type);
+
+      static cec_device_type GetType(cec_logical_address address);
+      static uint16_t GetMaskForType(cec_logical_address address);
+      static uint16_t GetMaskForType(cec_device_type type);
+
+      virtual bool GetDeviceInformation(const char *strPort, libcec_configuration *config, uint32_t iTimeoutMs = 10000);
     //@}
 
-      virtual void AddLog(cec_log_level level, const std::string &strMessage);
-      virtual void AddKey(void);
-      virtual void AddKey(cec_keypress &key);
-      virtual void AddCommand(const cec_command &command);
+      static void AddLog(const cec_log_level level, const char *strFormat, ...);
+      static void AddKey(void);
+      static void AddKey(const cec_keypress &key);
+      static void AddCommand(const cec_command &command);
+      static void ConfigurationChanged(const libcec_configuration &config);
+      static void SetCurrentButton(cec_user_control_code iButtonCode);
       virtual void CheckKeypressTimeout(void);
-      virtual void SetCurrentButton(cec_user_control_code iButtonCode);
 
+      static CLibCEC *GetInstance(void);
+      static void SetInstance(CLibCEC *instance);
+
+      CCECProcessor *                         m_cec;
     protected:
-      int64_t                    m_iStartTime;
-      cec_user_control_code      m_iCurrentButton;
-      int64_t                    m_buttontime;
-      CCECProcessor             *m_cec;
-      CecBuffer<cec_log_message> m_logBuffer;
-      CecBuffer<cec_keypress>    m_keyBuffer;
-      CecBuffer<cec_command>     m_commandBuffer;
+      int64_t                                 m_iStartTime;
+      cec_user_control_code                   m_iCurrentButton;
+      int64_t                                 m_buttontime;
+      PLATFORM::SyncedBuffer<cec_log_message> m_logBuffer;
+      PLATFORM::SyncedBuffer<cec_keypress>    m_keyBuffer;
+      PLATFORM::SyncedBuffer<cec_command>     m_commandBuffer;
+      ICECCallbacks *                         m_callbacks;
+      void *                                  m_cbParam;
+      PLATFORM::CMutex                        m_mutex;
   };
 };

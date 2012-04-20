@@ -31,64 +31,69 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using CecSharp;
 
 namespace CecSharpClient
 {
-  class CecSharpClient
+  class CecSharpClient : CecCallbackMethods
   {
     public CecSharpClient()
     {
-      CecDeviceTypeList types = new CecDeviceTypeList();
-      types.Types[0] = CecDeviceType.RecordingDevice;
+      Config = new LibCECConfiguration();
+      Config.DeviceTypes.Types[0] = CecDeviceType.RecordingDevice;
+      Config.DeviceName = "CEC Tester";
+      Config.ClientVersion = CecClientVersion.Version1_6_1;
+      Config.SetCallbacks(this);
+      LogLevel = (int)CecLogLevel.All;
 
-      Lib = new LibCecSharp("CEC Tester", types);
-      LogLevel = (int) CecLogLevel.All;
+      Lib = new LibCecSharp(Config);
 
-      Console.WriteLine("CEC Parser created - libcec version " + Lib.GetLibVersionMajor() + "." + Lib.GetLibVersionMinor());
+      Console.WriteLine("CEC Parser created - libcec version " + Lib.ToString(Config.ServerVersion));
     }
 
-    void FlushLog()
+    public override int ReceiveCommand(CecCommand command)
     {
-      CecLogMessage message = Lib.GetNextLogMessage();
-      bool bGotMessage = !message.Empty;
-      while (bGotMessage)
-      {
-        if (((int)message.Level & LogLevel) == (int)message.Level)
-        {
-          string strLevel = "";
-          switch (message.Level)
-          {
-            case CecLogLevel.Error:
-              strLevel = "ERROR:   ";
-              break;
-            case CecLogLevel.Warning:
-              strLevel = "WARNING: ";
-              break;
-            case CecLogLevel.Notice:
-              strLevel = "NOTICE:  ";
-              break;
-            case CecLogLevel.Traffic:
-              strLevel = "TRAFFIC: ";
-              break;
-            case CecLogLevel.Debug:
-              strLevel = "DEBUG:   ";
-              break;
-            default:
-              break;
-          }
-          string strLog = string.Format("{0} {1,16} {2}", strLevel, message.Time, message.Message);
-          Console.WriteLine(strLog);
-        }
-
-        message = Lib.GetNextLogMessage();
-        bGotMessage = !message.Empty;
-      }
+      return 1;
     }
 
-    public bool Connect(int timeout)
+    public override int ReceiveKeypress(CecKeypress key)
+    {
+      return 1;
+    }
+
+    public override int ReceiveLogMessage(CecLogMessage message)
+    {
+      if (((int)message.Level & LogLevel) == (int)message.Level)
+      {
+        string strLevel = "";
+        switch (message.Level)
+        {
+          case CecLogLevel.Error:
+            strLevel = "ERROR:   ";
+            break;
+          case CecLogLevel.Warning:
+            strLevel = "WARNING: ";
+            break;
+          case CecLogLevel.Notice:
+            strLevel = "NOTICE:  ";
+            break;
+          case CecLogLevel.Traffic:
+            strLevel = "TRAFFIC: ";
+            break;
+          case CecLogLevel.Debug:
+            strLevel = "DEBUG:   ";
+            break;
+          default:
+            break;
+        }
+        string strLog = string.Format("{0} {1,16} {2}", strLevel, message.Time, message.Message);
+        Console.WriteLine(strLog);
+      }
+      return 1;
+    }
+
+      public bool Connect(int timeout)
     {
       CecAdapter[] adapters = Lib.FindAdapters(string.Empty);
       if (adapters.Length > 0)
@@ -124,51 +129,44 @@ namespace CecSharpClient
     void ShowConsoleHelp()
     {
       Console.WriteLine(
-        "================================================================================" + System.Environment.NewLine +
-        "Available commands:" + System.Environment.NewLine +
-        System.Environment.NewLine +
-        "[tx] {bytes}              transfer bytes over the CEC line." + System.Environment.NewLine +
-        "[txn] {bytes}             transfer bytes but don't wait for transmission ACK." + System.Environment.NewLine +
-        "[on] {address}            power on the device with the given logical address." + System.Environment.NewLine +
-        "[standby] {address}       put the device with the given address in standby mode." + System.Environment.NewLine +
-        "[la] {logical_address}    change the logical address of the CEC adapter." + System.Environment.NewLine +
-        "[pa] {physical_address}   change the physical address of the CEC adapter." + System.Environment.NewLine +
-        "[osd] {addr} {string}     set OSD message on the specified device." + System.Environment.NewLine +
-        "[ver] {addr}              get the CEC version of the specified device." + System.Environment.NewLine +
-        "[ven] {addr}              get the vendor ID of the specified device." + System.Environment.NewLine +
-        "[lang] {addr}             get the menu language of the specified device." + System.Environment.NewLine +
-        "[pow] {addr}              get the power status of the specified device." + System.Environment.NewLine +
-        "[poll] {addr}             poll the specified device." + System.Environment.NewLine +
-        "[scan]                    scan the CEC bus and display device info" + System.Environment.NewLine +
-        "[mon] {1|0}               enable or disable CEC bus monitoring." + System.Environment.NewLine +
-        "[log] {1 - 31}            change the log level. see cectypes.h for values." + System.Environment.NewLine +
-        "[ping]                    send a ping command to the CEC adapter." + System.Environment.NewLine +
-        "[bl]                      to let the adapter enter the bootloader, to upgrade" + System.Environment.NewLine +
-        "                          the flash rom." + System.Environment.NewLine +
-        "[r]                       reconnect to the CEC adapter." + System.Environment.NewLine +
-        "[h] or [help]             show this help." + System.Environment.NewLine +
-        "[q] or [quit]             to quit the CEC test client and switch off all" + System.Environment.NewLine +
-        "                          connected CEC devices." + System.Environment.NewLine +
+        "================================================================================" + Environment.NewLine +
+        "Available commands:" + Environment.NewLine +
+        Environment.NewLine +
+        "[tx] {bytes}              transfer bytes over the CEC line." + Environment.NewLine +
+        "[txn] {bytes}             transfer bytes but don't wait for transmission ACK." + Environment.NewLine +
+        "[on] {address}            power on the device with the given logical address." + Environment.NewLine +
+        "[standby] {address}       put the device with the given address in standby mode." + Environment.NewLine +
+        "[la] {logical_address}    change the logical address of the CEC adapter." + Environment.NewLine +
+        "[pa] {physical_address}   change the physical address of the CEC adapter." + Environment.NewLine +
+        "[osd] {addr} {string}     set OSD message on the specified device." + Environment.NewLine +
+        "[ver] {addr}              get the CEC version of the specified device." + Environment.NewLine +
+        "[ven] {addr}              get the vendor ID of the specified device." + Environment.NewLine +
+        "[lang] {addr}             get the menu language of the specified device." + Environment.NewLine +
+        "[pow] {addr}              get the power status of the specified device." + Environment.NewLine +
+        "[poll] {addr}             poll the specified device." + Environment.NewLine +
+        "[scan]                    scan the CEC bus and display device info" + Environment.NewLine +
+        "[mon] {1|0}               enable or disable CEC bus monitoring." + Environment.NewLine +
+        "[log] {1 - 31}            change the log level. see cectypes.h for values." + Environment.NewLine +
+        "[ping]                    send a ping command to the CEC adapter." + Environment.NewLine +
+        "[bl]                      to let the adapter enter the bootloader, to upgrade" + Environment.NewLine +
+        "                          the flash rom." + Environment.NewLine +
+        "[r]                       reconnect to the CEC adapter." + Environment.NewLine +
+        "[h] or [help]             show this help." + Environment.NewLine +
+        "[q] or [quit]             to quit the CEC test client and switch off all" + Environment.NewLine +
+        "                          connected CEC devices." + Environment.NewLine +
         "================================================================================");
     }
 
     public void MainLoop()
     {
-      Lib.PowerOnDevices(CecLogicalAddress.Tv);
-      FlushLog();
-
-      Lib.SetActiveSource(CecDeviceType.PlaybackDevice);
-      FlushLog();
-
       bool bContinue = true;
       string command;
       while (bContinue)
       {
-        FlushLog();
         Console.WriteLine("waiting for input");
 
         command = Console.ReadLine();
-        if (command.Length == 0)
+        if (command != null && command.Length == 0)
           continue;
         string[] splitCommand = command.Split(' ');
         if (splitCommand[0] == "tx" || splitCommand[0] == "txn")
@@ -218,7 +216,7 @@ namespace CecSharpClient
         else if (splitCommand[0] == "pa")
         {
           if (splitCommand.Length > 1)
-            Lib.SetPhysicalAddress(short.Parse(splitCommand[1], System.Globalization.NumberStyles.HexNumber));
+            Lib.SetPhysicalAddress(ushort.Parse(splitCommand[1], System.Globalization.NumberStyles.HexNumber));
         }
         else if (splitCommand[0] == "osd")
         {
@@ -283,11 +281,9 @@ namespace CecSharpClient
         {
           Console.WriteLine("closing the connection");
           Lib.Close();
-          FlushLog();
 
           Console.WriteLine("opening a new connection");
           Connect(10000);
-          FlushLog();
 
           Console.WriteLine("setting active source");
           Lib.SetActiveSource(CecDeviceType.PlaybackDevice);
@@ -297,7 +293,7 @@ namespace CecSharpClient
           Console.WriteLine("CEC bus information");
           Console.WriteLine("===================");
           CecLogicalAddresses addresses = Lib.GetActiveDevices();
-          for (int iPtr = 0; iPtr < addresses.Addresses.Count(); iPtr++)
+          for (int iPtr = 0; iPtr < addresses.Addresses.Length; iPtr++)
           {
             CecLogicalAddress address = (CecLogicalAddress)iPtr;
             if (!addresses.IsSet(address))
@@ -346,10 +342,10 @@ namespace CecSharpClient
       {
         Console.WriteLine("Could not open a connection to the CEC adapter");
       }
-      p.FlushLog();
     }
 
-    private int         LogLevel;
-    private LibCecSharp Lib;
+    private int                 LogLevel;
+    private LibCecSharp         Lib;
+    private LibCECConfiguration Config;
   }
 }
