@@ -1,3 +1,10 @@
+libcec (1.6.1-2) unstable; urgency=low
+
+  * Build depends on pkg-config. (Closes: #669919)
+  * libudev-dev only optionally needed for Linux.
+
+ -- Andres Mejia <amejia@debian.org>  Sat, 21 Apr 2012 19:03:19 -0400
+
 libcec (1.6.1-1) unstable; urgency=low
 
   [ Mario Limonciello ]
