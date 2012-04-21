@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -37,6 +37,12 @@
 #include <stdint.h>
 #include <string.h>
 
+#if defined(_WIN32) || defined(_WIN64)
+#define CEC_CDECL    __cdecl
+#else
+#define CEC_CDECL
+#endif
+
 #if !defined(DECLSPEC)
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
@@ -64,14 +70,27 @@ namespace CEC {
 #define MSGESC                       0xFD
 #define ESCOFFSET                    3
 #define CEC_BUTTON_TIMEOUT           500
+#define CEC_POWER_STATE_REFRESH_TIME 30000
+#define CEC_FW_VERSION_UNKNOWN       0xFFFF
+#define CEC_CONNECT_TRIES            3
 
-#define CEC_DEFAULT_TRANSMIT_TIMEOUT 1000
-#define CEC_DEFAULT_TRANSMIT_WAIT    2000
-#define CEC_DEFAULT_TRANSMIT_RETRIES 1
+#define CEC_DEFAULT_SETTING_USE_TV_MENU_LANGUAGE  1
+#define CEC_DEFAULT_SETTING_ACTIVATE_SOURCE       1
+#define CEC_DEFAULT_SETTING_POWER_OFF_SHUTDOWN    1
+#define CEC_DEFAULT_SETTING_POWER_OFF_SCREENSAVER 1
+#define CEC_DEFAULT_SETTING_POWER_OFF_ON_STANDBY  1
+#define CEC_DEFAULT_SETTING_SHUTDOWN_ON_STANDBY   0
+#define CEC_DEFAULT_SETTING_SEND_INACTIVE_SOURCE  1
+#define CEC_DEFAULT_SETTING_POWER_OFF_DEVICES_STANDBY 1
+
+#define CEC_DEFAULT_TRANSMIT_RETRY_WAIT 500
+#define CEC_DEFAULT_TRANSMIT_TIMEOUT    1000
+#define CEC_DEFAULT_TRANSMIT_WAIT       2000
+#define CEC_DEFAULT_TRANSMIT_RETRIES    1
 
 #define CEC_MIN_LIB_VERSION          1
 #define CEC_LIB_VERSION_MAJOR        1
-#define CEC_LIB_VERSION_MINOR        3
+#define CEC_LIB_VERSION_MINOR        6
 
 typedef enum cec_abort_reason
 {
@@ -451,14 +470,11 @@ typedef enum cec_user_control_code
   CEC_USER_CONTROL_CODE_F4_YELLOW                   = 0x74,
   CEC_USER_CONTROL_CODE_F5                          = 0x75,
   CEC_USER_CONTROL_CODE_DATA                        = 0x76,
-  CEC_USER_CONTROL_CODE_MAX                         = 0x76,
+  CEC_USER_CONTROL_CODE_AN_RETURN                   = 0x91,
+  CEC_USER_CONTROL_CODE_AN_CHANNELS_LIST            = 0x96,
+  CEC_USER_CONTROL_CODE_MAX                         = 0x96,
   CEC_USER_CONTROL_CODE_UNKNOWN
 } cec_user_control_code;
-
-typedef enum cec_an_user_control_code
-{
-  CEC_AN_USER_CONTROL_CODE_RETURN = 0x91
-} cec_an_user_control_code;
 
 typedef enum cec_logical_address
 {
@@ -585,6 +601,23 @@ typedef enum cec_adapter_messagecode
   MSGCODE_TRANSMIT_FAILED_TIMEOUT_LINE,
   MSGCODE_FIRMWARE_VERSION,
   MSGCODE_START_BOOTLOADER,
+  MSGCODE_SET_POWERSTATE,
+  MSGCODE_SET_CONTROLLED,
+  MSGCODE_GET_AUTO_ENABLED,
+  MSGCODE_SET_AUTO_ENABLED,
+  MSGCODE_GET_DEFAULT_LOGICAL_ADDRESS,
+  MSGCODE_SET_DEFAULT_LOGICAL_ADDRESS,
+  MSGCODE_GET_LOGICAL_ADDRESS_MASK,
+  MSGCODE_SET_LOGICAL_ADDRESS_MASK,
+  MSGCODE_GET_PHYSICAL_ADDRESS,
+  MSGCODE_SET_PHYSICAL_ADDRESS,
+  MSGCODE_GET_DEVICE_TYPE,
+  MSGCODE_SET_DEVICE_TYPE,
+  MSGCODE_GET_HDMI_VERSION,
+  MSGCODE_SET_HDMI_VERSION,
+  MSGCODE_GET_OSD_NAME,
+  MSGCODE_SET_OSD_NAME,
+  MSGCODE_WRITE_EEPROM,
   MSGCODE_FRAME_EOM = 0x80,
   MSGCODE_FRAME_ACK = 0x40,
 } cec_adapter_messagecode;
@@ -599,13 +632,15 @@ typedef enum cec_bus_device_status
 
 typedef enum cec_vendor_id
 {
-  CEC_VENDOR_SAMSUNG   = 0x00F0,
-  CEC_VENDOR_LG        = 0xE091,
-  CEC_VENDOR_PANASONIC = 0x8045,
-  CEC_VENDOR_PIONEER   = 0xE036,
-  CEC_VENDOR_ONKYO     = 0x09B0,
-  CEC_VENDOR_YAMAHA    = 0xA0DE,
-  CEC_VENDOR_PHILIPS   = 0x903E,
+  CEC_VENDOR_SAMSUNG   = 0x0000F0,
+  CEC_VENDOR_LG        = 0x00E091,
+  CEC_VENDOR_PANASONIC = 0x008045,
+  CEC_VENDOR_PIONEER   = 0x00E036,
+  CEC_VENDOR_ONKYO     = 0x0009B0,
+  CEC_VENDOR_YAMAHA    = 0x00A0DE,
+  CEC_VENDOR_PHILIPS   = 0x00903E,
+  CEC_VENDOR_SONY      = 0x080046,
+  CEC_VENDOR_TOSHIBA   = 0x000039,
   CEC_VENDOR_UNKNOWN   = 0
 } cec_vendor_id;
 
@@ -801,7 +836,7 @@ typedef struct cec_device_type_list
     return bReturn;
   }
 
-  bool IsEmpty()
+  bool IsEmpty() const
   {
     bool bReturn(true);
     for (unsigned int iPtr = 0; bReturn && iPtr < 5; iPtr++)
@@ -813,6 +848,18 @@ typedef struct cec_device_type_list
   }
 
   cec_device_type operator[](uint8_t pos) const { return pos < 5 ? types[pos] : CEC_DEVICE_TYPE_RESERVED; }
+  bool operator==(const cec_device_type_list &other) const
+  {
+    bool bEqual(true);
+    for (uint8_t iPtr = 0; iPtr < 5; iPtr++)
+      bEqual &= (types[iPtr] == other[iPtr]);
+    return bEqual;
+  }
+
+  bool operator!=(const cec_device_type_list &other) const
+  {
+    return !(*this == other);
+  }
 #endif
 } cec_device_type_list;
 
@@ -861,8 +908,184 @@ typedef struct cec_logical_addresses
 
   bool IsSet(cec_logical_address address) const { return addresses[(int) address] == 1; }
   bool operator[](uint8_t pos) const { return pos < 16 ? IsSet((cec_logical_address) pos) : false; }
+
+  bool operator==(const cec_logical_addresses &other) const
+  {
+    bool bEqual(true);
+    for (uint8_t iPtr = 0; iPtr < 16; iPtr++)
+      bEqual &= ((addresses[(int)iPtr] == 1) == other[iPtr]);
+    return bEqual;
+  }
+
+  bool operator!=(const cec_logical_addresses &other) const
+  {
+    return !(*this == other);
+  }
 #endif
 } cec_logical_addresses;
+
+typedef enum libcec_alert
+{
+  CEC_ALERT_SERVICE_DEVICE
+} libcec_alert;
+
+typedef enum libcec_parameter_type
+{
+  CEC_PARAMETER_TYPE_STRING
+} libcec_parameter_type;
+
+struct libcec_parameter
+{
+  libcec_parameter_type paramType;
+  void*                 paramData;
+};
+
+struct libcec_configuration;
+
+typedef int (CEC_CDECL* CBCecLogMessageType)(void *param, const cec_log_message &);
+typedef int (CEC_CDECL* CBCecKeyPressType)(void *param, const cec_keypress &);
+typedef int (CEC_CDECL* CBCecCommandType)(void *param, const cec_command &);
+typedef int (CEC_CDECL* CBCecConfigurationChangedType)(void *param, const libcec_configuration &);
+typedef int (CEC_CDECL* CBCecAlertType)(void *param, const libcec_alert, const libcec_parameter &);
+
+typedef struct ICECCallbacks
+{
+  /*!
+   * @brief Transfer a log message from libCEC to the client.
+   * @param message The message to transfer.
+   * @return 1 when ok, 0 otherwise.
+   */
+  CBCecLogMessageType CBCecLogMessage;
+
+  /*!
+   * @brief Transfer a keypress from libCEC to the client.
+   * @param key The keypress to transfer.
+   * @return 1 when ok, 0 otherwise.
+   */
+  CBCecKeyPressType CBCecKeyPress;
+
+  /*!
+   * @brief Transfer a CEC command from libCEC to the client.
+   * @param command The command to transfer.
+   * @return 1 when ok, 0 otherwise.
+   */
+  CBCecCommandType CBCecCommand;
+
+  /*!
+   * @brief Transfer a changed configuration from libCEC to the client
+   * @param configuration The configuration to transfer
+   * @return 1 when ok, 0 otherwise
+   */
+  CBCecConfigurationChangedType CBCecConfigurationChanged;
+
+  /*!
+   * @Brief Transfer a libcec alert message from libCEC to the client
+   * @Param alert The alert type transfer.
+   * @Param data  Misc. additional information.
+   * @return 1 when ok, 0 otherwise
+   */
+  CBCecAlertType CBCecAlert;
+} ICECCallbacks;
+
+typedef enum cec_client_version
+{
+  CEC_CLIENT_VERSION_PRE_1_5 = 0,
+  CEC_CLIENT_VERSION_1_5_0   = 0x1500,
+  CEC_CLIENT_VERSION_1_5_1   = 0x1501,
+  CEC_CLIENT_VERSION_1_5_2   = 0x1502,
+  CEC_CLIENT_VERSION_1_5_3   = 0x1503,
+  CEC_CLIENT_VERSION_1_6_0   = 0x1600,
+  CEC_CLIENT_VERSION_1_6_1   = 0x1601
+} cec_client_version;
+
+typedef enum cec_server_version
+{
+  CEC_SERVER_VERSION_PRE_1_5 = 0,
+  CEC_SERVER_VERSION_1_5_0   = 0x1500,
+  CEC_SERVER_VERSION_1_5_1   = 0x1501,
+  CEC_SERVER_VERSION_1_5_2   = 0x1502,
+  CEC_SERVER_VERSION_1_5_3   = 0x1503,
+  CEC_SERVER_VERSION_1_6_0   = 0x1600,
+  CEC_SERVER_VERSION_1_6_1   = 0x1601
+} cec_server_version;
+
+typedef struct libcec_configuration
+{
+  uint32_t              clientVersion;        /*!< the version of the client that is connecting */
+  char                  strDeviceName[13];    /*!< how to name the device on the CEC bus */
+  cec_device_type_list  deviceTypes;          /*!< the CEC device types to emulate */
+  uint8_t               bAutodetectAddress;   /*!< try to autodetect the physical address when 1 */
+  uint16_t              iPhysicalAddress;     /*!< the physical address of the CEC adapter. only used when bAutodetectAddress = 0 or when the adapter doesn't support autodetection */
+  cec_logical_address   baseDevice;           /*!< the logical address of the device to which the adapter is connected. only used when iPhysicalAddress = 0 and bAutodetectAddress = 0 or when the adapter doesn't support autodetection */
+  uint8_t               iHDMIPort;            /*!< the HDMI port to which the adapter is connected. only used when iPhysicalAddress = 0 and bAutodetectAddress = 0 or when the adapter doesn't support autodetection */
+  uint64_t              tvVendor;             /*!< override the vendor ID of the TV. leave this untouched to autodetect */
+  cec_logical_addresses wakeDevices;          /*!< wake these CEC devices when initialising libCEC or when calling PowerOnDevices() without any parameter */
+  cec_logical_addresses powerOffDevices;      /*!< power off these devices when calling StandbyDevices() without any parameter */
+
+  uint32_t              serverVersion;        /*!< the version number of the server. read-only */
+
+  // player specific settings
+  uint8_t               bGetSettingsFromROM;  /*!< true to get the settings from the ROM (if set, and a v2 ROM is present), false to use these settings. */
+  uint8_t               bUseTVMenuLanguage;   /*!< use the menu language of the TV in the player application */
+  uint8_t               bActivateSource;      /*!< make libCEC the active source on the bus when starting the player application */
+  uint8_t               bPowerOffScreensaver; /*!< put devices in standby mode when activating the screensaver */
+  uint8_t               bPowerOffOnStandby;   /*!< put this PC in standby mode when the TV is switched off. only used when bShutdownOnStandby = 0  */
+  uint8_t               bSendInactiveSource;  /*!< send an 'inactive source' message when stopping the player. added in 1.5.1 */
+
+  void *                callbackParam;        /*!< the object to pass along with a call of the callback methods. NULL to ignore */
+  ICECCallbacks *       callbacks;            /*!< the callback methods to use. set this to NULL when not using callbacks */
+
+  cec_logical_addresses logicalAddresses;     /*!< the current logical addresses. read-only. added in 1.5.3 */
+  uint16_t              iFirmwareVersion;     /*!< the firmware version of the adapter. added in 1.6.0 */
+  uint8_t               bPowerOffDevicesOnStandby; /*!< put devices in standby when the PC/player is put in standby. added in 1.6.0 */
+  uint8_t               bShutdownOnStandby;   /*!< shutdown this PC when the TV is switched off. only used when bPowerOffOnStandby = 0. added in 1.6.0 */
+
+#ifdef __cplusplus
+  void Clear(void)
+  {
+    memset(strDeviceName, 0, 13);
+    deviceTypes.clear();
+    iPhysicalAddress = 0;
+    baseDevice       = (cec_logical_address)CEC_DEFAULT_BASE_DEVICE;
+    iHDMIPort        = CEC_DEFAULT_HDMI_PORT;
+    tvVendor         = (uint64_t)CEC_VENDOR_UNKNOWN;
+    clientVersion    = (uint32_t)CEC_CLIENT_VERSION_PRE_1_5;
+    serverVersion    = (uint32_t)CEC_SERVER_VERSION_PRE_1_5;
+    wakeDevices.Clear();
+    powerOffDevices.Clear();
+
+    bAutodetectAddress   = 1;
+    bGetSettingsFromROM  = 0;
+    bUseTVMenuLanguage   = CEC_DEFAULT_SETTING_USE_TV_MENU_LANGUAGE;
+    bActivateSource      = CEC_DEFAULT_SETTING_ACTIVATE_SOURCE;
+    #if CEC_DEFAULT_SETTING_POWER_OFF_SHUTDOWN == 1
+    powerOffDevices.Set(CECDEVICE_BROADCAST);
+    #endif
+    #if CEC_DEFAULT_SETTING_ACTIVATE_SOURCE == 1
+    wakeDevices.Set(CECDEVICE_TV);
+    #endif
+    bPowerOffScreensaver = CEC_DEFAULT_SETTING_POWER_OFF_SCREENSAVER;
+    bPowerOffOnStandby   = CEC_DEFAULT_SETTING_POWER_OFF_ON_STANDBY;
+    bShutdownOnStandby   = CEC_DEFAULT_SETTING_SHUTDOWN_ON_STANDBY;
+    bSendInactiveSource  = CEC_DEFAULT_SETTING_SEND_INACTIVE_SOURCE;
+    logicalAddresses.Clear();
+    iFirmwareVersion          = CEC_FW_VERSION_UNKNOWN;
+    bPowerOffDevicesOnStandby = CEC_DEFAULT_SETTING_POWER_OFF_DEVICES_STANDBY;
+
+    callbackParam    = NULL;
+    callbacks        = NULL;
+  }
+#endif
+} libcec_configuration;
+
+#ifdef UNUSED
+#elif defined(__GNUC__)
+#define UNUSED(x) UNUSED_ ## x __attribute__((unused))
+#elif defined(__LCLINT__)
+#define UNUSED(x) /*@unused@*/ x
+#else
+#define UNUSED(x) x
+#endif
 
 #ifdef __cplusplus
 };

@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -32,6 +32,7 @@
  */
 
 #include "CECCommandHandler.h"
+#include "../platform/util/timeutils.h"
 
 namespace CEC
 {
@@ -41,15 +42,12 @@ namespace CEC
     CSLCommandHandler(CCECBusDevice *busDevice);
     virtual ~CSLCommandHandler(void) {};
 
-    virtual void HandlePoll(const cec_logical_address iInitiator, const cec_logical_address iDestination);
-    virtual bool HandleReceiveFailed(void);
-
     virtual bool InitHandler(void);
     virtual bool ActivateSource(void);
 
   protected:
     virtual bool HandleActiveSource(const cec_command &command);
-    virtual bool HandleFeatureAbort(const cec_command &command);
+    virtual bool HandleDeviceVendorId(const cec_command &command);
     virtual bool HandleGivePhysicalAddress(const cec_command &command);
     virtual bool HandleVendorCommand(const cec_command &command);
 
@@ -60,12 +58,24 @@ namespace CEC
     virtual void HandleVendorCommandPowerOnStatus(const cec_command &command);
 
     virtual void HandleVendorCommandSLConnect(const cec_command &command);
-    virtual void TransmitVendorCommand05(const cec_logical_address iSource, const cec_logical_address iDestination);
+    virtual void TransmitVendorCommandSetDeviceMode(const cec_logical_address iSource, const cec_logical_address iDestination, const cec_device_type type);
 
-    virtual void SetLGDeckStatus(void);
+    virtual bool HandleGiveDevicePowerStatus(const cec_command &command);
+    virtual bool HandleGiveDeckStatus(const cec_command &command);
+    virtual bool HandleRequestActiveSource(const cec_command &command);
+    virtual bool HandleFeatureAbort(const cec_command &command);
+    virtual bool HandleStandby(const cec_command &command);
+    virtual bool TransmitMenuState(const cec_logical_address UNUSED(iInitiator), const cec_logical_address UNUSED(iDestination), cec_menu_state UNUSED(menuState)) { return true; }
+    virtual bool PowerOn(const cec_logical_address iInitiator, const cec_logical_address iDestination);
 
-    bool    m_bAwaitingReceiveFailed;
-    bool    m_bSLEnabled;
-    bool    m_bPowerStateReset;
+    virtual void ResetSLState(void);
+    virtual bool SLInitialised(void);
+    virtual void SetSLInitialised(void);
+    virtual bool ActiveSourceSent(void);
+
+    bool               m_bSLEnabled;
+    bool               m_bActiveSourceSent;
+    PLATFORM::CTimeout m_resetPowerState;
+    PLATFORM::CMutex   m_SLMutex;
   };
 };

@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -34,30 +34,35 @@
 #ifndef CECEXPORTS_C_H_
 #define CECEXPORTS_C_H_
 
-#include <cectypes.h>
+#include "cectypes.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #ifdef __cplusplus
-extern DECLSPEC int cec_init(const char *strDeviceName, CEC::cec_logical_address iLogicalAddress, uint16_t iPhysicalAddress);
+extern DECLSPEC int cec_initialise(CEC::libcec_configuration *configuration);
 #else
-extern DECLSPEC int cec_init(const char *strDeviceName, cec_logical_address iLogicalAddress, uint16_t iPhysicalAddress);
+extern DECLSPEC int cec_initialise(libcec_configuration *configuration);
 #endif
 
 #ifdef __cplusplus
-extern DECLSPEC int cec_init_typed(const char *strDeviceName, CEC::cec_device_type_list devicesTypes);
+extern DECLSPEC int cec_init_typed(const char *strDeviceName, CEC::cec_device_type_list deviceTypes);
 #else
-extern DECLSPEC int cec_init_typed(const char *strDeviceName, cec_device_type_list devicesTypes);
+extern DECLSPEC int cec_init_typed(const char *strDeviceName, cec_device_type_list deviceTypes);
 #endif
-
 
 extern DECLSPEC void cec_destroy(void);
 
 extern DECLSPEC int cec_open(const char *strPort, uint32_t iTimeout);
 
 extern DECLSPEC void cec_close(void);
+
+#ifdef __cplusplus
+extern DECLSPEC int cec_enable_callbacks(void *cbParam, CEC::ICECCallbacks *callbacks);
+#else
+extern DECLSPEC int cec_enable_callbacks(void *cbParam, ICECCallbacks *callbacks);
+#endif
 
 #ifdef __cplusplus
 extern DECLSPEC int8_t cec_find_adapters(CEC::cec_adapter *deviceList, uint8_t iBufSize, const char *strDevicePath);
@@ -252,6 +257,50 @@ extern DECLSPEC cec_osd_name cec_get_device_osd_name(cec_logical_address iAddres
 #endif
 
 extern DECLSPEC int cec_enable_physical_address_detection(void);
+
+#ifdef __cplusplus
+extern DECLSPEC int cec_set_stream_path_logical(CEC::cec_logical_address iAddress);
+#else
+extern DECLSPEC int cec_set_stream_path_logical(cec_logical_address iAddress);
+#endif
+
+extern DECLSPEC int cec_set_stream_path_physical(uint16_t iPhysicalAddress);
+
+#ifdef __cplusplus
+extern DECLSPEC CEC::cec_logical_addresses cec_get_logical_addresses(void);
+#else
+extern DECLSPEC cec_logical_addresses cec_get_logical_addresses(void);
+#endif
+
+#ifdef __cplusplus
+extern DECLSPEC int cec_get_current_configuration(CEC::libcec_configuration *configuration);
+#else
+extern DECLSPEC int cec_get_current_configuration(libcec_configuration *configuration);
+#endif
+
+extern DECLSPEC int cec_can_persist_configuration(void);
+
+#ifdef __cplusplus
+extern DECLSPEC int cec_persist_configuration(CEC::libcec_configuration *configuration);
+#else
+extern DECLSPEC int cec_persist_configuration(libcec_configuration *configuration);
+#endif
+
+#ifdef __cplusplus
+extern DECLSPEC int cec_set_configuration(const CEC::libcec_configuration *configuration);
+#else
+extern DECLSPEC int cec_set_configuration(const libcec_configuration *configuration);
+#endif
+
+extern DECLSPEC void cec_rescan_devices(void);
+
+extern DECLSPEC int cec_is_libcec_active_source(void);
+
+#ifdef __cplusplus
+extern DECLSPEC int cec_get_device_information(const char *strPort, CEC::libcec_configuration *config, uint32_t iTimeoutMs);
+#else
+extern DECLSPEC int cec_get_device_information(const char *strPort, libcec_configuration *config, uint32_t iTimeoutMs);
+#endif
 
 #ifdef __cplusplus
 };

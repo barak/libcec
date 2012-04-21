@@ -1,7 +1,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -33,8 +33,10 @@
 #include "CECPlaybackDevice.h"
 #include "../implementations/CECCommandHandler.h"
 #include "../CECProcessor.h"
+#include "../LibCEC.h"
 
 using namespace CEC;
+using namespace PLATFORM;
 
 #define ToString(p) m_processor->ToString(p)
 
@@ -48,38 +50,32 @@ CCECPlaybackDevice::CCECPlaybackDevice(CCECProcessor *processor, cec_logical_add
 
 cec_deck_info CCECPlaybackDevice::GetDeckStatus(void)
 {
-  CLockObject lock(&m_mutex);
+  CLockObject lock(m_mutex);
   return m_deckStatus;
 }
 
 void CCECPlaybackDevice::SetDeckStatus(cec_deck_info deckStatus)
 {
-  CLockObject lock(&m_mutex);
-  if (m_deckStatus != deckStatus && m_deckStatus != CEC_DECK_INFO_OTHER_STATUS_LG)
+  CLockObject lock(m_mutex);
+  if (m_deckStatus != deckStatus)
   {
-    CStdString strLog;
-    strLog.Format(">> %s (%X): deck status changed from '%s' to '%s'", GetLogicalAddressName(), m_iLogicalAddress, ToString(m_deckStatus), ToString(deckStatus));
-    AddLog(CEC_LOG_DEBUG, strLog.c_str());
-
+    CLibCEC::AddLog(CEC_LOG_DEBUG, ">> %s (%X): deck status changed from '%s' to '%s'", GetLogicalAddressName(), m_iLogicalAddress, ToString(m_deckStatus), ToString(deckStatus));
     m_deckStatus = deckStatus;
   }
 }
 
 cec_deck_control_mode CCECPlaybackDevice::GetDeckControlMode(void)
 {
-  CLockObject lock(&m_mutex);
+  CLockObject lock(m_mutex);
   return m_deckControlMode;
 }
 
 void CCECPlaybackDevice::SetDeckControlMode(cec_deck_control_mode mode)
 {
-  CLockObject lock(&m_mutex);
+  CLockObject lock(m_mutex);
   if (m_deckControlMode != mode)
   {
-    CStdString strLog;
-    strLog.Format(">> %s (%X): deck control mode changed from '%s' to '%s'", GetLogicalAddressName(), m_iLogicalAddress, ToString(m_deckControlMode), ToString(mode));
-    AddLog(CEC_LOG_DEBUG, strLog.c_str());
-
+    CLibCEC::AddLog(CEC_LOG_DEBUG, ">> %s (%X): deck control mode changed from '%s' to '%s'", GetLogicalAddressName(), m_iLogicalAddress, ToString(m_deckControlMode), ToString(mode));
     m_deckControlMode = mode;
   }
 }
@@ -88,10 +84,8 @@ bool CCECPlaybackDevice::TransmitDeckStatus(cec_logical_address dest)
 {
   cec_deck_info state;
   {
-    CLockObject lock(&m_mutex);
-    CStdString strLog;
-    strLog.Format("<< %s (%X) -> %s (%X): deck status '%s'", GetLogicalAddressName(), m_iLogicalAddress, ToString(dest), dest, ToString(m_deckStatus));
-    AddLog(CEC_LOG_NOTICE, strLog);
+    CLockObject lock(m_mutex);
+    CLibCEC::AddLog(CEC_LOG_NOTICE, "<< %s (%X) -> %s (%X): deck status '%s'", GetLogicalAddressName(), m_iLogicalAddress, ToString(dest), dest, ToString(m_deckStatus));
     state = m_deckStatus;
   }
 

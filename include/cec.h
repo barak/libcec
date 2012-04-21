@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -34,7 +34,7 @@
 #ifndef CECEXPORTS_H_
 #define CECEXPORTS_H_
 
-#include <cectypes.h>
+#include "cectypes.h"
 
 namespace CEC
 {
@@ -59,7 +59,15 @@ namespace CEC
     virtual void Close(void) = 0;
 
     /*!
-     * @brief Try to find all connected CEC adapters. Only implemented on Linux at the moment.
+     * @brief Set and enable the callback methods. If this method is not called, the GetNext...() methods will have to be used.
+     * @param cbParam Parameter to pass to callback methods.
+     * @param callbacks The callbacks to set.
+     * @return True when enabled, false otherwise.
+     */
+    virtual bool EnableCallbacks(void *cbParam, ICECCallbacks *callbacks) = 0;
+
+    /*!
+     * @brief Try to find all connected CEC adapters. Only implemented on Linux and Windows at the moment.
      * @param deviceList The vector to store device descriptors in.
      * @param iBufSize The size of the deviceList buffer.
      * @param strDevicePath Optional device path. Only adds device descriptors that match the given device path.
@@ -81,21 +89,25 @@ namespace CEC
     //@}
 
     /*!
+     * @deprecated Use libcec_configuration instead
      * @return Get the minimal version of libcec that this version of libcec can interface with.
      */
     virtual int8_t GetMinLibVersion(void) const = 0;
 
     /*!
+     * @deprecated Use libcec_configuration instead
      * @return Get the major version of libcec.
      */
     virtual int8_t GetLibVersionMajor(void) const = 0;
 
     /*!
+     * @deprecated Use libcec_configuration instead
      * @return Get the minor version of libcec.
      */
     virtual int8_t GetLibVersionMinor(void) const = 0;
 
     /*!
+     * @deprecated Use callback methods instead
      * @brief Get the next log message in the queue, if there is one.
      * @param message The next message.
      * @return True if a message was passed, false otherwise.
@@ -103,6 +115,7 @@ namespace CEC
     virtual bool GetNextLogMessage(cec_log_message *message) = 0;
 
     /*!
+     * @deprecated Use callback methods instead
      * @brief Get the next keypress in the queue, if there is one.
      * @param key The next keypress.
      * @return True if a key was passed, false otherwise.
@@ -110,6 +123,7 @@ namespace CEC
     virtual bool GetNextKeypress(cec_keypress *key) = 0;
 
     /*!
+     * @deprecated Use callback methods instead
      * @brief Get the next CEC command that was received by the adapter.
      * @param action The next command.
      * @return True when a command was passed, false otherwise.
@@ -138,6 +152,7 @@ namespace CEC
     virtual bool SetPhysicalAddress(uint16_t iPhysicalAddress = CEC_DEFAULT_PHYSICAL_ADDRESS) = 0;
 
     /*!
+     * @deprecated Use libcec_configuration instead.
      * @brief Enable physical address detection (if the connected adapter supports this).
      * @return True when physical address detection was enabled, false otherwise.
      */
@@ -342,6 +357,25 @@ namespace CEC
      */
     virtual bool IsActiveSource(cec_logical_address iAddress) = 0;
 
+    /*!
+     * @brief Sets the stream path to the device on the given logical address.
+     * @param iAddress The address to activate.
+     * @return True when the command was sent, false otherwise.
+     */
+    virtual bool SetStreamPath(cec_logical_address iAddress) = 0;
+
+    /*!
+     * @brief Sets the stream path to the device on the given logical address.
+     * @param iPhysicalAddress The address to activate.
+     * @return True when the command was sent, false otherwise.
+     */
+    virtual bool SetStreamPath(uint16_t iPhysicalAddress) = 0;
+
+    /*!
+     * @return The list of addresses that libCEC is controlling
+     */
+    virtual cec_logical_addresses GetLogicalAddresses(void) = 0;
+
     virtual const char *ToString(const cec_menu_state state) = 0;
     virtual const char *ToString(const cec_version version) = 0;
     virtual const char *ToString(const cec_power_status status) = 0;
@@ -352,7 +386,53 @@ namespace CEC
     virtual const char *ToString(const cec_system_audio_status mode) = 0;
     virtual const char *ToString(const cec_audio_status status) = 0;
     virtual const char *ToString(const cec_vendor_id vendor) = 0;
+    virtual const char *ToString(const cec_client_version version) = 0;
+    virtual const char *ToString(const cec_server_version version) = 0;
 
+    /*!
+     * @brief Get libCEC's current configuration.
+     * @param configuration The configuration.
+     * @return True when the configuration was updated, false otherwise.
+     */
+    virtual bool GetCurrentConfiguration(libcec_configuration *configuration) = 0;
+
+    /*!
+     * @brief Change libCEC's configuration.
+     * @param configuration The new configuration.
+     * @return True when the configuration was changed successfully, false otherwise.
+     */
+    virtual bool SetConfiguration(const libcec_configuration *configuration) = 0;
+
+    /*!
+     * @return True when this device can persist the user configuration, false otherwise.
+     */
+    virtual bool CanPersistConfiguration(void) = 0;
+
+    /*!
+     * @brief Persist the given configuration in adapter (if supported)
+     * @brief The configuration to store.
+     * @return True when the configuration was persisted, false otherwise.
+     */
+    virtual bool PersistConfiguration(libcec_configuration *configuration) = 0;
+
+    /*!
+     * @brief Tell libCEC to poll for active devices on the bus.
+     */
+    virtual void RescanActiveDevices(void) = 0;
+
+    /*!
+     * @return true when libCEC is the active source on the bus, false otherwise.
+     */
+    virtual bool IsLibCECActiveSource(void) = 0;
+
+    /*!
+     * @brief Get information about the given device
+     * @param strPort The port to which the device is connected
+     * @param config The device configuration
+     * @param iTimeoutMs The timeout in milliseconds
+     * @return True when the device was found, false otherwise
+     */
+    virtual bool GetDeviceInformation(const char *strPort, libcec_configuration *config, uint32_t iTimeoutMs = 10000) = 0;
   };
 };
 
@@ -360,19 +440,23 @@ namespace CEC
  * @brief Load the CEC adapter library.
  * @param strDeviceName How to present this device to other devices.
  * @param deviceTypes The device types to use on the CEC bus.
+ * @param iPhysicalAddress The physical address to assume on the bus. If set to 0, libCEC will try to autodetect the address, with the data provided via SetHDMIPort()
  * @return An instance of ICECAdapter or NULL on error.
  */
-extern "C" DECLSPEC void * CECInit(const char *strDeviceName, CEC::cec_device_type_list devicesTypes);
+extern "C" DECLSPEC void * CECInit(const char *strDeviceName, CEC::cec_device_type_list deviceTypes, uint16_t iPhysicalAddress = 0);
 
 /*!
- * @deprecated Please use CECInit() instead
  * @brief Load the CEC adapter library.
- * @param strDeviceName How to present this device to other devices.
- * @param iLogicalAddress The logical of this device. PLAYBACKDEVICE1 by default.
- * @param iPhysicalAddress The physical address of this device. 0x1000 by default.
+ * @param configuration The configuration to pass to libCEC
  * @return An instance of ICECAdapter or NULL on error.
  */
-extern "C" DECLSPEC void * CECCreate(const char *strDeviceName, CEC::cec_logical_address iLogicalAddress = CEC::CECDEVICE_PLAYBACKDEVICE1, uint16_t iPhysicalAddress = CEC_DEFAULT_PHYSICAL_ADDRESS);
+extern "C" DECLSPEC void * CECInitialise(CEC::libcec_configuration *configuration);
+
+/*!
+ * @brief Try to connect to the adapter and send the "start bootloader" command, without initialising libCEC and going through all checks
+ * @return True when the command was send, false otherwise.
+ */
+extern "C" DECLSPEC bool CECStartBootloader(void);
 
 /*!
  * @brief Unload the CEC adapter library.
