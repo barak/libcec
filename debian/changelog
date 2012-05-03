@@ -1,3 +1,9 @@
+libcec (1.6.2-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Andres Mejia <amejia@debian.org>  Wed, 02 May 2012 22:35:02 -0400
+
 libcec (1.6.1-2) unstable; urgency=low
 
   * Build depends on pkg-config. (Closes: #669919)
