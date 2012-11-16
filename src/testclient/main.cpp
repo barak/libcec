@@ -30,7 +30,8 @@
  *     http://www.pulse-eight.net/
  */
 
-#include "../../include/cec.h"
+#include "../env.h"
+#include "../include/cec.h"
 
 #include <cstdio>
 #include <fcntl.h>
@@ -38,18 +39,23 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <signal.h>
 #include "../lib/platform/os.h"
 #include "../lib/implementations/CECCommandHandler.h"
+#include "../lib/platform/util/StdString.h"
 
 using namespace CEC;
 using namespace std;
 using namespace PLATFORM;
 
-#include <cecloader.h>
+#define CEC_CONFIG_VERSION CEC_CLIENT_VERSION_2_0_3;
+
+#include "../../include/cecloader.h"
 
 ICECCallbacks        g_callbacks;
 libcec_configuration g_config;
-int                  g_cecLogLevel(CEC_LOG_ALL);
+int                  g_cecLogLevel(-1);
+int                  g_cecDefaultLogLevel(CEC_LOG_ALL);
 ofstream             g_logOutput;
 bool                 g_bShortLog(false);
 CStdString           g_strPort;
@@ -123,7 +129,7 @@ bool GetWord(string& data, string& word)
   return true;
 }
 
-int CecLogMessage(void *UNUSED(cbParam), const cec_log_message &message)
+int CecLogMessage(void *UNUSED(cbParam), const cec_log_message message)
 {
   if ((message.level & g_cecLogLevel) == message.level)
   {
@@ -165,17 +171,17 @@ int CecLogMessage(void *UNUSED(cbParam), const cec_log_message &message)
   return 0;
 }
 
-int CecKeyPress(void *UNUSED(cbParam), const cec_keypress &UNUSED(key))
+int CecKeyPress(void *UNUSED(cbParam), const cec_keypress UNUSED(key))
 {
   return 0;
 }
 
-int CecCommand(void *UNUSED(cbParam), const cec_command &UNUSED(command))
+int CecCommand(void *UNUSED(cbParam), const cec_command UNUSED(command))
 {
   return 0;
 }
 
-int CecAlert(void *UNUSED(cbParam), const libcec_alert type, const libcec_parameter &UNUSED(param))
+int CecAlert(void *UNUSED(cbParam), const libcec_alert type, const libcec_parameter UNUSED(param))
 {
   switch (type)
   {
@@ -218,8 +224,13 @@ void ListDevices(ICECAdapter *parser)
         {
           time_t buildTime = (time_t)config.iFirmwareBuildDate;
           strDeviceInfo.AppendFormat("firmware build date: %s", asctime(gmtime(&buildTime)));
-          strDeviceInfo = strDeviceInfo.Left((int)strDeviceInfo.length() - 1); // strip \n added by asctime
-          strDeviceInfo.append(" +0000");
+          strDeviceInfo = strDeviceInfo.Left(strDeviceInfo.length() > 1 ? (unsigned)(strDeviceInfo.length() - 1) : 0); // strip \n added by asctime
+          strDeviceInfo.append(" +0000\n");
+        }
+
+        if (config.adapterType != ADAPTERTYPE_UNKNOWN)
+        {
+          strDeviceInfo.AppendFormat("type:                %s\n", parser->ToString(config.adapterType));
         }
       }
       strDeviceInfo.append("\n");
@@ -249,6 +260,8 @@ void ShowHelpCommandLine(const char* strExec)
       "  -s --single-command         Execute a single command and exit. Does not power" << endl <<
       "                              on devices on startup and power them off on exit." << endl <<
       "  -o --osd-name {osd name}    Use a custom osd name." << endl <<
+      "  -m --monitor                Start a monitor-only client." << endl <<
+      "  -i --info                   Shows information about how libCEC was compiled." << endl <<
       "  [COM PORT]                  The com port to connect to. If no COM" << endl <<
       "                              port is given, the client tries to connect to the" << endl <<
       "                              first device that is detected." << endl <<
@@ -524,6 +537,18 @@ bool ProcessCommandAS(ICECAdapter *parser, const string &command, string & UNUSE
   if (command == "as")
   {
     parser->SetActiveSource();
+    // wait for the source switch to finish for 15 seconds tops
+    if (g_bSingleCommand)
+    {
+      CTimeout timeout(15000);
+      bool bActiveSource(false);
+      while (timeout.TimeLeft() > 0 && !bActiveSource)
+      {
+        bActiveSource = parser->IsLibCECActiveSource();
+        if (!bActiveSource)
+          CEvent::Sleep(100);
+      }
+    }
     return true;
   }
 
@@ -642,7 +667,7 @@ bool ProcessCommandVEN(ICECAdapter *parser, const string &command, string &argum
       if (iDev >= 0 && iDev < 15)
       {
         uint64_t iVendor = parser->GetDeviceVendorId((cec_logical_address) iDev);
-        PrintToStdOut("vendor id: %06x", iVendor);
+        PrintToStdOut("vendor id: %06llx", iVendor);
         return true;
       }
     }
@@ -773,14 +798,19 @@ bool ProcessCommandR(ICECAdapter *parser, const string &command, string & UNUSED
 {
   if (command == "r")
   {
+    bool bReactivate = parser->IsLibCECActiveSource();
+
     PrintToStdOut("closing the connection");
     parser->Close();
 
     PrintToStdOut("opening a new connection");
     parser->Open(g_strPort.c_str());
 
-    PrintToStdOut("setting active source");
-    parser->SetActiveSource();
+    if (bReactivate)
+    {
+      PrintToStdOut("setting active source");
+      parser->SetActiveSource();
+    }
     return true;
   }
 
@@ -839,7 +869,7 @@ bool ProcessCommandSCAN(ICECAdapter *parser, const string &command, string & UNU
         cec_power_status power    = parser->GetDevicePowerStatus((cec_logical_address)iPtr);
         cec_osd_name osdName      = parser->GetDeviceOSDName((cec_logical_address)iPtr);
         CStdString strAddr;
-        strAddr.Format("%04x", iPhysicalAddress);
+        strAddr.Format("%x.%x.%x.%x", (iPhysicalAddress >> 12) & 0xF, (iPhysicalAddress >> 8) & 0xF, (iPhysicalAddress >> 4) & 0xF, iPhysicalAddress & 0xF);
         cec_menu_language lang;
         lang.device = CECDEVICE_UNKNOWN;
         parser->GetDeviceMenuLanguage((cec_logical_address)iPtr, &lang);
@@ -970,25 +1000,25 @@ bool ProcessCommandLineArguments(int argc, char *argv[])
           {
             if (!g_bSingleCommand)
               cout << "== using device type 'playback device'" << endl;
-            g_config.deviceTypes.add(CEC_DEVICE_TYPE_PLAYBACK_DEVICE);
+            g_config.deviceTypes.Add(CEC_DEVICE_TYPE_PLAYBACK_DEVICE);
           }
           else if (!strcmp(argv[iArgPtr + 1], "r"))
           {
             if (!g_bSingleCommand)
               cout << "== using device type 'recording device'" << endl;
-            g_config.deviceTypes.add(CEC_DEVICE_TYPE_RECORDING_DEVICE);
+            g_config.deviceTypes.Add(CEC_DEVICE_TYPE_RECORDING_DEVICE);
           }
           else if (!strcmp(argv[iArgPtr + 1], "t"))
           {
             if (!g_bSingleCommand)
               cout << "== using device type 'tuner'" << endl;
-            g_config.deviceTypes.add(CEC_DEVICE_TYPE_TUNER);
+            g_config.deviceTypes.Add(CEC_DEVICE_TYPE_TUNER);
           }
           else if (!strcmp(argv[iArgPtr + 1], "a"))
           {
             if (!g_bSingleCommand)
               cout << "== using device type 'audio system'" << endl;
-            g_config.deviceTypes.add(CEC_DEVICE_TYPE_AUDIO_SYSTEM);
+            g_config.deviceTypes.Add(CEC_DEVICE_TYPE_AUDIO_SYSTEM);
           }
           else
           {
@@ -998,9 +1028,29 @@ bool ProcessCommandLineArguments(int argc, char *argv[])
         }
         ++iArgPtr;
       }
+      else if (!strcmp(argv[iArgPtr], "--info") ||
+               !strcmp(argv[iArgPtr], "-i"))
+      {
+        if (g_cecLogLevel == -1)
+          g_cecLogLevel = CEC_LOG_WARNING + CEC_LOG_ERROR;
+        ICECAdapter *parser = LibCecInitialise(&g_config);
+        if (parser)
+        {
+          CStdString strMessage;
+          strMessage.Format("libCEC version: %s", parser->ToString((cec_server_version)g_config.serverVersion));
+          if (g_config.serverVersion >= CEC_SERVER_VERSION_1_7_2)
+            strMessage.AppendFormat(", %s", parser->GetLibInfo());
+          PrintToStdOut(strMessage.c_str());
+          UnloadLibCec(parser);
+          parser = NULL;
+        }
+        bReturn = false;
+      }
       else if (!strcmp(argv[iArgPtr], "--list-devices") ||
                !strcmp(argv[iArgPtr], "-l"))
       {
+        if (g_cecLogLevel == -1)
+          g_cecLogLevel = CEC_LOG_WARNING + CEC_LOG_ERROR;
         ICECAdapter *parser = LibCecInitialise(&g_config);
         if (parser)
         {
@@ -1024,6 +1074,9 @@ bool ProcessCommandLineArguments(int argc, char *argv[])
       else if (!strcmp(argv[iArgPtr], "--help") ||
                !strcmp(argv[iArgPtr], "-h"))
       {
+        if (g_cecLogLevel == -1)
+          g_cecLogLevel = CEC_LOG_WARNING + CEC_LOG_ERROR;
+
         ShowHelpCommandLine(argv[0]);
         return 0;
       }
@@ -1072,6 +1125,13 @@ bool ProcessCommandLineArguments(int argc, char *argv[])
         }
         ++iArgPtr;
       }
+      else if (!strcmp(argv[iArgPtr], "-m") ||
+               !strcmp(argv[iArgPtr], "--monitor"))
+      {
+        cout << "starting a monitor-only client. use 'mon 0' to switch to normal mode" << endl;
+        g_config.bMonitorOnly = 1;
+        ++iArgPtr;
+      }
       else
       {
         g_strPort = argv[iArgPtr++];
@@ -1082,11 +1142,24 @@ bool ProcessCommandLineArguments(int argc, char *argv[])
   return bReturn;
 }
 
+void sighandler(int iSignal)
+{
+  PrintToStdOut("signal caught: %d - exiting", iSignal);
+  g_bExit = true;
+}
+
 int main (int argc, char *argv[])
 {
+  if (signal(SIGINT, sighandler) == SIG_ERR)
+  {
+    PrintToStdOut("can't register sighandler");
+    return -1;
+  }
+
   g_config.Clear();
+  g_callbacks.Clear();
   snprintf(g_config.strDeviceName, 13, "CECTester");
-  g_config.clientVersion       = CEC_CLIENT_VERSION_1_6_2;
+  g_config.clientVersion       = CEC_CONFIG_VERSION;
   g_config.bActivateSource     = 0;
   g_callbacks.CBCecLogMessage  = &CecLogMessage;
   g_callbacks.CBCecKeyPress    = &CecKeyPress;
@@ -1097,11 +1170,14 @@ int main (int argc, char *argv[])
   if (!ProcessCommandLineArguments(argc, argv))
     return 0;
 
+  if (g_cecLogLevel == -1)
+    g_cecLogLevel = g_cecDefaultLogLevel;
+
   if (g_config.deviceTypes.IsEmpty())
   {
     if (!g_bSingleCommand)
       cout << "No device type given. Using 'recording device'" << endl;
-    g_config.deviceTypes.add(CEC_DEVICE_TYPE_RECORDING_DEVICE);
+    g_config.deviceTypes.Add(CEC_DEVICE_TYPE_RECORDING_DEVICE);
   }
 
   ICECAdapter *parser = LibCecInitialise(&g_config);
@@ -1118,6 +1194,9 @@ int main (int argc, char *argv[])
 
     return 1;
   }
+
+  // init video on targets that need this
+  parser->InitVideoStandalone();
 
   if (!g_bSingleCommand)
   {

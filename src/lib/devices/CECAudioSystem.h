@@ -43,13 +43,13 @@ namespace CEC
 
     bool SetAudioStatus(uint8_t status);
     bool SetSystemAudioModeStatus(const cec_system_audio_status mode);
-    bool TransmitAudioStatus(cec_logical_address dest);
-    bool TransmitSetSystemAudioMode(cec_logical_address dest);
-    bool TransmitSystemAudioModeStatus(cec_logical_address dest);
+    bool TransmitAudioStatus(cec_logical_address dest, bool bIsReply);
+    bool TransmitSetSystemAudioMode(cec_logical_address dest, bool bIsReply);
+    bool TransmitSystemAudioModeStatus(cec_logical_address dest, bool bIsReply);
 
-    uint8_t VolumeUp(bool bSendRelease = true);
-    uint8_t VolumeDown(bool bSendRelease = true);
-    uint8_t MuteAudio(bool bSendRelease = true);
+    uint8_t VolumeUp(const cec_logical_address source, bool bSendRelease = true);
+    uint8_t VolumeDown(const cec_logical_address source, bool bSendRelease = true);
+    uint8_t MuteAudio(const cec_logical_address source);
 
     bool TransmitActiveSource(void) { return false; }
 
