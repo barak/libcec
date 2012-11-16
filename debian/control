@@ -4,7 +4,8 @@ Priority: optional
 Maintainer: Andres Mejia <amejia@debian.org>
 Build-Depends: debhelper (>= 8.1.3~),
  pkg-config,
- libudev-dev [linux-any]
+ libudev-dev [linux-any],
+ liblockdev1-dev | liblockdev-dev
 Standards-Version: 3.9.3
 Homepage: http://libcec.pulse-eight.com/
 Vcs-Git: git://anonscm.debian.org/collab-maint/libcec.git
