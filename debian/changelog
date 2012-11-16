@@ -1,3 +1,12 @@
+libcec (2.0.3-1) experimental; urgency=low
+
+  * New upstream release. (Closes: #685058)
+  * Change library package to libcec2 for soname bump.
+  * Add new build-dependency liblockdev-dev.
+  * Add new manpage for cec-config utility program.
+
+ -- Andres Mejia <amejia@debian.org>  Fri, 16 Nov 2012 12:27:06 -0500
+
 libcec (1.6.2-1) unstable; urgency=low
 
   * New upstream release.
