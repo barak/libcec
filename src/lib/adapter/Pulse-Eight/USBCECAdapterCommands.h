@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -130,6 +130,8 @@ namespace CEC
      * @return True when persisted, false otherwise.
      */
     bool WriteEEPROM(void);
+
+    void SetActiveSource(bool bSetTo, bool bClientUnregistered);
 
   private:
     /*!

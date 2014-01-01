@@ -1,7 +1,7 @@
 ﻿/*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -74,9 +74,12 @@ namespace LibCECTray.controller.actions
       SendEvent(UpdateEventType.StatusText, Resources.action_sending_power_on);
       _lib.PowerOnDevices(CecLogicalAddress.Broadcast);
 
-      SendEvent(UpdateEventType.StatusText, Resources.action_detecting_tv_vendor);
-      SendEvent(UpdateEventType.ProgressBar, 30);
-      SendEvent(UpdateEventType.TVVendorId, (int)_lib.GetDeviceVendorId(CecLogicalAddress.Tv));
+      if (_lib.IsActiveDevice(CecLogicalAddress.Tv))
+      {
+        SendEvent(UpdateEventType.StatusText, Resources.action_detecting_tv_vendor);
+        SendEvent(UpdateEventType.ProgressBar, 30);
+        SendEvent(UpdateEventType.TVVendorId, (int)_lib.GetDeviceVendorId(CecLogicalAddress.Tv));
+      }
 
       SendEvent(UpdateEventType.ProgressBar, 50);
       SendEvent(UpdateEventType.StatusText, Resources.action_detecting_avr);
@@ -91,7 +94,7 @@ namespace LibCECTray.controller.actions
         SendEvent(UpdateEventType.AVRVendorId, (int)_lib.GetDeviceVendorId(CecLogicalAddress.AudioSystem));
       }
 
-      if (!_lib.GetDevicePowerStatus(CecLogicalAddress.Tv).Equals(CecPowerStatus.On))
+      if (_lib.IsActiveDevice(CecLogicalAddress.Tv)&& !_lib.GetDevicePowerStatus(CecLogicalAddress.Tv).Equals(CecPowerStatus.On))
       {
         SendEvent(UpdateEventType.ProgressBar, 70);
         SendEvent(UpdateEventType.StatusText, Resources.action_activating_source);
@@ -107,6 +110,11 @@ namespace LibCECTray.controller.actions
       SendEvent(UpdateEventType.ProgressBar, 90);
       SendEvent(UpdateEventType.StatusText, Resources.action_polling_active_devices);
       SendEvent(UpdateEventType.PollDevices);
+
+      if (!_lib.IsActiveDevice(CecLogicalAddress.Tv))
+      {
+        MessageBox.Show(Resources.alert_tv_poll_failed, Resources.cec_alert, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+      }
 
       SendEvent(UpdateEventType.ProgressBar, 100);
       SendEvent(UpdateEventType.StatusText, Resources.ready);

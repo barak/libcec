@@ -1,7 +1,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -53,8 +53,37 @@ using namespace PLATFORM;
 
 #define CEC_PROCESSOR_SIGNAL_WAIT_TIME 1000
 #define ACTIVE_SOURCE_CHECK_INTERVAL   500
+#define TV_PRESENT_CHECK_INTERVAL      30000
 
 #define ToString(x) CCECTypeUtils::ToString(x)
+
+CCECStandbyProtection::CCECStandbyProtection(CCECProcessor* processor) :
+    m_processor(processor) {}
+CCECStandbyProtection::~CCECStandbyProtection(void) {}
+
+void* CCECStandbyProtection::Process(void)
+{
+  int64_t last = GetTimeMs();
+  int64_t next;
+  while (!IsStopped())
+  {
+    PLATFORM::CEvent::Sleep(1000);
+
+    next = GetTimeMs();
+
+    // reset the connection if the clock changed
+    if (next < last || next - last > 10000)
+    {
+      libcec_parameter param;
+      param.paramData = NULL; param.paramType = CEC_PARAMETER_TYPE_UNKOWN;
+      m_processor->GetLib()->Alert(CEC_ALERT_CONNECTION_LOST, param);
+      break;
+    }
+
+    last = next;
+  }
+  return NULL;
+}
 
 CCECProcessor::CCECProcessor(CLibCEC *libcec) :
     m_bInitialised(false),
@@ -65,7 +94,8 @@ CCECProcessor::CCECProcessor(CLibCEC *libcec) :
     m_iLastTransmission(0),
     m_bMonitor(true),
     m_addrAllocator(NULL),
-    m_bStallCommunication(false)
+    m_bStallCommunication(false),
+    m_connCheck(NULL)
 {
   m_busDevices = new CCECDeviceMap(this);
 }
@@ -104,11 +134,13 @@ void CCECProcessor::Close(void)
   SetCECInitialised(false);
 
   // stop the processor
+  DELETE_AND_NULL(m_connCheck);
   StopThread(-1);
   m_inBuffer.Broadcast();
   StopThread();
 
   // close the connection
+  CLockObject lock(m_mutex);
   DELETE_AND_NULL(m_communication);
 }
 
@@ -214,8 +246,13 @@ void *CCECProcessor::Process(void)
 {
   m_libcec->AddLog(CEC_LOG_DEBUG, "processor thread started");
 
+  if (!m_connCheck)
+    m_connCheck = new CCECStandbyProtection(this);
+  m_connCheck->CreateThread();
+
   cec_command command; command.Clear();
   CTimeout activeSourceCheck(ACTIVE_SOURCE_CHECK_INTERVAL);
+  CTimeout tvPresentCheck(TV_PRESENT_CHECK_INTERVAL);
 
   // as long as we're not being stopped and the connection is open
   while (!IsStopped() && m_communication->IsOpen())
@@ -239,6 +276,24 @@ void *CCECProcessor::Process(void)
           TransmitPendingActiveSourceCommands();
         activeSourceCheck.Init(ACTIVE_SOURCE_CHECK_INTERVAL);
       }
+
+      // check whether the TV is present and responding
+      if (tvPresentCheck.TimeLeft() == 0)
+      {
+        CCECClient *primary = GetPrimaryClient();
+        // only check whether the tv responds to polls when a client is connected and not in monitoring mode
+        if (primary && primary->GetConfiguration()->bMonitorOnly != 1)
+        {
+          if (!m_busDevices->At(CECDEVICE_TV)->IsPresent())
+          {
+            libcec_parameter param;
+            param.paramType = CEC_PARAMETER_TYPE_STRING;
+            param.paramData = (void*)"TV does not respond to CEC polls";
+            primary->Alert(CEC_ALERT_TV_POLL_FAILED, param);
+          }
+        }
+        tvPresentCheck.Init(TV_PRESENT_CHECK_INTERVAL);
+      }
     }
   }
 
@@ -258,6 +313,12 @@ bool CCECProcessor::ActivateSource(uint16_t iStreamPath)
     m_libcec->AddLog(CEC_LOG_DEBUG, "device with PA '%04x' not found", iStreamPath);
 
   return bReturn;
+}
+
+void CCECProcessor::SetActiveSource(bool bSetTo, bool bClientUnregistered)
+{
+  if (m_communication)
+    m_communication->SetActiveSource(bSetTo, bClientUnregistered);
 }
 
 void CCECProcessor::SetStandardLineTimeout(uint8_t iTimeout)
@@ -379,6 +440,10 @@ bool CCECProcessor::Transmit(const cec_command &data, bool bIsReply)
   // reset the state of this message to 'unknown'
   cec_adapter_message_state adapterState = ADAPTER_MESSAGE_STATE_UNKNOWN;
 
+  CLockObject lock(m_mutex);
+  if (!m_communication)
+    return false;
+
   if (!m_communication->SupportsSourceLogicalAddress(transmitData.initiator))
   {
     if (transmitData.initiator == CECDEVICE_UNREGISTERED && m_communication->SupportsSourceLogicalAddress(CECDEVICE_FREEUSE))
@@ -417,15 +482,14 @@ bool CCECProcessor::Transmit(const cec_command &data, bool bIsReply)
   }
 
   // wait until we finished allocating a new LA if it got lost
+  lock.Unlock();
   while (m_bStallCommunication) Sleep(5);
+  lock.Lock();
 
-  {
-    CLockObject lock(m_mutex);
-    m_iLastTransmission = GetTimeMs();
-    // set the number of tries
-    iMaxTries = initiator->GetHandler()->GetTransmitRetries() + 1;
-    initiator->MarkHandlerReady();
-  }
+  m_iLastTransmission = GetTimeMs();
+  // set the number of tries
+  iMaxTries = initiator->GetHandler()->GetTransmitRetries() + 1;
+  initiator->MarkHandlerReady();
 
   // and try to send the command
   while (bRetry && ++iTries < iMaxTries)
@@ -459,13 +523,7 @@ void CCECProcessor::TransmitAbort(cec_logical_address source, cec_logical_addres
 void CCECProcessor::ProcessCommand(const cec_command &command)
 {
   // log the command
-  CStdString dataStr;
-  dataStr.Format(">> %1x%1x", command.initiator, command.destination);
-  if (command.opcode_set == 1)
-    dataStr.AppendFormat(":%02x", command.opcode);
-  for (uint8_t iPtr = 0; iPtr < command.parameters.size; iPtr++)
-    dataStr.AppendFormat(":%02x", (unsigned int)command.parameters[iPtr]);
-  m_libcec->AddLog(CEC_LOG_TRAFFIC, dataStr.c_str());
+  m_libcec->AddLog(CEC_LOG_TRAFFIC, ToString(command).c_str());
 
   // find the initiator
   CCECBusDevice *device = m_busDevices->At(command.initiator);
@@ -617,6 +675,8 @@ bool CCECProcessor::GetDeviceInformation(const char *strPort, libcec_configurati
   config->iFirmwareBuildDate = m_communication->GetFirmwareBuildDate();
   config->adapterType        = m_communication->GetAdapterType();
 
+  Close();
+
   return true;
 }
 
@@ -689,7 +749,7 @@ bool CCECProcessor::AllocateLogicalAddresses(CCECClient* client)
     // replace a previous client
     CLockObject lock(m_mutex);
     m_clients.erase((*it)->GetLogicalAddress());
-    m_clients.insert(make_pair<cec_logical_address, CCECClient *>((*it)->GetLogicalAddress(), client));
+    m_clients.insert(make_pair((*it)->GetLogicalAddress(), client));
   }
 
   // set the new ackmask
@@ -737,6 +797,7 @@ bool CCECProcessor::RegisterClient(CCECClient *client)
 
   // ensure that controlled mode is enabled
   m_communication->SetControlledMode(true);
+  m_bMonitor = false;
 
   // source logical address for requests
   cec_logical_address sourceAddress(CECDEVICE_UNREGISTERED);
@@ -832,8 +893,11 @@ bool CCECProcessor::RegisterClient(CCECClient *client)
     GetTV()->MarkHandlerReady();
   }
 
+  // report our OSD name to the TV, since some TVs don't request it
+  client->GetPrimaryDevice()->TransmitOSDName(CECDEVICE_TV, false);
+
   // request the power status of the TV
-  tv->RequestPowerStatus(sourceAddress, true);
+  tv->RequestPowerStatus(sourceAddress, true, true);
 
   return bReturn;
 }
@@ -863,7 +927,7 @@ bool CCECProcessor::UnregisterClient(CCECClient *client)
         m_clients.erase(entry);
 
       // reset the device status
-      (*it)->ResetDeviceStatus();
+      (*it)->ResetDeviceStatus(true);
     }
   }
 
@@ -974,6 +1038,14 @@ void CCECProcessor::HandleLogicalAddressLost(cec_logical_address oldAddress)
     m_addrAllocator = new CCECAllocateLogicalAddress(this, client);
     m_addrAllocator->CreateThread();
   }
+}
+
+void CCECProcessor::HandlePhysicalAddressChanged(uint16_t iNewAddress)
+{
+  m_libcec->AddLog(CEC_LOG_NOTICE, "physical address changed to %04x", iNewAddress);
+  CCECClient* client = GetPrimaryClient();
+  if (client)
+    client->SetPhysicalAddress(iNewAddress);
 }
 
 uint16_t CCECProcessor::GetAdapterVendorId(void) const

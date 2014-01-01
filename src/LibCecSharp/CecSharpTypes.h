@@ -2,7 +2,7 @@
 /*
 * This file is part of the libCEC(R) library.
 *
-* libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+* libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
 * libCEC(R) is an original work, containing original code.
 *
 * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -200,7 +200,27 @@ namespace CecSharp
     /// The device needs servicing. This is set when the firmware can be upgraded, or when a problem with the firmware is detected.
     /// The latest firmware flash tool can be downloaded from http://packages.pulse-eight.net/
     /// </summary>
-    ServiceDevice = 1
+    ServiceDevice = 0,
+    /// <summary>
+    /// The connection to the adapter was lost, probably because the device got unplugged.
+    /// </summary>
+    ConnectionLost,
+    /// <summary>
+    /// No permission from the OS to access the adapter.
+    /// </summary>
+    PermissionError,
+    /// <summary>
+    /// The device is being used by another program.
+    /// </summary>
+    PortBusy,
+    /// <summary>
+    /// The physical address that is assigned to the adapter is already being used.
+    /// </summary>
+    PhysicalAddressError,
+    /// <summary>
+    /// The TV does not respond to polls.
+    /// </summary>
+    TVPollFailed
   };
 
   /// <summary>
@@ -764,23 +784,31 @@ namespace CecSharp
   /// </summary>
   public enum class CecVendorId
   {
-    Samsung   = 0x0000F0,
-    LG        = 0x00E091,
-    Panasonic = 0x008045,
-    Pioneer   = 0x00E036,
-    Onkyo     = 0x0009B0,
-    Yamaha    = 0x00A0DE,
-    Philips   = 0x00903E,
-    Sony      = 0x080046,
-    Toshiba   = 0x000039,
-    Akai      = 0x0020C7,
-    Benq      = 0x8065E9,
-    Daewoo    = 0x009053,
-    Grundig   = 0x00D0D5,
-    Medion    = 0x000CB8,
-    Sharp     = 0x08001F,
-    Vizio     = 0x6B746D,
-    Unknown   = 0
+    Toshiba      = 0x000039,
+    Samsung      = 0x0000F0,
+    Denon        = 0x0005CD,
+    Marantz      = 0x000678,
+    Loewe        = 0x000982,
+    Onkyo        = 0x0009B0,
+    Medion       = 0x000CB8,
+    Toshiba2     = 0x000CE7,
+    PulseEight   = 0x001582,
+    Akai         = 0x0020C7,
+    AOC          = 0x002467,
+    Panasonic    = 0x008045,
+    Philips      = 0x00903E,
+    Daewoo       = 0x009053,
+    Yamaha       = 0x00A0DE,
+    Grundig      = 0x00D0D5,
+    Pioneer      = 0x00E036,
+    LG           = 0x00E091,
+    Sharp        = 0x08001F,
+    Sony         = 0x080046,
+    Broadcom     = 0x18C086,
+    Vizio        = 0x6B746D,
+    Benq         = 0x8065E9,
+    HarmanKardon = 0x9C645E,
+    Unknown      = 0
   };
 
   /// <summary>
@@ -1175,7 +1203,39 @@ namespace CecSharp
     /// <summary>
     /// v2.0.3
     /// </summary>
-    Version2_0_3   = 0x2003
+    Version2_0_3   = 0x2003,
+    /// <summary>
+    /// v2.0.4
+    /// </summary>
+    Version2_0_4   = 0x2004,
+    /// <summary>
+    /// v2.0.5
+    /// </summary>
+    Version2_0_5   = 0x2005,
+    /// <summary>
+    /// v2.1.0
+    /// </summary>
+    Version2_1_0   = 0x2100,
+    /// <summary>
+    /// v2.1.1
+    /// </summary>
+    Version2_1_1   = 0x2101,
+    /// <summary>
+    /// v2.1.2
+    /// </summary>
+    Version2_1_2   = 0x2102,
+    /// <summary>
+    /// v2.1.3
+    /// </summary>
+    Version2_1_3   = 0x2103,
+    /// <summary>
+    /// v2.1.4
+    /// </summary>
+    Version2_1_4   = 0x2104,
+	/// <summary>
+    /// The current version
+    /// </summary>
+    CurrentVersion = 0x2104
   };
 
   /// <summary>
@@ -1266,7 +1326,39 @@ namespace CecSharp
     /// <summary>
     /// v2.0.3
     /// </summary>
-    Version2_0_3   = 0x2003
+    Version2_0_3   = 0x2003,
+    /// <summary>
+    /// v2.0.4
+    /// </summary>
+    Version2_0_4   = 0x2004,
+    /// <summary>
+    /// v2.0.5
+    /// </summary>
+    Version2_0_5   = 0x2005,
+    /// <summary>
+    /// v2.1.0
+    /// </summary>
+    Version2_1_0   = 0x2100,
+    /// <summary>
+    /// v2.1.1
+    /// </summary>
+    Version2_1_1   = 0x2101,
+    /// <summary>
+    /// v2.1.2
+    /// </summary>
+    Version2_1_2   = 0x2102,
+    /// <summary>
+    /// v2.1.3
+    /// </summary>
+    Version2_1_3   = 0x2103,
+	/// <summary>
+    /// v2.1.4
+    /// </summary>
+    Version2_1_4   = 0x2104,
+    /// <summary>
+    /// The current version
+    /// </summary>
+    CurrentVersion = 0x2104
   };
 
   /// <summary>
@@ -1289,7 +1381,11 @@ namespace CecSharp
     /// <summary>
     /// Raspberry Pi
     /// </summary>
-    RaspberryPi             = 0x100
+    RaspberryPi             = 0x100,
+    /// <summary>
+    /// TDA995x
+    /// </summary>
+    TDA995x                 = 0x200
   };
 
   /// <summary>
@@ -1653,8 +1749,8 @@ namespace CecSharp
       PhysicalAddress     = CEC_DEFAULT_PHYSICAL_ADDRESS;
       BaseDevice          = (CecLogicalAddress)CEC_DEFAULT_BASE_DEVICE;
       HDMIPort            = CEC_DEFAULT_HDMI_PORT;
-      ClientVersion       = CecClientVersion::VersionPre1_5;
-      ServerVersion       = CecServerVersion::VersionPre1_5;
+      ClientVersion       = CecClientVersion::CurrentVersion;
+      ServerVersion       = CecServerVersion::CurrentVersion;
       TvVendor            = CecVendorId::Unknown;
 
       GetSettingsFromROM  = false;
@@ -1762,6 +1858,9 @@ namespace CecSharp
 
       if (ServerVersion >= CecServerVersion::Version1_8_2)
         AdapterType = (CecAdapterType)config.adapterType;
+
+      if (ServerVersion >= CecServerVersion::Version2_1_0)
+        PowerOnScreensaver = config.bPowerOnScreensaver == 1;
     }
 
     /// <summary>
@@ -1900,6 +1999,11 @@ namespace CecSharp
     /// The type of adapter that libCEC is connected to.
     /// </summary>
     property CecAdapterType       AdapterType;
+
+	/// <summary>
+    /// True to power on when quitting the screensaver.
+    /// </summary>
+	property bool                 PowerOnScreensaver;
   };
 
   // the callback methods are called by unmanaged code, so we need some delegates for this
@@ -2309,7 +2413,7 @@ namespace CecSharp
         CecParameterType newType = (CecParameterType)data.paramType;
         if (newType == CecParameterType::ParameterTypeString)
         {
-          System::String ^ newData = gcnew System::String((const char *)data.paramData, 0, 128);
+          System::String ^ newData = gcnew System::String(data.paramData ? (const char *)data.paramData : "", 0, 128);
           CecParameter ^ newParam = gcnew CecParameter(newType, newData);
           iReturn = m_callbacks->ReceiveAlert((CecAlert)alert, newParam);
         }

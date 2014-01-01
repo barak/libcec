@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -175,6 +175,11 @@ namespace CEC {
 #define CEC_DEFAULT_SETTING_POWER_OFF_SCREENSAVER     1
 
 /*!
+ * default value for settings "wake up when deactivating the screensaver"
+ */
+#define CEC_DEFAULT_SETTING_POWER_ON_SCREENSAVER      1
+
+/*!
  * default value for settings "power off on standby"
  */
 #define CEC_DEFAULT_SETTING_POWER_OFF_ON_STANDBY      1
@@ -265,6 +270,11 @@ namespace CEC {
 #define CEC_FORWARD_STANDBY_MIN_INTERVAL 10000
 
 /*!
+ * default timeout in milliseconds for combo keys
+ */
+#define CEC_DEFAULT_COMBO_TIMEOUT_MS 1000
+
+/*!
  * the virtual device path to use for the Raspberry Pi's CEC wire
  */
 #define CEC_RPI_VIRTUAL_PATH           "Raspberry Pi"
@@ -302,13 +312,15 @@ namespace CEC {
 /*!
  * libCEC's minor version number
  */
-#define CEC_LIB_VERSION_MINOR        0
+#define CEC_LIB_VERSION_MINOR        1
 
 #define MSGSTART                     0xFF
 #define MSGEND                       0xFE
 #define MSGESC                       0xFD
 #define ESCOFFSET                    3
 
+// defines to make compile time checks for certain features easy
+#define CEC_FEATURE_CONFIGURABLE_COMBO_KEY 1
 
 typedef enum cec_abort_reason
 {
@@ -691,7 +703,7 @@ typedef enum cec_user_control_code
   CEC_USER_CONTROL_CODE_AN_RETURN                   = 0x91,
   CEC_USER_CONTROL_CODE_AN_CHANNELS_LIST            = 0x96,
   CEC_USER_CONTROL_CODE_MAX                         = 0x96,
-  CEC_USER_CONTROL_CODE_UNKNOWN
+  CEC_USER_CONTROL_CODE_UNKNOWN                     = 0xFF
 } cec_user_control_code;
 
 typedef enum cec_logical_address
@@ -813,27 +825,31 @@ typedef enum cec_bus_device_status
 
 typedef enum cec_vendor_id
 {
-  CEC_VENDOR_SAMSUNG   = 0x0000F0,
-  CEC_VENDOR_LG        = 0x00E091,
-  CEC_VENDOR_PANASONIC = 0x008045,
-  CEC_VENDOR_PIONEER   = 0x00E036,
-  CEC_VENDOR_ONKYO     = 0x0009B0,
-  CEC_VENDOR_YAMAHA    = 0x00A0DE,
-  CEC_VENDOR_PHILIPS   = 0x00903E,
-  CEC_VENDOR_SONY      = 0x080046,
-  CEC_VENDOR_TOSHIBA   = 0x000039,
-  CEC_VENDOR_AKAI      = 0x0020C7,
-  CEC_VENDOR_AOC       = 0x002467,
-  CEC_VENDOR_BENQ      = 0x8065E9,
-  CEC_VENDOR_DAEWOO    = 0x009053,
-  CEC_VENDOR_GRUNDIG   = 0x00D0D5,
-  CEC_VENDOR_MEDION    = 0x000CB8,
-  CEC_VENDOR_SHARP     = 0x08001F,
-  CEC_VENDOR_VIZIO     = 0x6B746D,
-  CEC_VENDOR_BROADCOM  = 0x18C086,
-  CEC_VENDOR_LOEWE     = 0x000982,
-   
-  CEC_VENDOR_UNKNOWN   = 0
+  CEC_VENDOR_TOSHIBA       = 0x000039,
+  CEC_VENDOR_SAMSUNG       = 0x0000F0,
+  CEC_VENDOR_DENON         = 0x0005CD,
+  CEC_VENDOR_MARANTZ       = 0x000678,
+  CEC_VENDOR_LOEWE         = 0x000982,
+  CEC_VENDOR_ONKYO         = 0x0009B0,
+  CEC_VENDOR_MEDION        = 0x000CB8,
+  CEC_VENDOR_TOSHIBA2      = 0x000CE7,
+  CEC_VENDOR_PULSE_EIGHT   = 0x001582,
+  CEC_VENDOR_AKAI          = 0x0020C7,
+  CEC_VENDOR_AOC           = 0x002467,
+  CEC_VENDOR_PANASONIC     = 0x008045,
+  CEC_VENDOR_PHILIPS       = 0x00903E,
+  CEC_VENDOR_DAEWOO        = 0x009053,
+  CEC_VENDOR_YAMAHA        = 0x00A0DE,
+  CEC_VENDOR_GRUNDIG       = 0x00D0D5,
+  CEC_VENDOR_PIONEER       = 0x00E036,
+  CEC_VENDOR_LG            = 0x00E091,
+  CEC_VENDOR_SHARP         = 0x08001F,
+  CEC_VENDOR_SONY          = 0x080046,
+  CEC_VENDOR_BROADCOM      = 0x18C086,
+  CEC_VENDOR_VIZIO         = 0x6B746D,
+  CEC_VENDOR_BENQ          = 0x8065E9,
+  CEC_VENDOR_HARMAN_KARDON = 0x9C645E,
+  CEC_VENDOR_UNKNOWN       = 0
 } cec_vendor_id;
 
 typedef enum cec_adapter_type
@@ -876,6 +892,18 @@ typedef struct cec_adapter
   char comm[1024]; /**< the name of the com port */
 } cec_adapter;
 
+typedef struct cec_adapter_descriptor
+{
+  char             strComPath[1024]; /**< the path to the com port */
+  char             strComName[1024]; /**< the name of the com port */
+  uint16_t         iVendorId;
+  uint16_t         iProductId;
+  uint16_t         iFirmwareVersion;
+  uint16_t         iPhysicalAddress;
+  uint32_t         iFirmwareBuildDate;
+  cec_adapter_type adapterType;
+} cec_adapter_descriptor;
+
 typedef struct cec_datapacket
 {
   uint8_t data[100]; /**< the actual data */
@@ -889,6 +917,16 @@ typedef struct cec_datapacket
       PushBack(packet[iPtr]);
 
     return *this;
+  }
+
+  bool operator ==(const struct cec_datapacket& packet) const
+  {
+    if (size != packet.size)
+      return false;
+    for (uint8_t iPtr = 0; iPtr < size; iPtr++)
+      if (packet.data[iPtr] != data[iPtr])
+        return false;
+    return true;
   }
 
   bool    IsEmpty(void) const             { return size == 0; }   /**< @return True when this packet is empty, false otherwise. */
@@ -1256,7 +1294,9 @@ typedef enum libcec_alert
   CEC_ALERT_SERVICE_DEVICE,
   CEC_ALERT_CONNECTION_LOST,
   CEC_ALERT_PERMISSION_ERROR,
-  CEC_ALERT_PORT_BUSY
+  CEC_ALERT_PORT_BUSY,
+  CEC_ALERT_PHYSICAL_ADDRESS_ERROR,
+  CEC_ALERT_TV_POLL_FAILED
 } libcec_alert;
 
 typedef enum libcec_parameter_type
@@ -1377,6 +1417,14 @@ typedef enum cec_client_version
   CEC_CLIENT_VERSION_2_0_1   = 0x2001,
   CEC_CLIENT_VERSION_2_0_2   = 0x2002,
   CEC_CLIENT_VERSION_2_0_3   = 0x2003,
+  CEC_CLIENT_VERSION_2_0_4   = 0x2004,
+  CEC_CLIENT_VERSION_2_0_5   = 0x2005,
+  CEC_CLIENT_VERSION_2_1_0   = 0x2100,
+  CEC_CLIENT_VERSION_2_1_1   = 0x2101,
+  CEC_CLIENT_VERSION_2_1_2   = 0x2102,
+  CEC_CLIENT_VERSION_2_1_3   = 0x2103,
+  CEC_CLIENT_VERSION_2_1_4   = 0x2104,
+  CEC_CLIENT_VERSION_CURRENT = 0x2104
 } cec_client_version;
 
 typedef enum cec_server_version
@@ -1402,6 +1450,14 @@ typedef enum cec_server_version
   CEC_SERVER_VERSION_2_0_1   = 0x2001,
   CEC_SERVER_VERSION_2_0_2   = 0x2002,
   CEC_SERVER_VERSION_2_0_3   = 0x2003,
+  CEC_SERVER_VERSION_2_0_4   = 0x2004,
+  CEC_SERVER_VERSION_2_0_5   = 0x2005,
+  CEC_SERVER_VERSION_2_1_0   = 0x2100,
+  CEC_SERVER_VERSION_2_1_1   = 0x2101,
+  CEC_SERVER_VERSION_2_1_2   = 0x2102,
+  CEC_SERVER_VERSION_2_1_3   = 0x2103,
+  CEC_SERVER_VERSION_2_1_4   = 0x2104,
+  CEC_SERVER_VERSION_CURRENT = 0x2104
 } cec_server_version;
 
 struct libcec_configuration
@@ -1424,6 +1480,7 @@ struct libcec_configuration
   uint8_t               bUseTVMenuLanguage;   /*!< use the menu language of the TV in the player application */
   uint8_t               bActivateSource;      /*!< make libCEC the active source on the bus when starting the player application */
   uint8_t               bPowerOffScreensaver; /*!< put devices in standby mode when activating the screensaver */
+  uint8_t               bPowerOnScreensaver;  /*!< wake devices when deactivating the screensaver */
   uint8_t               bPowerOffOnStandby;   /*!< put this PC in standby mode when the TV is switched off. only used when bShutdownOnStandby = 0  */
   uint8_t               bSendInactiveSource;  /*!< send an 'inactive source' message when stopping the player. added in 1.5.1 */
 
@@ -1440,6 +1497,8 @@ struct libcec_configuration
   cec_version           cecVersion;           /*!< CEC spec version to use by libCEC. defaults to v1.4. added in 1.8.0 */
   cec_adapter_type      adapterType;          /*!< type of the CEC adapter that we're connected to. added in 1.8.2 */
   uint8_t               iDoubleTapTimeoutMs;  /*!< prevent double taps withing this timeout. defaults to 200ms. added in 2.0.0 */
+  cec_user_control_code comboKey;             /*!< key code that initiates combo keys. defaults to CEC_USER_CONTROL_CODE_F1_BLUE. CEC_USER_CONTROL_CODE_UNKNOWN to disable. added in 2.0.5 */
+  uint32_t              iComboKeyTimeoutMs;   /*!< timeout until the combo key is sent as normal keypress */
 
 #ifdef __cplusplus
    libcec_configuration(void) { Clear(); }
@@ -1473,7 +1532,10 @@ struct libcec_configuration
                   bMonitorOnly              == other.bMonitorOnly &&
                   cecVersion                == other.cecVersion &&
                   adapterType               == other.adapterType &&
-                  iDoubleTapTimeoutMs       == other.iDoubleTapTimeoutMs);
+                  iDoubleTapTimeoutMs       == other.iDoubleTapTimeoutMs &&
+                  (other.clientVersion <= CEC_CLIENT_VERSION_2_0_4 || comboKey            == other.comboKey) &&
+                  (other.clientVersion <= CEC_CLIENT_VERSION_2_0_4 || iComboKeyTimeoutMs  == other.iComboKeyTimeoutMs) &&
+                  (other.clientVersion <  CEC_CLIENT_VERSION_2_1_0 || bPowerOnScreensaver == other.bPowerOnScreensaver));
   }
 
   bool operator!=(const libcec_configuration &other) const
@@ -1490,13 +1552,14 @@ struct libcec_configuration
     baseDevice = (cec_logical_address)CEC_DEFAULT_BASE_DEVICE;
     iHDMIPort =                       CEC_DEFAULT_HDMI_PORT;
     tvVendor =              (uint64_t)CEC_VENDOR_UNKNOWN;
-    clientVersion =         (uint32_t)CEC_CLIENT_VERSION_2_0_0;
-    serverVersion =         (uint32_t)CEC_SERVER_VERSION_2_0_0;
+    clientVersion =         (uint32_t)CEC_CLIENT_VERSION_CURRENT;
+    serverVersion =         (uint32_t)CEC_SERVER_VERSION_CURRENT;
     bAutodetectAddress =              0;
     bGetSettingsFromROM =             CEC_DEFAULT_SETTING_GET_SETTINGS_FROM_ROM;
     bUseTVMenuLanguage =              CEC_DEFAULT_SETTING_USE_TV_MENU_LANGUAGE;
     bActivateSource =                 CEC_DEFAULT_SETTING_ACTIVATE_SOURCE;
     bPowerOffScreensaver =            CEC_DEFAULT_SETTING_POWER_OFF_SCREENSAVER;
+    bPowerOnScreensaver =             CEC_DEFAULT_SETTING_POWER_ON_SCREENSAVER;
     bPowerOffOnStandby =              CEC_DEFAULT_SETTING_POWER_OFF_ON_STANDBY;
     bShutdownOnStandby =              CEC_DEFAULT_SETTING_SHUTDOWN_ON_STANDBY;
     bSendInactiveSource =             CEC_DEFAULT_SETTING_SEND_INACTIVE_SOURCE;
@@ -1508,6 +1571,8 @@ struct libcec_configuration
     cecVersion =         (cec_version)CEC_DEFAULT_SETTING_CEC_VERSION;
     adapterType =                     ADAPTERTYPE_UNKNOWN;
     iDoubleTapTimeoutMs =             CEC_DOUBLE_TAP_TIMEOUT_MS;
+    comboKey =                        CEC_USER_CONTROL_CODE_STOP;
+    iComboKeyTimeoutMs =              CEC_DEFAULT_COMBO_TIMEOUT_MS;
 
     memset(strDeviceName, 0, 13);
     deviceTypes.Clear();

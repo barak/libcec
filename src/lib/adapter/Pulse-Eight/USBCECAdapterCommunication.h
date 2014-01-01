@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -90,6 +90,7 @@ namespace CEC
     cec_adapter_type GetAdapterType(void);
     uint16_t GetAdapterVendorId(void) const;
     uint16_t GetAdapterProductId(void) const;
+    void SetActiveSource(bool bSetTo, bool bClientUnregistered);
     ///}
 
     bool ProvidesExtendedResponse(void);
@@ -181,6 +182,7 @@ namespace CEC
     CUSBCECAdapterCommands *                     m_commands;             /**< commands that can be sent to the adapter */
     CCECAdapterMessageQueue *                    m_adapterMessageQueue;  /**< the incoming and outgoing message queue */
     cec_logical_addresses                        m_logicalAddresses;     /**< the logical address list that this instance is using */
+    PLATFORM::CMutex                             m_waitingMutex;
   };
 
   class CAdapterEepromWriteThread : public PLATFORM::CThread

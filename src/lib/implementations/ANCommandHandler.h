@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -46,7 +46,7 @@ namespace CEC
     virtual ~CANCommandHandler(void) {};
 
     int HandleVendorRemoteButtonDown(const cec_command &command);
-    int HandleVendorRemoteButtonUp(const cec_command &command);
+    int HandleDeviceVendorCommandWithId(const cec_command &command);
 
   protected:
     bool PowerOn(const cec_logical_address iInitiator, const cec_logical_address iDestination);

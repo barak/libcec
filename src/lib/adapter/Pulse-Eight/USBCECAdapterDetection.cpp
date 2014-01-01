@@ -1,7 +1,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -61,6 +61,8 @@ extern "C" {
 #include <libudev.h>
 }
 #elif defined(__FreeBSD__)
+#include <sys/param.h>
+#include <sys/sysctl.h>
 #include <stdio.h>
 #include <unistd.h>
 #endif
@@ -202,7 +204,7 @@ static bool FindComPortForComposite(const char* strLocation, char* strPortName, 
 }
 #endif
 
-uint8_t CUSBCECAdapterDetection::FindAdapters(cec_adapter *deviceList, uint8_t iBufSize, const char *strDevicePath /* = NULL */)
+uint8_t CUSBCECAdapterDetection::FindAdapters(cec_adapter_descriptor *deviceList, uint8_t iBufSize, const char *strDevicePath /* = NULL */)
 {
   uint8_t iFound(0);
 
@@ -262,10 +264,13 @@ uint8_t CUSBCECAdapterDetection::FindAdapters(cec_adapter *deviceList, uint8_t i
             if (!strDevicePath || !strcmp(bsdPath, strDevicePath))
             {
               // on darwin, the device path is the same as the comm path.
-              if (iFound == 0 || strcmp(deviceList[iFound-1].comm, bsdPath))
+              if (iFound == 0 || strcmp(deviceList[iFound-1].strComName, bsdPath))
               {
-                snprintf(deviceList[iFound].path, sizeof(deviceList[iFound].path), "%s", bsdPath);
-                snprintf(deviceList[iFound].comm, sizeof(deviceList[iFound].path), "%s", bsdPath);
+                snprintf(deviceList[iFound].strComPath, sizeof(deviceList[iFound].strComPath), "%s", bsdPath);
+                snprintf(deviceList[iFound].strComName, sizeof(deviceList[iFound].strComName), "%s", bsdPath);
+                deviceList[iFound].iVendorId = iVendor;
+                deviceList[iFound].iProductId = iProduct;
+                deviceList[iFound].adapterType = ADAPTERTYPE_P8_EXTERNAL; // will be overridden when not doing a "quick scan" by the actual type
                 iFound++;
               }
             }
@@ -312,10 +317,13 @@ uint8_t CUSBCECAdapterDetection::FindAdapters(cec_adapter *deviceList, uint8_t i
       if (!strDevicePath || !strcmp(strPath.c_str(), strDevicePath))
       {
         CStdString strComm(strPath);
-        if (FindComPort(strComm) && (iFound == 0 || strcmp(deviceList[iFound-1].comm, strComm.c_str())))
+        if (FindComPort(strComm) && (iFound == 0 || strcmp(deviceList[iFound-1].strComName, strComm.c_str())))
         {
-          snprintf(deviceList[iFound].path, sizeof(deviceList[iFound].path), "%s", strPath.c_str());
-          snprintf(deviceList[iFound].comm, sizeof(deviceList[iFound].path), "%s", strComm.c_str());
+          snprintf(deviceList[iFound].strComPath, sizeof(deviceList[iFound].strComPath), "%s", strPath.c_str());
+          snprintf(deviceList[iFound].strComName, sizeof(deviceList[iFound].strComName), "%s", strComm.c_str());
+          deviceList[iFound].iVendorId = iVendor;
+          deviceList[iFound].iProductId = iProduct;
+          deviceList[iFound].adapterType = ADAPTERTYPE_P8_EXTERNAL; // will be overridden when not doing a "quick scan" by the actual type
           iFound++;
         }
       }
@@ -408,38 +416,102 @@ uint8_t CUSBCECAdapterDetection::FindAdapters(cec_adapter *deviceList, uint8_t i
       // the 1002 pid indicates a composite device, that needs special treatment
       char strId[512];
       CM_Get_Device_ID(devInfoData.DevInst, strId, 512, 0);
-      if (FindComPortForComposite(strId, deviceList[iFound].comm, sizeof(deviceList[iFound].comm)))
+      if (FindComPortForComposite(strId, deviceList[iFound].strComName, sizeof(deviceList[iFound].strComName)))
       {
-        snprintf(deviceList[iFound].path, sizeof(deviceList[iFound].path), "%s", devicedetailData->DevicePath);
+        snprintf(deviceList[iFound].strComPath, sizeof(deviceList[iFound].strComPath), "%s", devicedetailData->DevicePath);
+        deviceList[iFound].iVendorId = (uint16_t)iVendor;
+        deviceList[iFound].iProductId = (uint16_t)iProduct;
+        deviceList[iFound].adapterType = ADAPTERTYPE_P8_EXTERNAL; // will be overridden when not doing a "quick scan" by the actual type
         iFound++;
       }
     }
-    else if (GetComPortFromHandle(hDevHandle, &devInfoData, deviceList[iFound].comm, sizeof(deviceList[iFound].comm)))
+    else if (GetComPortFromHandle(hDevHandle, &devInfoData, deviceList[iFound].strComName, sizeof(deviceList[iFound].strComName)))
     {
-      snprintf(deviceList[iFound].path, sizeof(deviceList[iFound].path), "%s", devicedetailData->DevicePath);
+      snprintf(deviceList[iFound].strComPath, sizeof(deviceList[iFound].strComPath), "%s", devicedetailData->DevicePath);
+      deviceList[iFound].iVendorId = (uint16_t)iVendor;
+      deviceList[iFound].iProductId = (uint16_t)iProduct;
+      deviceList[iFound].adapterType = ADAPTERTYPE_P8_EXTERNAL; // will be overridden when not doing a "quick scan" by the actual type
       iFound++;
     }
   }
 #elif defined(__FreeBSD__)
   char devicePath[PATH_MAX + 1];
+  char infos[512];
+  char sysctlname[32];
+  char ttyname[8];
+  char *pos;
+  size_t infos_size = sizeof(infos);
   int i;
 
-  for (i = 0; i < 8; ++i)
+  for (i = 0; ; ++i)
   {
-    (void)snprintf(devicePath, sizeof(devicePath), "/dev/ttyU%d", i);
-    if (strDevicePath && strcmp(devicePath, strDevicePath) != 0)
+    unsigned int iVendor, iProduct;
+    memset(infos, 0, sizeof(infos));
+    (void)snprintf(sysctlname, sizeof(sysctlname),
+      "dev.umodem.%d.%%pnpinfo", i);
+    if (sysctlbyname(sysctlname, infos, &infos_size,
+      NULL, 0) != 0)
+        break;
+    pos = strstr(infos, "vendor=");
+    if (pos == NULL)
       continue;
-    if (!access(devicePath, 0))
-    {
-      snprintf(deviceList[iFound].path, sizeof(deviceList[iFound].path), "%s", devicePath);
-      snprintf(deviceList[iFound].comm, sizeof(deviceList[iFound].path), "%s", devicePath);
-      iFound++;
+    sscanf(pos, "vendor=%x ", &iVendor);
+
+    pos = strstr(infos, "product=");
+    if (pos == NULL)
+      continue;
+    sscanf(pos, "product=%x ", &iProduct);
+
+    if (iVendor != CEC_VID || (iProduct != CEC_PID && iProduct != CEC_PID2))
+      continue;
+
+    pos = strstr(infos, "ttyname=");
+    if (pos == NULL)
+      continue;
+    sscanf(pos, "ttyname=%s ", ttyname);
+
+    (void)snprintf(devicePath, sizeof(devicePath),
+      "/dev/tty%s", ttyname);
+
+    if (strDevicePath) {
+      char currStrDevicePath[512];
+      int port = 0;
+      int devaddr = 0;
+      memset(currStrDevicePath, 0, sizeof(currStrDevicePath));
+      memset(infos, 0, sizeof(infos));
+      (void)snprintf(sysctlname, sizeof(sysctlname),
+        "dev.umodem.%d.%%location", i);
+      if (sysctlbyname(sysctlname, infos, &infos_size,
+        NULL, 0) != 0)
+          break;
+
+      pos = strstr(infos, "port=");
+      if (pos == NULL)
+        continue;
+      sscanf(pos, "port=%d ", &port);
+
+      pos = strstr(infos, "devaddr=");
+      if (pos == NULL)
+        continue;
+      sscanf(pos, "devaddr=%d ", &devaddr);
+
+      (void)snprintf(currStrDevicePath, sizeof(currStrDevicePath),
+        "/dev/ugen%d.%d", port, devaddr);
+
+      if (strcmp(currStrDevicePath, strDevicePath) != 0)
+        continue;
     }
+    snprintf(deviceList[iFound].strComPath, sizeof(deviceList[iFound].strComPath), "%s", devicePath);
+    snprintf(deviceList[iFound].strComName, sizeof(deviceList[iFound].strComName), "%s", devicePath);
+    deviceList[iFound].iVendorId = iVendor;
+    deviceList[iFound].iProductId = iProduct;
+    deviceList[iFound].adapterType = ADAPTERTYPE_P8_EXTERNAL; // will be overridden when not doing a "quick scan" by the actual type
+    iFound++;
   }
 #else
   //silence "unused" warnings
-  void *tmp = (void*)deviceList;
-  tmp = (void *)strDevicePath;
+  ((void)deviceList);
+  ((void) strDevicePath);
 #endif
 
   iBufSize = 0; if(!iBufSize){} /* silence "unused" warning on linux/osx */

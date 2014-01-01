@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -36,7 +36,7 @@
 
 #include "cectypes.h"
 
-#define LIBCEC_VERSION_CURRENT CEC_SERVER_VERSION_2_0_3
+#define LIBCEC_VERSION_CURRENT CEC_SERVER_VERSION_CURRENT
 
 namespace CEC
 {
@@ -72,6 +72,7 @@ namespace CEC
     virtual void Close(void) = 0;
 
     /*!
+     * @deprecated Use DetectAdapters() instead
      * @brief Try to find all connected CEC adapters.
      * @param deviceList The vector to store device descriptors in.
      * @param iBufSize The size of the deviceList buffer.
@@ -251,6 +252,7 @@ namespace CEC
     virtual uint8_t VolumeDown(bool bSendRelease = true) = 0;
 
     /*!
+     * @deprecated Use AudioToggleMute() instead
      * @brief Sends a mute keypress to an audiosystem if it's present.
      * @param bSendRelease Send a key release after the keypress.
      * @return The new audio status.
@@ -421,6 +423,41 @@ namespace CEC
     virtual const char *ToString(const cec_server_version version) = 0;
     virtual const char *ToString(const cec_user_control_code key) = 0;
     virtual const char *ToString(const cec_adapter_type type) = 0;
+
+    /*!
+     * @brief Toggle the mute status of the AVR (if present)
+     * @return The new audio status.
+     */
+    virtual uint8_t AudioToggleMute(void) = 0;
+
+    /*!
+     * @brief Mute the AVR (if present)
+     * @return The new audio status.
+     */
+    virtual uint8_t AudioMute(void) = 0;
+
+    /*!
+     * @brief Mute the AVR (if connected)
+     * @return The new audio status.
+     */
+    virtual uint8_t AudioUnmute(void) = 0;
+
+    /*!
+     * @brief Get the current audio status (if an AVR is connected)
+     * @return The current audio status, or cec_audio_status if unknown.
+     */
+    virtual uint8_t AudioStatus(void) = 0;
+
+    /*!
+     * @brief Try to find all connected CEC adapters.
+     * @param deviceList The vector to store device descriptors in.
+     * @param iBufSize The size of the deviceList buffer.
+     * @param strDevicePath Optional device path. Only adds device descriptors that match the given device path.
+     * @param bQuickScan True to do a "quick scan", which will not open a connection to the adapter. Firmware version information and the exact device type will be missing
+     * @return The number of devices that were found, or -1 when an error occured.
+     */
+    virtual int8_t DetectAdapters(cec_adapter_descriptor *deviceList, uint8_t iBufSize, const char *strDevicePath = NULL, bool bQuickScan = false) = 0;
+
   };
 };
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -280,6 +280,7 @@ uint8_t CLibCEC::VolumeDown(bool bSendRelease /* = true */)
 
 uint8_t CLibCEC::MuteAudio(bool UNUSED(bSendRelease) /* = true */)
 {
+  AddLog(CEC_LOG_WARNING, "deprecated function called: %s", __FUNCTION__);
   return m_client ? m_client->SendMuteAudio() : (uint8_t)CEC_AUDIO_VOLUME_STATUS_UNKNOWN;
 }
 
@@ -328,7 +329,7 @@ cec_logical_addresses CLibCEC::GetLogicalAddresses(void)
   cec_logical_addresses addresses;
   addresses.Clear();
   if (m_client)
-    m_client->GetLogicalAddresses();
+    addresses = m_client->GetLogicalAddresses();
   return addresses;
 }
 
@@ -537,4 +538,42 @@ uint16_t CLibCEC::GetAdapterVendorId(void) const
 uint16_t CLibCEC::GetAdapterProductId(void) const
 {
   return m_cec && m_cec->IsRunning() ? m_cec->GetAdapterProductId() : 0;
+}
+
+uint8_t CLibCEC::AudioToggleMute(void)
+{
+  return m_client ? m_client->AudioToggleMute() : (uint8_t)CEC_AUDIO_VOLUME_STATUS_UNKNOWN;
+}
+
+uint8_t CLibCEC::AudioMute(void)
+{
+  return m_client ? m_client->AudioMute() : (uint8_t)CEC_AUDIO_VOLUME_STATUS_UNKNOWN;
+}
+
+uint8_t CLibCEC::AudioUnmute(void)
+{
+  return m_client ? m_client->AudioUnmute() : (uint8_t)CEC_AUDIO_VOLUME_STATUS_UNKNOWN;
+}
+
+uint8_t CLibCEC::AudioStatus(void)
+{
+  return m_client ? m_client->AudioStatus() : (uint8_t)CEC_AUDIO_VOLUME_STATUS_UNKNOWN;
+}
+
+int8_t CLibCEC::DetectAdapters(cec_adapter_descriptor *deviceList, uint8_t iBufSize, const char *strDevicePath /* = NULL */, bool bQuickScan /* = false */)
+{
+  int8_t iAdaptersFound = CAdapterFactory(this).DetectAdapters(deviceList, iBufSize, strDevicePath);
+  if (!bQuickScan)
+  {
+    for (int8_t iPtr = 0; iPtr < iAdaptersFound; iPtr++)
+    {
+      libcec_configuration config;
+      GetDeviceInformation(deviceList[iPtr].strComName, &config);
+      deviceList[iPtr].iFirmwareVersion   = config.iFirmwareVersion;
+      deviceList[iPtr].iPhysicalAddress   = config.iPhysicalAddress;
+      deviceList[iPtr].iFirmwareBuildDate = config.iFirmwareBuildDate;
+      deviceList[iPtr].adapterType        = config.adapterType;
+    }
+  }
+  return iAdaptersFound;
 }

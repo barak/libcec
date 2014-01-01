@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -30,6 +30,8 @@
  *     http://www.pulse-eight.com/
  *     http://www.pulse-eight.net/
  */
+
+#include "lib/platform/util/StdString.h"
 
 namespace CEC
 {
@@ -491,6 +493,7 @@ namespace CEC
       case CEC_VENDOR_SONY:
         return "Sony";
       case CEC_VENDOR_TOSHIBA:
+      case CEC_VENDOR_TOSHIBA2:
         return "Toshiba";
       case CEC_VENDOR_AKAI:
         return "Akai";
@@ -512,6 +515,14 @@ namespace CEC
         return "Broadcom";
       case CEC_VENDOR_LOEWE:
         return "Loewe";
+      case CEC_VENDOR_DENON:
+        return "Denon";
+      case CEC_VENDOR_MARANTZ:
+        return "Marantz";
+      case CEC_VENDOR_HARMAN_KARDON:
+        return "Harman/Kardon";
+      case CEC_VENDOR_PULSE_EIGHT:
+        return "Pulse Eight";
       default:
         return "Unknown";
       }
@@ -563,6 +574,20 @@ namespace CEC
         return "2.0.2";
       case CEC_CLIENT_VERSION_2_0_3:
         return "2.0.3";
+      case CEC_CLIENT_VERSION_2_0_4:
+        return "2.0.4";
+      case CEC_CLIENT_VERSION_2_0_5:
+        return "2.0.5";
+      case CEC_CLIENT_VERSION_2_1_0:
+        return "2.1.0";
+      case CEC_CLIENT_VERSION_2_1_1:
+        return "2.1.1";
+      case CEC_CLIENT_VERSION_2_1_2:
+        return "2.1.2";
+      case CEC_CLIENT_VERSION_2_1_3:
+        return "2.1.3";
+      case CEC_CLIENT_VERSION_2_1_4:
+        return "2.1.4";
       default:
         return "Unknown";
       }
@@ -614,6 +639,20 @@ namespace CEC
         return "2.0.2";
       case CEC_SERVER_VERSION_2_0_3:
         return "2.0.3";
+      case CEC_SERVER_VERSION_2_0_4:
+        return "2.0.4";
+      case CEC_SERVER_VERSION_2_0_5:
+        return "2.0.5";
+      case CEC_SERVER_VERSION_2_1_0:
+        return "2.1.0";
+      case CEC_SERVER_VERSION_2_1_1:
+        return "2.1.1";
+      case CEC_SERVER_VERSION_2_1_2:
+        return "2.1.2";
+      case CEC_SERVER_VERSION_2_1_3:
+        return "2.1.3";
+      case CEC_SERVER_VERSION_2_1_4:
+        return "2.1.4";
       default:
         return "Unknown";
       }
@@ -833,6 +872,17 @@ namespace CEC
           return false;
       }
       return true;
+    }
+
+    static CStdString ToString(const cec_command& command)
+    {
+      CStdString dataStr;
+      dataStr.Format(">> %1x%1x", command.initiator, command.destination);
+      if (command.opcode_set == 1)
+        dataStr.AppendFormat(":%02x", command.opcode);
+      for (uint8_t iPtr = 0; iPtr < command.parameters.size; iPtr++)
+        dataStr.AppendFormat(":%02x", (unsigned int)command.parameters[iPtr]);
+      return dataStr;
     }
   };
 }

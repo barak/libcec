@@ -1,7 +1,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -54,10 +54,10 @@ using namespace PLATFORM;
 #define CEC_ADAPTER_EEPROM_WRITE_INTERVAL 30000
 #define CEC_ADAPTER_EEPROM_WRITE_RETRY    5000
 
-// firmware version 2
-#define CEC_LATEST_ADAPTER_FW_VERSION 2
-// firmware date Thu Aug  2 08:31:24 UTC 2012
-#define CEC_LATEST_ADAPTER_FW_DATE    0x501a4b0c
+// firmware version 3
+#define CEC_LATEST_ADAPTER_FW_VERSION 3
+// firmware date Thu Nov 15 11:09:45 2012
+#define CEC_LATEST_ADAPTER_FW_DATE    0x50a4cd79
 
 #define CEC_FW_DATE_EXTENDED_RESPONSE 0x501a4b0c
 #define CEC_FW_DATE_DESCRIPTOR2       0x5045dbf5
@@ -304,6 +304,7 @@ bool CUSBCECAdapterCommunication::HandlePoll(const CCECAdapterMessage &msg)
     m_lastPollDestination = msg.Destination();
     if (msg.Destination() < CECDEVICE_BROADCAST)
     {
+      CLockObject waitingLock(m_waitingMutex);
       if (!m_bWaitingForAck[msg.Destination()] && !msg.IsEOM())
       {
         if (m_callback)
@@ -328,7 +329,7 @@ void CUSBCECAdapterCommunication::MarkAsWaiting(const cec_logical_address dest)
   /* mark as waiting for an ack from the destination */
   if (dest < CECDEVICE_BROADCAST)
   {
-    CLockObject lock(m_mutex);
+    CLockObject waitingLock(m_waitingMutex);
     m_bWaitingForAck[dest] = true;
   }
 }
@@ -382,8 +383,7 @@ bool CUSBCECAdapterCommunication::WriteToDevice(CCECAdapterMessage *message)
   {
     LIB_CEC->AddLog(CEC_LOG_DEBUG, "error writing command '%s' to serial port '%s': %s", CCECAdapterMessage::ToString(message->Message()), m_port->GetName().c_str(), m_port->GetError().c_str());
     message->state = ADAPTER_MESSAGE_STATE_ERROR;
-    // this will trigger an alert in the reader thread
-    m_port->Close();
+    // let the higher level close the port
     return false;
   }
 
@@ -416,7 +416,7 @@ bool CUSBCECAdapterCommunication::ReadFromDevice(uint32_t iTimeout, size_t iSize
     if (m_port->GetErrorNumber())
     {
       LIB_CEC->AddLog(CEC_LOG_ERROR, "error reading from serial port: %s", m_port->GetError().c_str());
-      m_port->Close();
+      // let the higher level close the port
       return false;
     }
   }
@@ -628,6 +628,12 @@ uint16_t CUSBCECAdapterCommunication::GetAdapterProductId(void) const
   return iBuildDate >= CEC_FW_DATE_DESCRIPTOR2 ? CEC_PID2 : CEC_PID;
 }
 
+void CUSBCECAdapterCommunication::SetActiveSource(bool bSetTo, bool bClientUnregistered)
+{
+  if (m_commands)
+    m_commands->SetActiveSource(bSetTo, bClientUnregistered);
+}
+
 bool CUSBCECAdapterCommunication::IsRunningLatestFirmware(void)
 {
   return GetFirmwareBuildDate() >= CEC_LATEST_ADAPTER_FW_DATE &&
@@ -723,6 +729,11 @@ void *CAdapterPingThread::Process(void)
         /* failed to ping the adapter 3 times in a row. something must be wrong with the connection */
         m_com->LIB_CEC->AddLog(CEC_LOG_ERROR, "failed to ping the adapter 3 times in a row. closing the connection.");
         m_com->StopThread(false);
+
+        libcec_parameter param;
+        param.paramData = NULL; param.paramType = CEC_PARAMETER_TYPE_UNKOWN;
+        m_com->LIB_CEC->Alert(CEC_ALERT_CONNECTION_LOST, param);
+
         break;
       }
     }

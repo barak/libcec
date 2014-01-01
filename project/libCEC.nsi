@@ -1,5 +1,5 @@
 ;libCEC installer
-;Copyright (C) 2012 Pulse-Eight Ltd.
+;Copyright (C) 2011-2013 Pulse-Eight Ltd.
 ;http://www.pulse-eight.com/
 
 !include "MUI2.nsh"
@@ -7,7 +7,7 @@
 !include "LogicLib.nsh"
 !include "x64.nsh"
 
-Name "Pulse-Eight libCEC version 2.0.2"
+Name "Pulse-Eight libCEC"
 OutFile "..\build\libCEC-installer.exe"
 
 XPStyle on
@@ -18,8 +18,8 @@ Var StartMenuFolder
 Var VSRedistSetupError
 Var VSRedistInstalled
 
-!define MUI_FINISHPAGE_LINK "Visit http://www.pulse-eight.com/ for more information."
-!define MUI_FINISHPAGE_LINK_LOCATION "http://www.pulse-eight.com/"
+!define MUI_FINISHPAGE_LINK "Visit http://libcec.pulse-eight.com/ for more information."
+!define MUI_FINISHPAGE_LINK_LOCATION "http://libcec.pulse-eight.com/"
 !define MUI_ABORTWARNING  
 
 !insertmacro MUI_PAGE_WELCOME
@@ -42,11 +42,11 @@ Var VSRedistInstalled
 
 !insertmacro MUI_LANGUAGE "English"
 
-InstType "USB-CEC driver & libCEC"
-InstType "USB-CEC driver only"
+InstType "USB-CEC Driver & libCEC"
+InstType "USB-CEC Driver Only"
 InstType "Full installation"
 
-Section "USB-CEC driver" SecDriver
+Section "USB-CEC Driver" SecDriver
   SetShellVarContext current
   SectionIn RO
   SectionIn 1 2 3
@@ -55,7 +55,7 @@ Section "USB-CEC driver" SecDriver
   ReadRegStr $1 HKCU "Software\libCEC" ""
   ${If} $1 != ""
     MessageBox MB_OK \
-	  "A previous libCEC and USB-CEC driver was found. This update requires the old version to be uninstalled. Press OK to uninstall the old version."
+	  "A previous libCEC and USB-CEC Driver was found. This update requires the old version to be uninstalled. Press OK to uninstall the old version."
     ExecWait '"$1\Uninstall.exe" /S _?=$1'
 	Delete "$1\Uninstall.exe"
 	RMDir "$1"
@@ -145,7 +145,7 @@ Section "libCEC" SecLibCec
   File /r /x *.so "..\include\cec*.*"
 SectionEnd
 
-Section "CEC debug client" SecCecClient
+Section "CEC Debug Client" SecCecClient
   SetShellVarContext current
   SectionIn 3
 
@@ -153,15 +153,15 @@ Section "CEC debug client" SecCecClient
   SetOutPath "$INSTDIR"
   File /x p8-usbcec-driver-installer.exe /x cec-tray.exe "..\build\*.exe"
   SetOutPath "$INSTDIR\x64"
-  File /nonfatal /x cec-tray.exe "..\build\x64\*.exe"
+  File /nonfatal "..\build\x64\*.exe"
 
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   SetOutPath "$INSTDIR"
 
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
   ${If} ${RunningX64}
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\CEC Test client (x64).lnk" "$INSTDIR\x64\cec-client.x64.exe" \
-      "" "$INSTDIR\cec-client.x64.exe" 0 SW_SHOWNORMAL \
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\CEC Test client (x64).lnk" "$INSTDIR\x64\cec-client.exe" \
+      "" "$INSTDIR\x64\cec-client.exe" 0 SW_SHOWNORMAL \
       "" "Start the CEC Test client (x64)."
   ${Else}
     CreateShortCut "$SMPROGRAMS\$StartMenuFolder\CEC Test client.lnk" "$INSTDIR\cec-client.exe" \
@@ -335,7 +335,7 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\$StartMenuFolder\Visit Pulse-Eight.url"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
 
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Pulse-Eight USB-CEC Adapter sofware"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Pulse-Eight USB-CEC Adapter software"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Pulse-Eight USB-CEC Adapter driver"
   DeleteRegKey /ifempty HKLM "Software\Pulse-Eight\USB-CEC Adapter software"
   DeleteRegKey /ifempty HKLM "Software\Pulse-Eight"
