@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -33,6 +33,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 #include "lib/platform/threads/mutex.h"
 
 namespace CEC
@@ -57,7 +58,7 @@ namespace CEC
     virtual bool HandleCommand(const cec_command &command);
     virtual cec_vendor_id GetVendorId(void) { return m_vendorId; };
     virtual void SetVendorId(cec_vendor_id vendorId) { m_vendorId = vendorId; }
-    static bool HasSpecificHandler(cec_vendor_id vendorId) { return vendorId == CEC_VENDOR_LG || vendorId == CEC_VENDOR_SAMSUNG || vendorId == CEC_VENDOR_PANASONIC;}
+    static bool HasSpecificHandler(cec_vendor_id vendorId) { return vendorId == CEC_VENDOR_LG || vendorId == CEC_VENDOR_SAMSUNG || vendorId == CEC_VENDOR_PANASONIC || vendorId == CEC_VENDOR_PHILIPS || vendorId == CEC_VENDOR_SHARP;}
 
     virtual bool InitHandler(void) { return true; }
     virtual bool ActivateSource(bool bTransmitDelayedCommandsOnly = false);
@@ -70,8 +71,9 @@ namespace CEC
     virtual bool TransmitRequestCecVersion(const cec_logical_address iInitiator, const cec_logical_address iDestination, bool bWaitForResponse = true);
     virtual bool TransmitRequestMenuLanguage(const cec_logical_address iInitiator, const cec_logical_address iDestination, bool bWaitForResponse = true);
     virtual bool TransmitRequestOSDName(const cec_logical_address iInitiator, const cec_logical_address iDestination, bool bWaitForResponse = true);
+    virtual bool TransmitRequestAudioStatus(const cec_logical_address iInitiator, const cec_logical_address iDestination, bool bWaitForResponse = true);
     virtual bool TransmitRequestPhysicalAddress(const cec_logical_address iInitiator, const cec_logical_address iDestination, bool bWaitForResponse = true);
-    virtual bool TransmitRequestPowerStatus(const cec_logical_address iInitiator, const cec_logical_address iDestination, bool bWaitForResponse = true);
+    virtual bool TransmitRequestPowerStatus(const cec_logical_address iInitiator, const cec_logical_address iDestination, bool bUpdate, bool bWaitForResponse = true);
     virtual bool TransmitRequestVendorId(const cec_logical_address iInitiator, const cec_logical_address iDestination, bool bWaitForResponse = true);
     virtual bool TransmitActiveSource(const cec_logical_address iInitiator, uint16_t iPhysicalAddress, bool bIsReply);
     virtual bool TransmitCECVersion(const cec_logical_address iInitiator, const cec_logical_address iDestination, cec_version cecVersion, bool bIsReply);
@@ -80,10 +82,10 @@ namespace CEC
     virtual bool TransmitOSDName(const cec_logical_address iInitiator, const cec_logical_address iDestination, std::string strDeviceName, bool bIsReply);
     virtual bool TransmitOSDString(const cec_logical_address iInitiator, const cec_logical_address iDestination, cec_display_control duration, const char *strMessage, bool bIsReply);
     virtual bool TransmitPhysicalAddress(const cec_logical_address iInitiator, uint16_t iPhysicalAddress, cec_device_type type, bool bIsReply);
-    virtual bool TransmitSetMenuLanguage(const cec_logical_address iInitiator, const char lang[3], bool bIsReply);
+    virtual bool TransmitSetMenuLanguage(const cec_logical_address iInitiator, const char lang[4], bool bIsReply);
     virtual bool TransmitPoll(const cec_logical_address iInitiator, const cec_logical_address iDestination, bool bIsReply);
     virtual bool TransmitPowerState(const cec_logical_address iInitiator, const cec_logical_address iDestination, cec_power_status state, bool bIsReply);
-    virtual bool TransmitVendorID(const cec_logical_address iInitiator, uint64_t iVendorId, bool bIsReply);
+    virtual bool TransmitVendorID(const cec_logical_address iInitiator, const cec_logical_address iDestination, uint64_t iVendorId, bool bIsReply);
     virtual bool TransmitAudioStatus(const cec_logical_address iInitiator, const cec_logical_address iDestination, uint8_t state, bool bIsReply);
     virtual bool TransmitSetSystemAudioMode(const cec_logical_address iInitiator, const cec_logical_address iDestination, cec_system_audio_status state, bool bIsReply);
     virtual bool TransmitSystemAudioModeStatus(const cec_logical_address iInitiator, const cec_logical_address iDestination, cec_system_audio_status state, bool bIsReply);
@@ -136,8 +138,9 @@ namespace CEC
     virtual int HandleUserControlRelease(const cec_command &command);
     virtual int HandleVendorCommand(const cec_command &command);
     virtual int HandleVendorRemoteButtonDown(const cec_command& command);
-    virtual int HandleVendorRemoteButtonUp(const cec_command & UNUSED(command)) { return COMMAND_HANDLED; }
+    virtual int HandleVendorRemoteButtonUp(const cec_command& command) { return HandleUserControlRelease(command); }
     virtual void UnhandledCommand(const cec_command &command, const cec_abort_reason reason);
+    virtual void RequestEmailFromCustomer(const cec_command& command);
 
     virtual void VendorPreActivateSourceHook(void) {};
 
@@ -163,5 +166,6 @@ namespace CEC
     int64_t          m_iActiveSourcePending;
     PLATFORM::CMutex m_mutex;
     int64_t          m_iPowerStatusRequested;
+    std::map<cec_opcode, std::vector<cec_command> > m_logsRequested;
   };
 };

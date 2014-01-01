@@ -1,7 +1,7 @@
 ﻿/*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -38,22 +38,13 @@ using LibCECTray.Properties;
 using LibCECTray.controller;
 using LibCECTray.controller.applications;
 using LibCECTray.settings;
+using Microsoft.Win32;
+using System.Security.Permissions;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace LibCECTray.ui
 {
-  /// <summary>
-  /// The tab pages in this application
-  /// </summary>
-  internal enum ConfigTab
-  {
-    Configuration,
-    KeyConfiguration,
-    Tester,
-    Log,
-    WMC,
-    XBMC
-  }
-
   /// <summary>
   /// Main LibCecTray GUI
   /// </summary>
@@ -63,7 +54,13 @@ namespace LibCECTray.ui
     {
       Text = Resources.app_name;
       InitializeComponent();
-      _controller = new CECController(this);
+
+      _sstimer.Interval = 5000;
+      _sstimer.Tick += ScreensaverActiveCheck;
+      _sstimer.Enabled = false;
+
+      _lastScreensaverActivated = DateTime.Now;
+
       VisibleChanged += delegate
                        {
                          if (!Visible)
@@ -71,6 +68,133 @@ namespace LibCECTray.ui
                          else
                            OnShow();
                        };
+
+      SystemEvents.SessionEnding += new SessionEndingEventHandler(OnSessionEnding);
+    }
+
+    public void OnSessionEnding(object sender, SessionEndingEventArgs e)
+    {
+      Controller.CECActions.SuppressUpdates = true;
+      Controller.Close();
+    }
+
+    #region Power state change window messages
+    private const int WM_POWERBROADCAST      = 0x0218;
+    private const int WM_SYSCOMMAND          = 0x0112;
+
+    private const int PBT_APMSUSPEND         = 0x0004;
+    private const int PBT_APMRESUMESUSPEND   = 0x0007;
+    private const int PBT_APMRESUMECRITICAL  = 0x0006;
+    private const int PBT_APMRESUMEAUTOMATIC = 0x0012;
+    private const int PBT_POWERSETTINGCHANGE = 0x8013;
+
+    private static Guid GUID_SYSTEM_AWAYMODE = new Guid("98a7f580-01f7-48aa-9c0f-44352c29e5c0");
+
+    private const int SC_SCREENSAVE             = 0xF140;
+    private const int SPI_GETSCREENSAVERRUNNING = 0x0072;
+
+    [DllImport("user32.dll", SetLastError = true)]
+    static extern bool SystemParametersInfo(int action, int param, ref int retval, int updini);
+
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    internal struct POWERBROADCAST_SETTING
+    {
+      public Guid PowerSetting;
+      public uint DataLength;
+      public byte Data;
+    }
+    #endregion
+
+    /// <summary>
+    /// Check for power state changes, and pass up when it's something we don't care about
+    /// </summary>
+    /// <param name="msg">The incoming window message</param>
+    protected override void WndProc(ref Message msg)
+    {
+      if (msg.Msg == WM_SYSCOMMAND && (msg.WParam.ToInt32() & 0xfff0) == SC_SCREENSAVE)
+      {
+        // there's no event for screensaver exit
+        if (!_sstimer.Enabled)
+        {
+          // guard against screensaver failing, and resulting in power up and down spam to the tv
+          TimeSpan diff = DateTime.Now - _lastScreensaverActivated;
+          if (diff.TotalSeconds > 60)
+          {
+            _sstimer.Enabled = true;
+            _lastScreensaverActivated = DateTime.Now;
+            Controller.CECActions.SendStandby(CecLogicalAddress.Broadcast);
+          }
+        }
+      }
+      else if (msg.Msg == WM_POWERBROADCAST)
+      {
+        switch (msg.WParam.ToInt32())
+        {
+          case PBT_APMSUSPEND:
+            OnSleep();
+            return;
+
+          case PBT_APMRESUMESUSPEND:
+          case PBT_APMRESUMECRITICAL:
+          case PBT_APMRESUMEAUTOMATIC:
+            OnWake();
+            return;
+
+          case PBT_POWERSETTINGCHANGE:
+            {
+              POWERBROADCAST_SETTING pwr = (POWERBROADCAST_SETTING)Marshal.PtrToStructure(msg.LParam, typeof(POWERBROADCAST_SETTING));
+              if (pwr.PowerSetting == GUID_SYSTEM_AWAYMODE && pwr.DataLength == Marshal.SizeOf(typeof(Int32)))
+              {
+                switch (pwr.Data)
+                {
+                  case 0:
+                    // do _not_ wake the pc when away mode is deactivated
+                    //OnWake();
+                    //return;
+                  case 1:
+                    Controller.CECActions.SendStandby(CecLogicalAddress.Broadcast);
+                    return;
+                  default:
+                    break;
+                }
+              }
+            }
+            break;
+          default:
+            break;
+        }
+      }
+
+      // pass up when not handled
+      base.WndProc(ref msg);
+    }
+
+    private void ScreensaverActiveCheck(object sender, EventArgs e)
+    {
+      if (!IsScreensaverActive())
+      {
+        _sstimer.Enabled = false;
+        Controller.CECActions.ActivateSource();
+      }
+    }
+
+    private bool IsScreensaverActive()
+    {
+      int active = 1;
+      SystemParametersInfo(SPI_GETSCREENSAVERRUNNING, 0, ref active, 0);
+      return active == 1;
+    }
+
+    private void OnWake()
+    {
+      Controller.Initialise();
+    }
+
+    private void OnSleep()
+    {
+      Controller.CECActions.SuppressUpdates = true;
+      AsyncDisconnect dc = new AsyncDisconnect(Controller);
+      (new Thread(dc.Process)).Start();
     }
 
     public override sealed string Text
@@ -79,9 +203,9 @@ namespace LibCECTray.ui
       set { base.Text = value; }
     }
 
-    private void CECTrayLoad(object sender, EventArgs e)
+    public void Initialise()
     {
-      _controller.Initialise();
+      Controller.Initialise();
     }
 
     protected override void Dispose(bool disposing)
@@ -89,7 +213,7 @@ namespace LibCECTray.ui
       Hide();
       if (disposing)
       {
-        _controller.Close();
+        OnSleep();
       }
       if (disposing && (components != null))
       {
@@ -120,12 +244,12 @@ namespace LibCECTray.ui
 
     private void BSaveClick(object sender, EventArgs e)
     {
-      _controller.PersistSettings();
+      Controller.PersistSettings();
     }
    
     private void BReloadConfigClick(object sender, EventArgs e)
     {
-      _controller.ResetDefaultSettings();
+      Controller.ResetDefaultSettings();
     }
     #endregion
 
@@ -170,22 +294,22 @@ namespace LibCECTray.ui
 
     private void BSendImageViewOnClick(object sender, EventArgs e)
     {
-      _controller.CECActions.SendImageViewOn(GetTargetDevice());
+      Controller.CECActions.SendImageViewOn(GetTargetDevice());
     }
 
     private void BStandbyClick(object sender, EventArgs e)
     {
-      _controller.CECActions.SendStandby(GetTargetDevice());
+      Controller.CECActions.SendStandby(GetTargetDevice());
     }
 
     private void BScanClick(object sender, EventArgs e)
     {
-      _controller.CECActions.ShowDeviceInfo(GetTargetDevice());
+      Controller.CECActions.ShowDeviceInfo(GetTargetDevice());
     }
 
     private void BActivateSourceClick(object sender, EventArgs e)
     {
-      _controller.CECActions.ActivateSource(GetTargetDevice());
+      Controller.CECActions.SetStreamPath(GetTargetDevice());
     }
 
     private void CbCommandDestinationSelectedIndexChanged(object sender, EventArgs e)
@@ -200,22 +324,22 @@ namespace LibCECTray.ui
 
     private void BVolUpClick(object sender, EventArgs e)
     {
-      _controller.Lib.VolumeUp(true);
+      Controller.Lib.VolumeUp(true);
     }
 
     private void BVolDownClick(object sender, EventArgs e)
     {
-      _controller.Lib.VolumeDown(true);
+      Controller.Lib.VolumeDown(true);
     }
 
     private void BMuteClick(object sender, EventArgs e)
     {
-      _controller.Lib.MuteAudio(true);
+      Controller.Lib.MuteAudio(true);
     }
 
     private void BRescanDevicesClick(object sender, EventArgs e)
     {
-      _controller.CECActions.RescanDevices();
+      Controller.CECActions.RescanDevices();
     }
     #endregion
 
@@ -333,12 +457,12 @@ namespace LibCECTray.ui
 
     private void AboutToolStripMenuItemClick(object sender, EventArgs e)
     {
-      (new About(_controller.LibServerVersion, _controller.LibClientVersion, _controller.LibInfo)).ShowDialog();
+      (new About(Controller.LibServerVersion, Controller.LibClientVersion, Controller.LibInfo)).ShowDialog();
     }
 
     private void AdvancedModeToolStripMenuItemClick(object sender, EventArgs e)
     {
-      _controller.Settings.AdvancedMode.Value = !advancedModeToolStripMenuItem.Checked;
+      Controller.Settings.AdvancedMode.Value = !advancedModeToolStripMenuItem.Checked;
       ShowHideAdvanced(!advancedModeToolStripMenuItem.Checked);
     }
 
@@ -372,12 +496,12 @@ namespace LibCECTray.ui
     {
       if (Visible && WindowState != FormWindowState.Minimized)
       {
-        _controller.Settings.StartHidden.Value = true;
+        Controller.Settings.StartHidden.Value = true;
         Hide();
       }
       else
       {
-        _controller.Settings.StartHidden.Value = false;
+        Controller.Settings.StartHidden.Value = false;
         Show();
       }
     }
@@ -426,7 +550,7 @@ namespace LibCECTray.ui
 
     private void TsAdvancedClick(object sender, EventArgs e)
     {
-      _controller.Settings.AdvancedMode.Value = !tsAdvanced.Checked;
+      Controller.Settings.AdvancedMode.Value = !tsAdvanced.Checked;
       ShowHideAdvanced(!tsAdvanced.Checked);
     }
 
@@ -482,10 +606,13 @@ namespace LibCECTray.ui
     #region Class members
     private ConfigTab _selectedTab = ConfigTab.Configuration;
     private string _log = string.Empty;
-    private readonly CECController _controller;
+    private CECController _controller;
     public CECController Controller
     {
-      get { return _controller; }
+      get
+      {
+        return _controller ?? (_controller = new CECController(this));
+      }
     }
     public Control.ControlCollection TabControls
     {
@@ -495,12 +622,43 @@ namespace LibCECTray.ui
     {
       get { return GetSelectedTabName(tabPanel, tabPanel.TabPages); }
     }
+
+    private System.Windows.Forms.Timer _sstimer = new System.Windows.Forms.Timer();
+    private DateTime _lastScreensaverActivated;
     #endregion
 
     private void AddNewApplicationToolStripMenuItemClick(object sender, EventArgs e)
     {
-      ConfigureApplication appConfig = new ConfigureApplication(_controller.Settings, _controller);
-      _controller.DisplayDialog(appConfig, false);
+      ConfigureApplication appConfig = new ConfigureApplication(Controller.Settings, Controller);
+      Controller.DisplayDialog(appConfig, false);
     }
+  }
+
+  /// <summary>
+  /// The tab pages in this application
+  /// </summary>
+  internal enum ConfigTab
+  {
+    Configuration,
+    KeyConfiguration,
+    Tester,
+    Log,
+    WMC,
+    XBMC
+  }
+
+  class AsyncDisconnect
+  {
+    public AsyncDisconnect(CECController controller)
+    {
+      _controller = controller;
+    }
+
+    public void Process()
+    {
+      _controller.Close();
+    }
+
+    private CECController _controller;
   }
 }

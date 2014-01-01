@@ -1,7 +1,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -37,9 +37,13 @@
 #include "lib/devices/CECBusDevice.h"
 #include "lib/CECProcessor.h"
 #include "lib/LibCEC.h"
+#include "lib/CECClient.h"
 
 using namespace CEC;
 using namespace PLATFORM;
+
+#define RL_KEY_TOP_MENU           0x10
+#define RL_KEY_DVD_MENU           0x11
 
 CRLCommandHandler::CRLCommandHandler(CCECBusDevice *busDevice,
                                      int32_t iTransmitTimeout /* = CEC_DEFAULT_TRANSMIT_TIMEOUT */,
@@ -56,6 +60,9 @@ bool CRLCommandHandler::InitHandler(void)
   if (m_bHandlerInited)
     return true;
   m_bHandlerInited = true;
+
+  if (m_busDevice->GetLogicalAddress() != CECDEVICE_TV)
+    return true;
 
   CCECBusDevice *primary = m_processor->GetPrimaryDevice();
   if (primary && primary->GetLogicalAddress() != CECDEVICE_UNREGISTERED)
@@ -75,4 +82,60 @@ bool CRLCommandHandler::InitHandler(void)
   }
 
   return true;
+}
+
+int CRLCommandHandler::HandleDeviceVendorCommandWithId(const cec_command &command)
+{
+  if (!m_processor->IsHandledByLibCEC(command.destination))
+    return CEC_ABORT_REASON_INVALID_OPERAND;
+
+  if (command.parameters.size < 4)
+    return CEC_ABORT_REASON_INVALID_OPERAND;
+
+  // check whether the vendor id matches
+  if (command.parameters[0] != 0x00 ||
+      command.parameters[1] != 0x00 ||
+      command.parameters[2] != 0x39)
+    return CEC_ABORT_REASON_INVALID_OPERAND;
+
+  bool bHandled(false);
+  CCECClient* client = m_processor->GetClient(command.destination);
+  if (client)
+  {
+    switch (command.parameters[3])
+    {
+    // user control pressed
+    case CEC_OPCODE_USER_CONTROL_PRESSED:
+      if (command.parameters.size == 5)
+      {
+        bHandled = true;
+        switch (command.parameters[4])
+        {
+        // top menu -> root menu
+        case RL_KEY_TOP_MENU:
+          client->SetCurrentButton(CEC_USER_CONTROL_CODE_ROOT_MENU);
+          break;
+        // dvd menu -> contents menu
+        case RL_KEY_DVD_MENU:
+          client->SetCurrentButton(CEC_USER_CONTROL_CODE_CONTENTS_MENU);
+          break;
+        default:
+          bHandled = false;
+          break;
+        }
+      }
+      break;
+    // user control released
+    case CEC_OPCODE_USER_CONTROL_RELEASE:
+      client->AddKey();
+      bHandled = true;
+      break;
+    default:
+      break;
+    }
+  }
+
+  return bHandled ?
+      COMMAND_HANDLED :
+      CCECCommandHandler::HandleDeviceVendorCommandWithId(command);
 }

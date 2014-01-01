@@ -1,7 +1,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -282,4 +282,10 @@ void CCECDeviceMap::GetChildrenOf(CECDEVICEVEC& devices, CCECBusDevice* device) 
     if (CCECTypeUtils::PhysicalAddressIsIncluded(iPA, iCurrentPA))
       devices.push_back(it->second);
   }
+}
+
+void CCECDeviceMap::SignalAll(cec_opcode opcode)
+{
+  for (CECDEVICEMAP::iterator it = m_busDevices.begin(); it != m_busDevices.end(); it++)
+    it->second->SignalOpcode(opcode);
 }

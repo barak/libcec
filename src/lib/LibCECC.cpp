@@ -1,7 +1,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -386,6 +386,33 @@ uint16_t cec_get_adapter_vendor_id(void)
 uint16_t cec_get_adapter_product_id(void)
 {
   return cec_parser ? cec_parser->GetAdapterProductId() : 0;
+}
+
+uint8_t cec_audio_toggle_mute(void)
+{
+  return cec_parser ? cec_parser->AudioToggleMute() : (uint8_t)CEC_AUDIO_VOLUME_STATUS_UNKNOWN;
+}
+
+uint8_t cec_audio_mute(void)
+{
+  return cec_parser ? cec_parser->AudioMute() : (uint8_t)CEC_AUDIO_VOLUME_STATUS_UNKNOWN;
+}
+
+uint8_t cec_audio_unmute(void)
+{
+  return cec_parser ? cec_parser->AudioUnmute() : (uint8_t)CEC_AUDIO_VOLUME_STATUS_UNKNOWN;
+}
+
+uint8_t cec_audio_get_status(void)
+{
+  return cec_parser ? cec_parser->AudioStatus() : (uint8_t)CEC_AUDIO_VOLUME_STATUS_UNKNOWN;
+}
+
+int8_t cec_detect_adapters(cec_adapter_descriptor *deviceList, uint8_t iBufSize, const char *strDevicePath, int bQuickScan)
+{
+  if (cec_parser)
+    return cec_parser->DetectAdapters(deviceList, iBufSize, strDevicePath, bQuickScan == 1);
+  return -1;
 }
 
 //@}

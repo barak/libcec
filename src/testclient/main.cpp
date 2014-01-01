@@ -1,7 +1,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -43,14 +43,17 @@
 #include "../lib/platform/os.h"
 #include "../lib/implementations/CECCommandHandler.h"
 #include "../lib/platform/util/StdString.h"
+#include "../lib/platform/threads/threads.h"
 
 using namespace CEC;
 using namespace std;
 using namespace PLATFORM;
 
-#define CEC_CONFIG_VERSION CEC_CLIENT_VERSION_2_0_3;
+#define CEC_CONFIG_VERSION CEC_CLIENT_VERSION_CURRENT;
 
 #include "../../include/cecloader.h"
+
+static void PrintToStdOut(const char *strFormat, ...);
 
 ICECCallbacks        g_callbacks;
 libcec_configuration g_config;
@@ -63,8 +66,38 @@ bool                 g_bSingleCommand(false);
 bool                 g_bExit(false);
 bool                 g_bHardExit(false);
 CMutex               g_outputMutex;
+ICECAdapter*         g_parser;
 
-inline void PrintToStdOut(const char *strFormat, ...)
+class CReconnect : public PLATFORM::CThread
+{
+public:
+  static CReconnect& Get(void)
+  {
+    static CReconnect _instance;
+    return _instance;
+  }
+
+  virtual ~CReconnect(void) {}
+
+  void* Process(void)
+  {
+    if (g_parser)
+    {
+      g_parser->Close();
+      if (!g_parser->Open(g_strPort.c_str()))
+      {
+        PrintToStdOut("Failed to reconnect\n");
+        g_bExit = true;
+      }
+    }
+    return NULL;
+  }
+
+private:
+  CReconnect(void) {}
+};
+
+static void PrintToStdOut(const char *strFormat, ...)
 {
   CStdString strLog;
 
@@ -186,8 +219,11 @@ int CecAlert(void *UNUSED(cbParam), const libcec_alert type, const libcec_parame
   switch (type)
   {
   case CEC_ALERT_CONNECTION_LOST:
-    PrintToStdOut("Connection lost - exiting\n");
-    g_bExit = true;
+    if (!CReconnect::Get().IsRunning())
+    {
+      PrintToStdOut("Connection lost - trying to reconnect\n");
+      CReconnect::Get().CreateThread(false);
+    }
     break;
   default:
     break;
@@ -197,45 +233,41 @@ int CecAlert(void *UNUSED(cbParam), const libcec_alert type, const libcec_parame
 
 void ListDevices(ICECAdapter *parser)
 {
-  cec_adapter *devices = new cec_adapter[10];
-  int8_t iDevicesFound = parser->FindAdapters(devices, 10, NULL);
+  cec_adapter_descriptor devices[10];
+  int8_t iDevicesFound = parser->DetectAdapters(devices, 10, NULL);
   if (iDevicesFound <= 0)
   {
     PrintToStdOut("Found devices: NONE");
   }
   else
   {
-    CStdString strDeviceInfo;
-    strDeviceInfo.Format("Found devices: %d\n\n", iDevicesFound);
+    PrintToStdOut("Found devices: %d\n", iDevicesFound);
 
     for (int8_t iDevicePtr = 0; iDevicePtr < iDevicesFound; iDevicePtr++)
     {
-      strDeviceInfo.AppendFormat("device:              %d\ncom port:            %s\n", iDevicePtr + 1, devices[iDevicePtr].comm);
-      libcec_configuration config;
-      config.Clear();
+      PrintToStdOut("device:              %d", iDevicePtr + 1);
+      PrintToStdOut("com port:            %s", devices[iDevicePtr].strComName);
+      PrintToStdOut("vendor id:           %04x", devices[iDevicePtr].iVendorId);
+      PrintToStdOut("product id:          %04x", devices[iDevicePtr].iProductId);
+      PrintToStdOut("firmware version:    %d", devices[iDevicePtr].iFirmwareVersion);
 
-      if (!parser->GetDeviceInformation(devices[iDevicePtr].comm, &config))
-        PrintToStdOut("WARNING: unable to open the device on port %s", devices[iDevicePtr].comm);
-      else
+      if (devices[iDevicePtr].iFirmwareBuildDate != CEC_FW_BUILD_UNKNOWN)
       {
-        strDeviceInfo.AppendFormat("firmware version:    %d\n", config.iFirmwareVersion);
-
-        if (config.iFirmwareBuildDate != CEC_FW_BUILD_UNKNOWN)
-        {
-          time_t buildTime = (time_t)config.iFirmwareBuildDate;
-          strDeviceInfo.AppendFormat("firmware build date: %s", asctime(gmtime(&buildTime)));
-          strDeviceInfo = strDeviceInfo.Left(strDeviceInfo.length() > 1 ? (unsigned)(strDeviceInfo.length() - 1) : 0); // strip \n added by asctime
-          strDeviceInfo.append(" +0000\n");
-        }
-
-        if (config.adapterType != ADAPTERTYPE_UNKNOWN)
-        {
-          strDeviceInfo.AppendFormat("type:                %s\n", parser->ToString(config.adapterType));
-        }
+        time_t buildTime = (time_t)devices[iDevicePtr].iFirmwareBuildDate;
+        CStdString strDeviceInfo;
+        strDeviceInfo.AppendFormat("firmware build date: %s", asctime(gmtime(&buildTime)));
+        strDeviceInfo = strDeviceInfo.Left(strDeviceInfo.length() > 1 ? (unsigned)(strDeviceInfo.length() - 1) : 0); // strip \n added by asctime
+        strDeviceInfo.append(" +0000");
+        PrintToStdOut(strDeviceInfo.c_str());
       }
-      strDeviceInfo.append("\n");
+
+      if (devices[iDevicePtr].adapterType != ADAPTERTYPE_UNKNOWN)
+      {
+        PrintToStdOut("type:                %s", parser->ToString(devices[iDevicePtr].adapterType));
+      }
+
+      PrintToStdOut("");
     }
-    PrintToStdOut(strDeviceInfo.c_str());
   }
 }
 
@@ -285,6 +317,7 @@ void ShowHelpConsole(void)
   "[p] {device} {port}       change the HDMI port number of the CEC adapter." << endl <<
   "[pa] {physical address}   change the physical address of the CEC adapter." << endl <<
   "[as]                      make the CEC adapter the active source." << endl <<
+  "[is]                      mark the CEC adapter as inactive source." << endl <<
   "[osd] {addr} {string}     set OSD message on the specified device." << endl <<
   "[ver] {addr}              get the CEC version of the specified device." << endl <<
   "[ven] {addr}              get the vendor ID of the specified device." << endl <<
@@ -380,6 +413,10 @@ bool ProcessCommandTX(ICECAdapter *parser, const string &command, string &argume
     uint8_t ivalue;
     cec_command bytes;
     bytes.Clear();
+
+    CStdString strArguments(arguments);
+    strArguments.Replace(':', ' ');
+    arguments = strArguments;
 
     while (GetWord(arguments, strvalue) && HexStrToInt(strvalue, ivalue))
       bytes.PushBack(ivalue);
@@ -555,6 +592,13 @@ bool ProcessCommandAS(ICECAdapter *parser, const string &command, string & UNUSE
   return false;
 }
 
+bool ProcessCommandIS(ICECAdapter *parser, const string &command, string & UNUSED(arguments))
+{
+  if (command == "is")
+    return parser->SetInactiveView();
+
+  return false;
+}
 
 bool ProcessCommandPING(ICECAdapter *parser, const string &command, string & UNUSED(arguments))
 {
@@ -858,13 +902,14 @@ bool ProcessCommandSCAN(ICECAdapter *parser, const string &command, string & UNU
 
     strLog.append("CEC bus information\n===================\n");
     cec_logical_addresses addresses = parser->GetActiveDevices();
+    cec_logical_address activeSource = parser->GetActiveSource();
     for (uint8_t iPtr = 0; iPtr < 16; iPtr++)
     {
       if (addresses[iPtr])
       {
         uint64_t iVendorId        = parser->GetDeviceVendorId((cec_logical_address)iPtr);
-        bool     bActive          = parser->IsActiveSource((cec_logical_address)iPtr);
         uint16_t iPhysicalAddress = parser->GetDevicePhysicalAddress((cec_logical_address)iPtr);
+        bool     bActive          = parser->IsActiveSource((cec_logical_address)iPtr);
         cec_version iCecVersion   = parser->GetDeviceCecVersion((cec_logical_address)iPtr);
         cec_power_status power    = parser->GetDevicePowerStatus((cec_logical_address)iPtr);
         cec_osd_name osdName      = parser->GetDeviceOSDName((cec_logical_address)iPtr);
@@ -887,7 +932,7 @@ bool ProcessCommandSCAN(ICECAdapter *parser, const string &command, string & UNU
       }
     }
 
-    cec_logical_address activeSource = parser->GetActiveSource();
+    activeSource = parser->GetActiveSource();
     strLog.AppendFormat("currently active source: %s (%d)", parser->ToString(activeSource), (int)activeSource);
 
     PrintToStdOut(strLog);
@@ -915,6 +960,7 @@ bool ProcessConsoleCommand(ICECAdapter *parser, string &input)
       ProcessCommandP(parser, command, input) ||
       ProcessCommandPA(parser, command, input) ||
       ProcessCommandAS(parser, command, input) ||
+      ProcessCommandIS(parser, command, input) ||
       ProcessCommandOSD(parser, command, input) ||
       ProcessCommandPING(parser, command, input) ||
       ProcessCommandVOLUP(parser, command, input) ||
@@ -1180,8 +1226,8 @@ int main (int argc, char *argv[])
     g_config.deviceTypes.Add(CEC_DEVICE_TYPE_RECORDING_DEVICE);
   }
 
-  ICECAdapter *parser = LibCecInitialise(&g_config);
-  if (!parser)
+  g_parser = LibCecInitialise(&g_config);
+  if (!g_parser)
   {
 #ifdef __WINDOWS__
     cout << "Cannot load libcec.dll" << endl;
@@ -1189,19 +1235,19 @@ int main (int argc, char *argv[])
     cout << "Cannot load libcec.so" << endl;
 #endif
 
-    if (parser)
-      UnloadLibCec(parser);
+    if (g_parser)
+      UnloadLibCec(g_parser);
 
     return 1;
   }
 
   // init video on targets that need this
-  parser->InitVideoStandalone();
+  g_parser->InitVideoStandalone();
 
   if (!g_bSingleCommand)
   {
     CStdString strLog;
-    strLog.Format("CEC Parser created - libCEC version %s", parser->ToString((cec_server_version)g_config.serverVersion));
+    strLog.Format("CEC Parser created - libCEC version %s", g_parser->ToString((cec_server_version)g_config.serverVersion));
     cout << strLog.c_str() << endl;
 
     //make stdin non-blocking
@@ -1217,13 +1263,13 @@ int main (int argc, char *argv[])
     if (!g_bSingleCommand)
       cout << "no serial port given. trying autodetect: ";
     cec_adapter devices[10];
-    uint8_t iDevicesFound = parser->FindAdapters(devices, 10, NULL);
+    uint8_t iDevicesFound = g_parser->FindAdapters(devices, 10, NULL);
     if (iDevicesFound <= 0)
     {
       if (g_bSingleCommand)
         cout << "autodetect ";
       cout << "FAILED" << endl;
-      UnloadLibCec(parser);
+      UnloadLibCec(g_parser);
       return 1;
     }
     else
@@ -1239,10 +1285,10 @@ int main (int argc, char *argv[])
 
   PrintToStdOut("opening a connection to the CEC adapter...");
 
-  if (!parser->Open(g_strPort.c_str()))
+  if (!g_parser->Open(g_strPort.c_str()))
   {
     PrintToStdOut("unable to open the device on port %s", g_strPort.c_str());
-    UnloadLibCec(parser);
+    UnloadLibCec(g_parser);
     return 1;
   }
 
@@ -1255,7 +1301,7 @@ int main (int argc, char *argv[])
     getline(cin, input);
     cin.clear();
 
-    if (ProcessConsoleCommand(parser, input) && !g_bSingleCommand && !g_bExit && !g_bHardExit)
+    if (ProcessConsoleCommand(g_parser, input) && !g_bSingleCommand && !g_bExit && !g_bHardExit)
     {
       if (!input.empty())
         PrintToStdOut("waiting for input");
@@ -1267,8 +1313,8 @@ int main (int argc, char *argv[])
       CEvent::Sleep(50);
   }
 
-  parser->Close();
-  UnloadLibCec(parser);
+  g_parser->Close();
+  UnloadLibCec(g_parser);
 
   if (g_logOutput.is_open())
     g_logOutput.close();

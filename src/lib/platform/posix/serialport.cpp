@@ -1,7 +1,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -48,7 +48,9 @@
 #define IUCLC	0
 #endif
 #else
+#ifdef HAVE_LOCKDEV
 #include <lockdev.h>
+#endif
 #endif
 
 using namespace std;
@@ -56,11 +58,10 @@ using namespace PLATFORM;
 
 inline bool RemoveLock(const char *strDeviceName)
 {
-  #if !defined(__APPLE__) && !defined(__FreeBSD__)
+  #if !defined(__APPLE__) && !defined(__FreeBSD__) && defined(HAVE_LOCKDEV)
   return dev_unlock(strDeviceName, 0) == 0;
   #else
-  void *tmp = (void*)strDeviceName; // silence unused warning
-  tmp = NULL;
+  (void)strDeviceName; // silence unused warning
   return true;
   #endif
 }
@@ -125,7 +126,7 @@ bool CSerialSocket::Open(uint64_t iTimeoutMs /* = 0 */)
     return false;
   }
 
-  #if !defined(__APPLE__) && !defined(__FreeBSD__)
+  #if !defined(__APPLE__) && !defined(__FreeBSD__) && defined(HAVE_LOCKDEV)
   if (dev_lock(m_strName.c_str()) != 0)
   {
     m_strError = "Couldn't lock the serial port";

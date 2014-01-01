@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -80,6 +80,12 @@ namespace CEC
      * @param oldAddress The logical address that was taken by another device.
      */
     virtual void HandleLogicalAddressLost(cec_logical_address oldAddress) = 0;
+
+    /*!
+     * @brief Callback method for IAdapterCommunication, called when the physical address changed.
+     * @param iNewAddress The new physical address.
+     */
+    virtual void HandlePhysicalAddressChanged(uint16_t iNewAddress) = 0;
 
     virtual CLibCEC *GetLib(void) const = 0;
   };
@@ -220,6 +226,13 @@ namespace CEC
      * @return The (virtual) USB product id
      */
     virtual uint16_t GetAdapterProductId(void) const = 0;
+
+    /*!
+     * @brief Marks the adapter as active or inactive source
+     * @param bSetTo True to mark as active source, false to mark as inactive source
+     * @param bClientUnregistered True when the client was unregistered, false when the device was explicitly marked as (in)active source
+     */
+    virtual void SetActiveSource(bool bSetTo, bool bClientUnregistered) = 0;
 
     IAdapterCommunicationCallback *m_callback;
   };

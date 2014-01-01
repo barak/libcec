@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -46,14 +46,13 @@ namespace CEC
     virtual ~CSLCommandHandler(void) {};
 
     bool InitHandler(void);
+    bool ActivateSource(bool bTransmitDelayedCommandsOnly = false);
 
   protected:
-    int HandleActiveSource(const cec_command &command);
-    int HandleDeviceVendorId(const cec_command &command);
     int HandleVendorCommand(const cec_command &command);
 
-    void HandleVendorCommand01(const cec_command &command);
-    void TransmitVendorCommand0205(const cec_logical_address iSource, const cec_logical_address iDestination);
+    void HandleVendorCommandSLInit(const cec_command &command);
+    void TransmitVendorCommandSLAckInit(const cec_logical_address iSource, const cec_logical_address iDestination);
 
     void HandleVendorCommandPowerOn(const cec_command &command);
     void HandleVendorCommandPowerOnStatus(const cec_command &command);
@@ -68,17 +67,12 @@ namespace CEC
     int HandleStandby(const cec_command &command);
     bool TransmitMenuState(const cec_logical_address UNUSED(iInitiator), const cec_logical_address UNUSED(iDestination), cec_menu_state UNUSED(menuState), bool UNUSED(bIsReply)) { return true; }
     bool PowerOn(const cec_logical_address iInitiator, const cec_logical_address iDestination);
-    int HandleVendorRemoteButtonUp(const cec_command& command) { return HandleUserControlRelease(command); }
 
     void ResetSLState(void);
     bool SLInitialised(void);
     void SetSLInitialised(void);
-    bool ActiveSourceSent(void);
-
-    void VendorPreActivateSourceHook(void);
 
     bool               m_bSLEnabled;
-    bool               m_bActiveSourceSent;
     PLATFORM::CTimeout m_resetPowerState;
     PLATFORM::CMutex   m_SLMutex;
   };

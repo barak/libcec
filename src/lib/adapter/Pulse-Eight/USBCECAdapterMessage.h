@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -78,6 +78,8 @@ namespace CEC
     MSGCODE_SET_OSD_NAME,
     MSGCODE_WRITE_EEPROM,
     MSGCODE_GET_ADAPTER_TYPE,
+    MSGCODE_SET_ACTIVE_SOURCE,
+
     MSGCODE_FRAME_EOM = 0x80,
     MSGCODE_FRAME_ACK = 0x40,
   } cec_adapter_messagecode;

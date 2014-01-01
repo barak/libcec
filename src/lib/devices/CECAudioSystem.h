@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -50,10 +50,13 @@ namespace CEC
     uint8_t VolumeUp(const cec_logical_address source, bool bSendRelease = true);
     uint8_t VolumeDown(const cec_logical_address source, bool bSendRelease = true);
     uint8_t MuteAudio(const cec_logical_address source);
+    uint8_t GetAudioStatus(const cec_logical_address initiator, bool bUpdate = false);
 
     bool TransmitActiveSource(void) { return false; }
 
   protected:
+    bool RequestAudioStatus(const cec_logical_address initiator, bool bWaitForResponse = true);
+
     cec_system_audio_status m_systemAudioStatus;
     uint8_t                 m_audioStatus;
   };

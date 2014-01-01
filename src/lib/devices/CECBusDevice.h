@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -50,22 +50,11 @@ namespace CEC
   class CResponse
   {
   public:
-    CResponse(cec_opcode opcode) :
-        m_opcode(opcode){}
-    ~CResponse(void)
-    {
-      Broadcast();
-    }
+    CResponse(cec_opcode opcode);
+    ~CResponse(void);
 
-    bool Wait(uint32_t iTimeout)
-    {
-      return m_event.Wait(iTimeout);
-    }
-
-    void Broadcast(void)
-    {
-      m_event.Broadcast();
-    }
+    bool Wait(uint32_t iTimeout);
+    void Broadcast(void);
 
   private:
     cec_opcode       m_opcode;
@@ -75,52 +64,15 @@ namespace CEC
   class CWaitForResponse
   {
   public:
-    CWaitForResponse(void) {}
-    ~CWaitForResponse(void)
-    {
-      Clear();
-    }
+    CWaitForResponse(void);
+    ~CWaitForResponse(void);
 
-    void Clear()
-    {
-      PLATFORM::CLockObject lock(m_mutex);
-      for (std::map<cec_opcode, CResponse*>::iterator it = m_waitingFor.begin(); it != m_waitingFor.end(); it++)
-        it->second->Broadcast();
-      m_waitingFor.clear();
-    }
-
-    bool Wait(cec_opcode opcode, uint32_t iTimeout = CEC_DEFAULT_TRANSMIT_WAIT)
-    {
-      CResponse *response = GetEvent(opcode);
-      return response ? response->Wait(iTimeout) : false;
-    }
-
-    void Received(cec_opcode opcode)
-    {
-      CResponse *response = GetEvent(opcode);
-      if (response)
-        response->Broadcast();
-    }
+    void Clear();
+    bool Wait(cec_opcode opcode, uint32_t iTimeout = CEC_DEFAULT_TRANSMIT_WAIT);
+    void Received(cec_opcode opcode);
 
   private:
-    CResponse *GetEvent(cec_opcode opcode)
-    {
-      CResponse *retVal(NULL);
-      {
-        PLATFORM::CLockObject lock(m_mutex);
-        std::map<cec_opcode, CResponse*>::iterator it = m_waitingFor.find(opcode);
-        if (it != m_waitingFor.end())
-        {
-          retVal = it->second;
-        }
-        else
-        {
-          retVal = new CResponse(opcode);
-          m_waitingFor[opcode] = retVal;
-        }
-        return retVal;
-      }
-    }
+    CResponse *GetEvent(cec_opcode opcode);
 
     PLATFORM::CMutex                 m_mutex;
     std::map<cec_opcode, CResponse*> m_waitingFor;
@@ -192,7 +144,9 @@ namespace CEC
     virtual cec_power_status      GetCurrentPowerStatus(void);
     virtual cec_power_status      GetPowerStatus(const cec_logical_address initiator, bool bUpdate = false);
     virtual void                  SetPowerStatus(const cec_power_status powerStatus);
-    virtual bool                  RequestPowerStatus(const cec_logical_address initiator, bool bWaitForResponse = true);
+    virtual void                  OnImageViewOnSent(bool bSentByLibCEC);
+    virtual bool                  ImageViewOnSent(void);
+    virtual bool                  RequestPowerStatus(const cec_logical_address initiator, bool bUpdate, bool bWaitForResponse = true);
     virtual bool                  TransmitPowerState(const cec_logical_address destination, bool bIsReply);
 
     virtual cec_vendor_id         GetCurrentVendorId(void);
@@ -205,7 +159,7 @@ namespace CEC
     virtual cec_bus_device_status GetCurrentStatus(void) { return GetStatus(false, true); }
     virtual cec_bus_device_status GetStatus(bool bForcePoll = false, bool bSuppressPoll = false);
     virtual void                  SetDeviceStatus(const cec_bus_device_status newStatus, cec_version libCECSpecVersion = CEC_VERSION_1_4);
-    virtual void                  ResetDeviceStatus(void);
+    virtual void                  ResetDeviceStatus(bool bClientUnregistered = false);
     virtual bool                  TransmitPoll(const cec_logical_address destination, bool bUpdateDeviceStatus);
     virtual void                  HandlePoll(const cec_logical_address destination);
     virtual void                  HandlePollFrom(const cec_logical_address initiator);
@@ -219,7 +173,7 @@ namespace CEC
     virtual bool                  IsActiveSource(void) const    { return m_bActiveSource; }
     virtual bool                  RequestActiveSource(bool bWaitForResponse = true);
     virtual void                  MarkAsActiveSource(void);
-    virtual void                  MarkAsInactiveSource(void);
+    virtual void                  MarkAsInactiveSource(bool bClientUnregistered = false);
     virtual bool                  TransmitActiveSource(bool bIsReply);
     virtual bool                  TransmitImageViewOn(void);
     virtual bool                  TransmitInactiveSource(void);
@@ -279,5 +233,6 @@ namespace CEC
     bool                  m_bAwaitingReceiveFailed;
     bool                  m_bVendorIdRequested;
     CWaitForResponse     *m_waitForResponse;
+    bool                  m_bImageViewOnSent;
   };
 };

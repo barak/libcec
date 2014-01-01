@@ -62,6 +62,9 @@
 /* Define to 1 if you have the `listen' function. */
 #undef HAVE_LISTEN
 
+/* Define to 1 if liblockdev is installed */
+#undef HAVE_LOCKDEV
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 

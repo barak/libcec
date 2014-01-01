@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -63,6 +63,7 @@ namespace CEC
     void GetActive(CECDEVICEVEC &devices) const;
     void GetByType(const cec_device_type type, CECDEVICEVEC &devices) const;
     void GetChildrenOf(CECDEVICEVEC& devices, CCECBusDevice* device) const;
+    void SignalAll(cec_opcode opcode);
 
     void GetPowerOffDevices(const libcec_configuration &configuration, CECDEVICEVEC &devices) const;
     void GetWakeDevices(const libcec_configuration &configuration, CECDEVICEVEC &devices) const;

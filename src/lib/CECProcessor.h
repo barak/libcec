@@ -2,7 +2,7 @@
 /*
  * This file is part of the libCEC(R) library.
  *
- * libCEC(R) is Copyright (C) 2011-2012 Pulse-Eight Limited.  All rights reserved.
+ * libCEC(R) is Copyright (C) 2011-2013 Pulse-Eight Limited.  All rights reserved.
  * libCEC(R) is an original work, containing original code.
  *
  * libCEC(R) is a trademark of Pulse-Eight Limited.
@@ -52,6 +52,7 @@ namespace CEC
   class CCECTV;
   class CCECClient;
   class CCECProcessor;
+  class CCECStandbyProtection;
 
   class CCECAllocateLogicalAddress : public PLATFORM::CThread
   {
@@ -83,6 +84,7 @@ namespace CEC
 
       bool                  OnCommandReceived(const cec_command &command);
       void                  HandleLogicalAddressLost(cec_logical_address oldAddress);
+      void                  HandlePhysicalAddressChanged(uint16_t iNewAddress);
 
       CCECBusDevice *       GetDevice(cec_logical_address address) const;
       CCECAudioSystem *     GetAudioSystem(void) const;
@@ -110,6 +112,7 @@ namespace CEC
 
       bool SetDeckInfo(cec_deck_info info, bool bSendUpdate = true);
       bool ActivateSource(uint16_t iStreamPath);
+      void SetActiveSource(bool bSetTo, bool bClientUnregistered);
       bool PollDevice(cec_logical_address iAddress);
       void SetStandardLineTimeout(uint8_t iTimeout);
       uint8_t GetStandardLineTimeout(void);
@@ -175,5 +178,17 @@ namespace CEC
       bool                                        m_bMonitor;
       CCECAllocateLogicalAddress*                 m_addrAllocator;
       bool                                        m_bStallCommunication;
+      CCECStandbyProtection*                      m_connCheck;
+  };
+
+  class CCECStandbyProtection : public PLATFORM::CThread
+  {
+  public:
+    CCECStandbyProtection(CCECProcessor* processor);
+    virtual ~CCECStandbyProtection(void);
+    void* Process(void);
+
+  private:
+    CCECProcessor* m_processor;
   };
 };
