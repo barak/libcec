@@ -2,6 +2,7 @@ Source: libcec
 Section: libs
 Priority: optional
 Maintainer: Andres Mejia <amejia@debian.org>
+Uploaders: Sjoerd Simons <sjoerd@debian.org>
 Build-Depends: debhelper (>= 8.1.3~),
  pkg-config,
  libudev-dev [linux-any],

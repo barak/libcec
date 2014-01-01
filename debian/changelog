@@ -1,3 +1,10 @@
+libcec (2.1.4-1) unstable; urgency=low
+
+  * New upstream release (Closes: ##730510)
+  * Add myself to uploaders
+
+ -- Sjoerd Simons <sjoerd@debian.org>  Wed, 01 Jan 2014 19:02:43 +0100
+
 libcec (2.0.3-1) experimental; urgency=low
 
   * New upstream release. (Closes: #685058)
