@@ -1,12 +1,21 @@
-libcec (2.1.4-2) UNRELEASED; urgency=low
+libcec (2.1.4-2) unstable; urgency=low
 
+  [ Balint Reczey ]
   * Add myself to uploaders
   * Set Sjoerd as maintainer
   * Remove Andres Mejia as maintainer since he is tracked as MIA
-    (Closes: #743513). Thanks to Andres for creating taking care of the
-    package.
+    Thanks to Andres for creating and taking care of the package.
+    (Closes: #743513)
+  * Provide symbols file (Closes: #737769)
+  * Bump standards version
 
- -- Balint Reczey <balint@balintreczey.hu>  Thu, 03 Apr 2014 17:31:15 +0200
+  [ Roger Leigh ]
+  * Stop using lockdev (Closes: #728023)
+
+  [ Logan Rosen ]
+  * Use dh-autoreconf to fix FTBFS on ppc64e (Closes: #735217)
+
+ -- Balint Reczey <balint@balintreczey.hu>  Thu, 07 Aug 2014 18:55:00 +0200
 
 libcec (2.1.4-1) unstable; urgency=low
 
