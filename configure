@@ -646,6 +646,8 @@ HAVE_HOSTNAME
 HAVE_WHOAMI
 HAVE_DATE
 HAVE_GIT
+USE_EXYNOS_API_FALSE
+USE_EXYNOS_API_TRUE
 USE_TDA995X_API_FALSE
 USE_TDA995X_API_TRUE
 USE_RPI_API_FALSE
@@ -654,6 +656,8 @@ USE_P8_USB_DETECT_FALSE
 USE_P8_USB_DETECT_TRUE
 USE_P8_USB_FALSE
 USE_P8_USB_TRUE
+USE_X11_RANDR_FALSE
+USE_X11_RANDR_TRUE
 UDEV_LIBS
 UDEV_CFLAGS
 PKG_CONFIG_LIBDIR
@@ -795,6 +799,7 @@ enable_debug
 enable_optimisation
 enable_cubox
 with_tda995x_toolkit_path
+enable_exynos
 enable_rpi
 with_rpi_include_path
 with_rpi_lib_path
@@ -1449,6 +1454,7 @@ Optional Features:
   --enable-debug          include debug symbols (default is no)
   --enable-optimisation   optimisation flag (default is yes)
   --enable-tda995x        enable support for the TDA995x (default is no)
+  --enable-exynos         enable support for the Exynos (default is yes)
   --enable-rpi            enable support for the Raspberry Pi (default is
                           auto)
 
@@ -2664,8 +2670,8 @@ test "$program_suffix" != NONE &&
 ac_script='s/[\\$]/&&/g;s/;s,x,x,$//'
 program_transform_name=`$as_echo "$program_transform_name" | sed "$ac_script"`
 
-# expand $ac_aux_dir to an absolute path
-am_aux_dir=`cd $ac_aux_dir && pwd`
+# Expand $ac_aux_dir to an absolute path.
+am_aux_dir=`cd "$ac_aux_dir" && pwd`
 
 if test x"${MISSING+set}" != xset; then
   case $am_aux_dir in
@@ -3070,6 +3076,7 @@ END
     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
   fi
 fi
+
 # Check whether --enable-silent-rules was given.
 if test "${enable_silent_rules+set}" = set; then :
   enableval=$enable_silent_rules;
@@ -3225,6 +3232,7 @@ END
     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
   fi
 fi
+
 
 # Make sure we can run config.sub.
 $SHELL "$ac_aux_dir/config.sub" sun4 >/dev/null 2>&1 ||
@@ -7322,7 +7330,7 @@ ia64-*-hpux*)
   rm -rf conftest*
   ;;
 
-x86_64-*kfreebsd*-gnu|x86_64-*linux*|ppc*-*linux*|powerpc*-*linux*| \
+x86_64-*kfreebsd*-gnu|x86_64-*linux*|powerpc*-*linux*| \
 s390*-*linux*|s390*-*tpf*|sparc*-*linux*)
   # Find out which ABI we are using.
   echo 'int i;' > conftest.$ac_ext
@@ -7347,7 +7355,10 @@ s390*-*linux*|s390*-*tpf*|sparc*-*linux*)
 		;;
 	    esac
 	    ;;
-	  ppc64-*linux*|powerpc64-*linux*)
+	  powerpc64le-*)
+	    LD="${LD-ld} -m elf32lppclinux"
+	    ;;
+	  powerpc64-*)
 	    LD="${LD-ld} -m elf32ppclinux"
 	    ;;
 	  s390x-*linux*)
@@ -7366,7 +7377,10 @@ s390*-*linux*|s390*-*tpf*|sparc*-*linux*)
 	  x86_64-*linux*)
 	    LD="${LD-ld} -m elf_x86_64"
 	    ;;
-	  ppc*-*linux*|powerpc*-*linux*)
+	  powerpcle-*)
+	    LD="${LD-ld} -m elf64lppc"
+	    ;;
+	  powerpc-*)
 	    LD="${LD-ld} -m elf64ppc"
 	    ;;
 	  s390*-*linux*|s390*-*tpf*)
@@ -15756,6 +15770,15 @@ else
 fi
 
 
+## Exynos support
+# Check whether --enable-exynos was given.
+if test "${enable_exynos+set}" = set; then :
+  enableval=$enable_exynos; use_exynos=$enableval
+else
+  use_exynos=yes
+fi
+
+
 ## Raspberry Pi support
 # Check whether --enable-rpi was given.
 if test "${enable_rpi+set}" = set; then :
@@ -16063,6 +16086,7 @@ libs_client="$LIBS"
 use_udev="no"
 use_adapter_detection="yes"
 use_lockdev="no"
+SUPPRESS_MANGLING_WARNINGS=" -Wno-psabi"
 case "${host}" in
   *-*-linux*)
     ## search for udev if pkg-config was found
@@ -17099,6 +17123,150 @@ fi
         LIBS="$libs_pre_rpi"
       fi
     fi
+    ## search for X11/xrandr
+    libs_tmp="$LIBS"
+    use_x11_xrandr="yes"
+    ac_fn_cxx_check_header_mongrel "$LINENO" "X11/Xlib.h" "ac_cv_header_X11_Xlib_h" "$ac_includes_default"
+if test "x$ac_cv_header_X11_Xlib_h" = xyes; then :
+
+else
+  use_x11_xrandr="no"
+fi
+
+
+    ac_fn_cxx_check_header_mongrel "$LINENO" "X11/Xatom.h" "ac_cv_header_X11_Xatom_h" "$ac_includes_default"
+if test "x$ac_cv_header_X11_Xatom_h" = xyes; then :
+
+else
+  use_x11_xrandr="no"
+fi
+
+
+    ac_fn_cxx_check_header_mongrel "$LINENO" "X11/extensions/Xrandr.h" "ac_cv_header_X11_extensions_Xrandr_h" "$ac_includes_default"
+if test "x$ac_cv_header_X11_extensions_Xrandr_h" = xyes; then :
+
+else
+  use_x11_xrandr="no"
+fi
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XOpenDisplay in -lX11" >&5
+$as_echo_n "checking for XOpenDisplay in -lX11... " >&6; }
+if ${ac_cv_lib_X11_XOpenDisplay+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lX11  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char XOpenDisplay ();
+int
+main ()
+{
+return XOpenDisplay ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_X11_XOpenDisplay=yes
+else
+  ac_cv_lib_X11_XOpenDisplay=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_X11_XOpenDisplay" >&5
+$as_echo "$ac_cv_lib_X11_XOpenDisplay" >&6; }
+if test "x$ac_cv_lib_X11_XOpenDisplay" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBX11 1
+_ACEOF
+
+  LIBS="-lX11 $LIBS"
+
+else
+  use_x11_xrandr="no"
+fi
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XRRGetScreenResources in -lXrandr" >&5
+$as_echo_n "checking for XRRGetScreenResources in -lXrandr... " >&6; }
+if ${ac_cv_lib_Xrandr_XRRGetScreenResources+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lXrandr  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char XRRGetScreenResources ();
+int
+main ()
+{
+return XRRGetScreenResources ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_Xrandr_XRRGetScreenResources=yes
+else
+  ac_cv_lib_Xrandr_XRRGetScreenResources=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xrandr_XRRGetScreenResources" >&5
+$as_echo "$ac_cv_lib_Xrandr_XRRGetScreenResources" >&6; }
+if test "x$ac_cv_lib_Xrandr_XRRGetScreenResources" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBXRANDR 1
+_ACEOF
+
+  LIBS="-lXrandr $LIBS"
+
+else
+  use_x11_xrandr="no"
+fi
+
+    if test "x$use_x11_xrandr" = "xyes"; then
+
+$as_echo "#define HAVE_RANDR 1" >>confdefs.h
+
+       if true; then
+  USE_X11_RANDR_TRUE=
+  USE_X11_RANDR_FALSE='#'
+else
+  USE_X11_RANDR_TRUE='#'
+  USE_X11_RANDR_FALSE=
+fi
+
+    else
+       if false; then
+  USE_X11_RANDR_TRUE=
+  USE_X11_RANDR_FALSE='#'
+else
+  USE_X11_RANDR_TRUE='#'
+  USE_X11_RANDR_FALSE=
+fi
+
+      LIBS="$libs_tmp"
+    fi
     ;;
   *-apple-darwin*)
     ac_fn_cxx_check_header_mongrel "$LINENO" "mach/mach_time.h" "ac_cv_header_mach_mach_time_h" "$ac_includes_default"
@@ -17120,6 +17288,7 @@ fi
 
 $as_echo "#define TARGET_DARWIN 1" >>confdefs.h
 
+    SUPPRESS_MANGLING_WARNINGS=""
     ;;
 esac
 
@@ -17238,6 +17407,35 @@ fi
 
   features="$features\n  TDA995x support :\t\t\tno"
 fi
+
+## mark Exynos support as available
+if test "x$use_exynos" != "xno"; then
+
+$as_echo "#define HAVE_EXYNOS_API 1" >>confdefs.h
+
+   if true; then
+  USE_EXYNOS_API_TRUE=
+  USE_EXYNOS_API_FALSE='#'
+else
+  USE_EXYNOS_API_TRUE='#'
+  USE_EXYNOS_API_FALSE=
+fi
+
+  features="$features\n  Exynos support :\t\t\tyes"
+  LIB_INFO="$LIB_INFO 'EXYNOS'"
+  CPPFLAGS="$CPPFLAGS $EXYNOS_CFLAGS"
+else
+   if false; then
+  USE_EXYNOS_API_TRUE=
+  USE_EXYNOS_API_FALSE='#'
+else
+  USE_EXYNOS_API_TRUE='#'
+  USE_EXYNOS_API_FALSE=
+fi
+
+  features="$features\n  EXYNOS support :\t\t\tno"
+fi
+
 
 ## check if our build system is complete
 ac_fn_cxx_check_header_mongrel "$LINENO" "algorithm" "ac_cv_header_algorithm" "$ac_includes_default"
@@ -17723,7 +17921,7 @@ fi
 LIBS_LIBCEC="$LIBS"
 LIBS="$libs_client"
 
-CXXFLAGS="$CXXFLAGS -fPIC -Wall -Wextra -Wno-missing-field-initializers -Wno-psabi"
+CXXFLAGS="$CXXFLAGS -fPIC -Wall -Wextra -Wno-missing-field-initializers $SUPPRESS_MANGLING_WARNINGS"
 
 if test "x$use_debug" = "xyes"; then
   CXXFLAGS="$CXXFLAGS -g"
@@ -17906,6 +18104,14 @@ if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
+if test -z "${USE_X11_RANDR_TRUE}" && test -z "${USE_X11_RANDR_FALSE}"; then
+  as_fn_error $? "conditional \"USE_X11_RANDR\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${USE_X11_RANDR_TRUE}" && test -z "${USE_X11_RANDR_FALSE}"; then
+  as_fn_error $? "conditional \"USE_X11_RANDR\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${USE_P8_USB_TRUE}" && test -z "${USE_P8_USB_FALSE}"; then
   as_fn_error $? "conditional \"USE_P8_USB\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -17932,6 +18138,14 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${USE_TDA995X_API_TRUE}" && test -z "${USE_TDA995X_API_FALSE}"; then
   as_fn_error $? "conditional \"USE_TDA995X_API\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${USE_EXYNOS_API_TRUE}" && test -z "${USE_EXYNOS_API_FALSE}"; then
+  as_fn_error $? "conditional \"USE_EXYNOS_API\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${USE_EXYNOS_API_TRUE}" && test -z "${USE_EXYNOS_API_FALSE}"; then
+  as_fn_error $? "conditional \"USE_EXYNOS_API\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

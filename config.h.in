@@ -35,6 +35,9 @@
 /* Define to 1 if you have the `dlsym' function. */
 #undef HAVE_DLSYM
 
+/* Define to 1 to include Exynos support */
+#undef HAVE_EXYNOS_API
+
 /* Define to 1 if you have the `fcntl' function. */
 #undef HAVE_FCNTL
 
@@ -58,6 +61,12 @@
 
 /* Define to 1 if libudev is installed */
 #undef HAVE_LIBUDEV
+
+/* Define to 1 if you have the `X11' library (-lX11). */
+#undef HAVE_LIBX11
+
+/* Define to 1 if you have the `Xrandr' library (-lXrandr). */
+#undef HAVE_LIBXRANDR
 
 /* Define to 1 if you have the `listen' function. */
 #undef HAVE_LISTEN
@@ -104,6 +113,9 @@
 
 /* Define to 1 if you have the `pthread_mutexattr_init' function. */
 #undef HAVE_PTHREAD_MUTEXATTR_INIT
+
+/* Define to 1 to include support for the X11 randr extension */
+#undef HAVE_RANDR
 
 /* Define to 1 if you have the `read' function. */
 #undef HAVE_READ

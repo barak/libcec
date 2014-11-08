@@ -90,16 +90,20 @@ host_triplet = @host@
 @USE_P8_USB_TRUE@                     platform/adl/adl-edid.cpp \
 @USE_P8_USB_TRUE@                     platform/nvidia/nv-edid.cpp
 
-@USE_RPI_API_TRUE@am__append_2 = adapter/RPi/RPiCECAdapterDetection.cpp \
+@USE_P8_USB_TRUE@@USE_X11_RANDR_TRUE@am__append_2 = platform/X11/randr-edid.cpp
+@USE_RPI_API_TRUE@am__append_3 = adapter/RPi/RPiCECAdapterDetection.cpp \
 @USE_RPI_API_TRUE@                     adapter/RPi/RPiCECAdapterCommunication.cpp \
 @USE_RPI_API_TRUE@                     adapter/RPi/RPiCECAdapterMessageQueue.cpp
 
-@USE_TDA995X_API_TRUE@am__append_3 = adapter/TDA995x/TDA995xCECAdapterDetection.cpp \
+@USE_TDA995X_API_TRUE@am__append_4 = adapter/TDA995x/TDA995xCECAdapterDetection.cpp \
 @USE_TDA995X_API_TRUE@                     adapter/TDA995x/TDA995xCECAdapterCommunication.cpp
+
+@USE_EXYNOS_API_TRUE@am__append_5 = adapter/Exynos/ExynosCECAdapterDetection.cpp \
+@USE_EXYNOS_API_TRUE@                     adapter/Exynos/ExynosCECAdapterCommunication.cpp
 
 subdir = src/lib
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(srcdir)/libcec.pc.in $(top_srcdir)/depcomp \
+	$(srcdir)/libcec.pc.in $(top_srcdir)/../depcomp \
 	$(library_include_HEADERS)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -160,22 +164,28 @@ am__libcec_la_SOURCES_DIST = CECProcessor.cpp LibCEC.cpp LibCECC.cpp \
 	adapter/Pulse-Eight/USBCECAdapterDetection.cpp \
 	platform/posix/serialport.cpp platform/posix/os-edid.cpp \
 	platform/adl/adl-edid.cpp platform/nvidia/nv-edid.cpp \
+	platform/X11/randr-edid.cpp \
 	adapter/RPi/RPiCECAdapterDetection.cpp \
 	adapter/RPi/RPiCECAdapterCommunication.cpp \
 	adapter/RPi/RPiCECAdapterMessageQueue.cpp \
 	adapter/TDA995x/TDA995xCECAdapterDetection.cpp \
-	adapter/TDA995x/TDA995xCECAdapterCommunication.cpp
+	adapter/TDA995x/TDA995xCECAdapterCommunication.cpp \
+	adapter/Exynos/ExynosCECAdapterDetection.cpp \
+	adapter/Exynos/ExynosCECAdapterCommunication.cpp
 @USE_P8_USB_TRUE@am__objects_1 = USBCECAdapterMessage.lo \
 @USE_P8_USB_TRUE@	USBCECAdapterCommands.lo \
 @USE_P8_USB_TRUE@	USBCECAdapterCommunication.lo \
 @USE_P8_USB_TRUE@	USBCECAdapterMessageQueue.lo \
 @USE_P8_USB_TRUE@	USBCECAdapterDetection.lo serialport.lo \
 @USE_P8_USB_TRUE@	os-edid.lo adl-edid.lo nv-edid.lo
-@USE_RPI_API_TRUE@am__objects_2 = RPiCECAdapterDetection.lo \
+@USE_P8_USB_TRUE@@USE_X11_RANDR_TRUE@am__objects_2 = randr-edid.lo
+@USE_RPI_API_TRUE@am__objects_3 = RPiCECAdapterDetection.lo \
 @USE_RPI_API_TRUE@	RPiCECAdapterCommunication.lo \
 @USE_RPI_API_TRUE@	RPiCECAdapterMessageQueue.lo
-@USE_TDA995X_API_TRUE@am__objects_3 = TDA995xCECAdapterDetection.lo \
+@USE_TDA995X_API_TRUE@am__objects_4 = TDA995xCECAdapterDetection.lo \
 @USE_TDA995X_API_TRUE@	TDA995xCECAdapterCommunication.lo
+@USE_EXYNOS_API_TRUE@am__objects_5 = ExynosCECAdapterDetection.lo \
+@USE_EXYNOS_API_TRUE@	ExynosCECAdapterCommunication.lo
 am_libcec_la_OBJECTS = CECProcessor.lo LibCEC.lo LibCECC.lo \
 	CECClient.lo AdapterFactory.lo CECAudioSystem.lo \
 	CECBusDevice.lo CECDeviceMap.lo CECPlaybackDevice.lo \
@@ -183,7 +193,7 @@ am_libcec_la_OBJECTS = CECProcessor.lo LibCEC.lo LibCECC.lo \
 	CECCommandHandler.lo SLCommandHandler.lo VLCommandHandler.lo \
 	RLCommandHandler.lo PHCommandHandler.lo RHCommandHandler.lo \
 	AQCommandHandler.lo $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3)
+	$(am__objects_3) $(am__objects_4) $(am__objects_5)
 libcec_la_OBJECTS = $(am_libcec_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -205,7 +215,7 @@ am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
 am__v_at_0 = @
 am__v_at_1 = 
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
-depcomp = $(SHELL) $(top_srcdir)/depcomp
+depcomp = $(SHELL) $(top_srcdir)/../depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
@@ -413,7 +423,8 @@ libcec_la_SOURCES = CECProcessor.cpp LibCEC.cpp LibCECC.cpp \
 	implementations/PHCommandHandler.cpp \
 	implementations/RHCommandHandler.cpp \
 	implementations/AQCommandHandler.cpp $(am__append_1) \
-	$(am__append_2) $(am__append_3)
+	$(am__append_2) $(am__append_3) $(am__append_4) \
+	$(am__append_5)
 libcec_la_LDFLAGS = @LIBS_LIBCEC@ -version-info @VERSION@
 all: all-am
 
@@ -509,6 +520,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CECRecordingDevice.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CECTV.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CECTuner.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExynosCECAdapterCommunication.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExynosCECAdapterDetection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LibCEC.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LibCECC.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PHCommandHandler.Plo@am__quote@
@@ -529,6 +542,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/adl-edid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nv-edid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/os-edid.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/randr-edid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/serialport.Plo@am__quote@
 
 .cpp.o:
@@ -727,6 +741,13 @@ nv-edid.lo: platform/nvidia/nv-edid.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o nv-edid.lo `test -f 'platform/nvidia/nv-edid.cpp' || echo '$(srcdir)/'`platform/nvidia/nv-edid.cpp
 
+randr-edid.lo: platform/X11/randr-edid.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT randr-edid.lo -MD -MP -MF $(DEPDIR)/randr-edid.Tpo -c -o randr-edid.lo `test -f 'platform/X11/randr-edid.cpp' || echo '$(srcdir)/'`platform/X11/randr-edid.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/randr-edid.Tpo $(DEPDIR)/randr-edid.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='platform/X11/randr-edid.cpp' object='randr-edid.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o randr-edid.lo `test -f 'platform/X11/randr-edid.cpp' || echo '$(srcdir)/'`platform/X11/randr-edid.cpp
+
 RPiCECAdapterDetection.lo: adapter/RPi/RPiCECAdapterDetection.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RPiCECAdapterDetection.lo -MD -MP -MF $(DEPDIR)/RPiCECAdapterDetection.Tpo -c -o RPiCECAdapterDetection.lo `test -f 'adapter/RPi/RPiCECAdapterDetection.cpp' || echo '$(srcdir)/'`adapter/RPi/RPiCECAdapterDetection.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/RPiCECAdapterDetection.Tpo $(DEPDIR)/RPiCECAdapterDetection.Plo
@@ -761,6 +782,20 @@ TDA995xCECAdapterCommunication.lo: adapter/TDA995x/TDA995xCECAdapterCommunicatio
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='adapter/TDA995x/TDA995xCECAdapterCommunication.cpp' object='TDA995xCECAdapterCommunication.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TDA995xCECAdapterCommunication.lo `test -f 'adapter/TDA995x/TDA995xCECAdapterCommunication.cpp' || echo '$(srcdir)/'`adapter/TDA995x/TDA995xCECAdapterCommunication.cpp
+
+ExynosCECAdapterDetection.lo: adapter/Exynos/ExynosCECAdapterDetection.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ExynosCECAdapterDetection.lo -MD -MP -MF $(DEPDIR)/ExynosCECAdapterDetection.Tpo -c -o ExynosCECAdapterDetection.lo `test -f 'adapter/Exynos/ExynosCECAdapterDetection.cpp' || echo '$(srcdir)/'`adapter/Exynos/ExynosCECAdapterDetection.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/ExynosCECAdapterDetection.Tpo $(DEPDIR)/ExynosCECAdapterDetection.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='adapter/Exynos/ExynosCECAdapterDetection.cpp' object='ExynosCECAdapterDetection.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ExynosCECAdapterDetection.lo `test -f 'adapter/Exynos/ExynosCECAdapterDetection.cpp' || echo '$(srcdir)/'`adapter/Exynos/ExynosCECAdapterDetection.cpp
+
+ExynosCECAdapterCommunication.lo: adapter/Exynos/ExynosCECAdapterCommunication.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ExynosCECAdapterCommunication.lo -MD -MP -MF $(DEPDIR)/ExynosCECAdapterCommunication.Tpo -c -o ExynosCECAdapterCommunication.lo `test -f 'adapter/Exynos/ExynosCECAdapterCommunication.cpp' || echo '$(srcdir)/'`adapter/Exynos/ExynosCECAdapterCommunication.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/ExynosCECAdapterCommunication.Tpo $(DEPDIR)/ExynosCECAdapterCommunication.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='adapter/Exynos/ExynosCECAdapterCommunication.cpp' object='ExynosCECAdapterCommunication.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ExynosCECAdapterCommunication.lo `test -f 'adapter/Exynos/ExynosCECAdapterCommunication.cpp' || echo '$(srcdir)/'`adapter/Exynos/ExynosCECAdapterCommunication.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo
