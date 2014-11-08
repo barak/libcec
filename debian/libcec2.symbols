@@ -1195,6 +1195,7 @@ libcec.so.2 libcec2 #MINVER#
  cec_send_key_release@Base 2.1.4
  cec_send_keypress@Base 2.1.4
  cec_set_active_source@Base 2.1.4
+ cec_set_configuration@Base 2.2.0
  cec_set_deck_control_mode@Base 2.1.4
  cec_set_deck_info@Base 2.1.4
  cec_set_hdmi_port@Base 2.1.4
