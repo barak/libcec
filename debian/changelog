@@ -1,6 +1,10 @@
-libcec (2.1.4-3) UNRELEASED; urgency=medium
+libcec (2.2.0+dfsg1-1) UNRELEASED; urgency=medium
 
-  *
+  * Add working watch file
+  * Update libcec-get-orig-source for 2.2.0.
+    Add +dfsg1 suffix to repacked version
+    Compress tarball using xz
+  * New upstream version 2.2.0
 
  -- Balint Reczey <balint@balintreczey.hu>  Sat, 08 Nov 2014 18:20:25 +0100
 
