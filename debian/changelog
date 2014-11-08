@@ -1,10 +1,14 @@
-libcec (2.2.0+dfsg1-1) UNRELEASED; urgency=medium
+libcec (2.2.0+dfsg1-1) experimental; urgency=medium
 
   * Add working watch file
   * Update libcec-get-orig-source for 2.2.0.
     Add +dfsg1 suffix to repacked version
     Compress tarball using xz
   * New upstream version 2.2.0
+  * Fix ABI breakage due to changed cec_set_configuration()
+  * Update symbols file with new ABI symbols
+  * Mangle local version in watch file
+  * Bump standards version, no changes needed
 
  -- Balint Reczey <balint@balintreczey.hu>  Sat, 08 Nov 2014 18:20:25 +0100
 
