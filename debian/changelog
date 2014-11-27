@@ -1,6 +1,7 @@
-libcec (2.2.0+dfsg1-2) UNRELEASED; urgency=medium
+libcec (2.2.0+dfsg1-2) experimental; urgency=medium
 
-  *
+  * Provide both C & C++ versions of cec_set_configuration()
+    to match upstream's latest ABI
 
  -- Balint Reczey <balint@balintreczey.hu>  Sat, 08 Nov 2014 22:57:17 +0100
 
