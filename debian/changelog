@@ -1,3 +1,9 @@
+libcec (2.2.0+dfsg1-3) UNRELEASED; urgency=medium
+
+  *
+
+ -- Balint Reczey <balint@balintreczey.hu>  Sun, 26 Apr 2015 20:57:42 +0200
+
 libcec (2.2.0+dfsg1-2) experimental; urgency=medium
 
   * Provide both C & C++ versions of cec_set_configuration()
