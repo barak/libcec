@@ -278,8 +278,8 @@ libcec.so.2 libcec2 #MINVER#
  _ZN3CEC13CCECProcessorD1Ev@Base 2.1.4
  _ZN3CEC13CCECProcessorD2Ev@Base 2.1.4
  _ZN3CEC13CCECTypeUtils14GetMaskForTypeENS_15cec_device_typeE@Base 2.1.4
- _ZN3CEC13CCECTypeUtils8ToStringENS_10cec_opcodeE@Base 2.1.4
- _ZN3CEC13CCECTypeUtils8ToStringENS_19cec_logical_addressE@Base 2.1.4
+ (optional)_ZN3CEC13CCECTypeUtils8ToStringENS_10cec_opcodeE@Base 2.1.4
+ (optional)_ZN3CEC13CCECTypeUtils8ToStringENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC15CAdapterFactory11GetInstanceEPKct@Base 2.1.4
  _ZN3CEC15CAdapterFactory12FindAdaptersEPNS_11cec_adapterEhPKc@Base 2.1.4
  _ZN3CEC15CAdapterFactory14DetectAdaptersEPNS_22cec_adapter_descriptorEhPKc@Base 2.1.4
@@ -802,6 +802,8 @@ libcec.so.2 libcec2 #MINVER#
  _ZN8PLATFORM12SyncedBufferIN3CEC11cec_commandEED0Ev@Base 2.1.4
  _ZN8PLATFORM12SyncedBufferIN3CEC11cec_commandEED1Ev@Base 2.1.4
  _ZN8PLATFORM12SyncedBufferIN3CEC11cec_commandEED2Ev@Base 2.1.4
+ (optional)_ZN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEEC1Em@Base 2.2.0+dfsg1-3~
+ (optional)_ZN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEEC2Em@Base 2.2.0+dfsg1-3~
  _ZN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEED0Ev@Base 2.1.4
  _ZN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEED1Ev@Base 2.1.4
  _ZN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEED2Ev@Base 2.1.4
@@ -953,9 +955,9 @@ libcec.so.2 libcec2 #MINVER#
  (optional)_ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE17_M_initialize_mapEm@Base 2.1.4
  _ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EED1Ev@Base 2.1.4
  _ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EED2Ev@Base 2.1.4
- _ZNSt5dequeIN3CEC11cec_commandESaIS1_EE16_M_pop_front_auxEv@Base 2.1.4
+ (optional)_ZNSt5dequeIN3CEC11cec_commandESaIS1_EE16_M_pop_front_auxEv@Base 2.1.4
  _ZNSt5dequeIN3CEC11cec_commandESaIS1_EE16_M_push_back_auxERKS1_@Base 2.1.4
- _ZNSt5dequeIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE16_M_pop_front_auxEv@Base 2.1.4
+ (optional)_ZNSt5dequeIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE16_M_pop_front_auxEv@Base 2.1.4
  _ZNSt5dequeIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE16_M_push_back_auxERKS2_@Base 2.1.4
  _ZNSt6vectorIN3CEC11cec_commandESaIS1_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS1_S3_EERKS1_@Base 2.1.4
  _ZNSt6vectorIPN3CEC10CCECClientESaIS2_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS2_S4_EERKS2_@Base 2.1.4
@@ -972,7 +974,7 @@ libcec.so.2 libcec2 #MINVER#
  _ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE8_M_eraseEPSt13_Rb_tree_nodeIS6_E@Base 2.1.4
  _ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_St6vectorINS0_11cec_commandESaIS5_EEESt10_Select1stIS8_ESt4lessIS1_ESaIS8_EE16_M_insert_uniqueERKS8_@Base 2.1.4
  _ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_St6vectorINS0_11cec_commandESaIS5_EEESt10_Select1stIS8_ESt4lessIS1_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E@Base 2.1.4
- _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_10CCECClientEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE16_M_insert_uniqueERKS6_@Base 2.1.4
+ (optional)_ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_10CCECClientEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE16_M_insert_uniqueERKS6_@Base 2.1.4
  (optional)_ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_10CCECClientEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE4findERS3_@Base 2.1.4
  _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_10CCECClientEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE5eraseERS3_@Base 2.1.4
  _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_10CCECClientEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE8_M_eraseEPSt13_Rb_tree_nodeIS6_E@Base 2.1.4
@@ -1079,7 +1081,7 @@ libcec.so.2 libcec2 #MINVER#
  _ZTSN8PLATFORM7CThreadE@Base 2.1.4
  _ZTSN8PLATFORM7ISocketE@Base 2.1.4
  _ZTVN3CEC10CCECClientE@Base 2.1.4
- _ZTVN3CEC11ICECAdapterE@Base 2.1.4
+ (optional)_ZTVN3CEC11ICECAdapterE@Base 2.1.4
  _ZTVN3CEC13CCECBusDeviceE@Base 2.1.4
  _ZTVN3CEC13CCECDeviceMapE@Base 2.1.4
  _ZTVN3CEC13CCECProcessorE@Base 2.1.4
@@ -1106,7 +1108,7 @@ libcec.so.2 libcec2 #MINVER#
  _ZTVN3CEC26CCECAllocateLogicalAddressE@Base 2.1.4
  _ZTVN3CEC27CUSBCECAdapterCommunicationE@Base 2.1.4
  _ZTVN3CEC28CCECAdapterMessageQueueEntryE@Base 2.1.4
- _ZTVN3CEC29IAdapterCommunicationCallbackE@Base 2.1.4
+ (optional)_ZTVN3CEC29IAdapterCommunicationCallbackE@Base 2.1.4
  _ZTVN3CEC30CExynosCECAdapterCommunicationE@Base 2.2.0
  _ZTVN3CEC6CCECTVE@Base 2.1.4
  _ZTVN3CEC7CLibCECE@Base 2.1.4
@@ -1123,7 +1125,7 @@ libcec.so.2 libcec2 #MINVER#
  (optional)_ZTVN8PLATFORM16CRandrEdidParserE@Base 2.2.0
  _ZTVN8PLATFORM6CEventE@Base 2.1.4
  _ZTVN8PLATFORM7CThreadE@Base 2.1.4
- _ZTVN8PLATFORM7ISocketE@Base 2.1.4
+ (optional)_ZTVN8PLATFORM7ISocketE@Base 2.1.4
  (optional)_ZThn128_N3CEC13CCECProcessor10HandlePollENS_19cec_logical_addressES1_@Base 2.1.4
  (optional)_ZThn128_N3CEC13CCECProcessor17OnCommandReceivedERKNS_11cec_commandE@Base 2.1.4
  (optional)_ZThn128_N3CEC13CCECProcessor19HandleReceiveFailedENS_19cec_logical_addressE@Base 2.1.4
