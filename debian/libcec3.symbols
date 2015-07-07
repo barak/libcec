@@ -1,4 +1,4 @@
-libcec.so.2 libcec2 #MINVER#
+libcec.so.3 libcec2 #MINVER#
  CECDestroy@Base 2.1.4
  CECInitialise@Base 2.1.4
  CECStartBootloader@Base 2.1.4
