@@ -1,3 +1,11 @@
+libcec (3.0.1+dfsg1-1) UNRELEASED; urgency=medium
+
+  * Imported Upstream version 3.0.1+dfsg1
+  * Merge upstream packaging changes
+  * Drop patches integrated upstream
+
+ -- Balint Reczey <balint@balintreczey.hu>  Tue, 07 Jul 2015 16:17:34 -0700
+
 libcec (2.2.0+dfsg1-3) unstable; urgency=medium
 
   * Upload to unstable
