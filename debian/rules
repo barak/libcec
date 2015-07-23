@@ -5,4 +5,5 @@
 
 
 override_dh_auto_configure:
+	ln -s /usr/include/cec-platform include/platform && \
 	cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1
