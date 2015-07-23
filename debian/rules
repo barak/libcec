@@ -1,9 +1,10 @@
 #!/usr/bin/make -f
 
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+
 %:
 	dh  $@
 
-
 override_dh_auto_configure:
 	ln -s /usr/include/cec-platform include/platform && \
-	cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1
+	dh_auto_configure -- -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
