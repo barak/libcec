@@ -59,9 +59,3 @@ Description: Python bindings for USB CEC Adaptor
  This library provides Python bindings for libcec.
  .
  This package provides Python bindings for libcec.
-
-Package: libcec
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libcec3 (= ${binary:Version})
-Description: Meta package libCEC.
-
