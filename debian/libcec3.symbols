@@ -1,20 +1,23 @@
-libcec.so.3 libcec2 #MINVER#
+libcec.so.3 libcec3 #MINVER#
  CECDestroy@Base 2.1.4
  CECInitialise@Base 2.1.4
  CECStartBootloader@Base 2.1.4
- _Z11FindComPortR7CStdStrIcE@Base 2.1.4
+ _Z11FindComPortRSs@Base 3.0.1
  _Z15ADL_AllocMemoryi@Base 2.1.4
- _Z16TranslateComPortR7CStdStrIcE@Base 2.1.4
- _Z21cec_set_configurationPN3CEC20libcec_configurationE@Base 2.1.4
+ _Z16TranslateComPortRSs@Base 3.0.1
+ _Z24libcec_set_configurationPN3CEC11ICECAdapterEPNS_20libcec_configurationE@Base 3.0.1
  _Z7CECInitPKcN3CEC20cec_device_type_listE@Base 2.1.4
  _ZN3CEC10CCECClient10AddCommandERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC10CCECClient10GetOSDNameEv@Base 2.1.4
  _ZN3CEC10CCECClient10OnRegisterEv@Base 2.1.4
  _ZN3CEC10CCECClient10PollDeviceENS_19cec_logical_addressE@Base 2.1.4
+ _ZN3CEC10CCECClient10QueueAlertENS_12libcec_alertERKNS_16libcec_parameterE@Base 3.0.1
  _ZN3CEC10CCECClient10SetOSDNameERKSs@Base 2.1.4
  _ZN3CEC10CCECClient11AudioStatusEv@Base 2.1.4
  _ZN3CEC10CCECClient11AudioUnmuteEv@Base 2.1.4
  _ZN3CEC10CCECClient11PingAdapterEv@Base 2.1.4
+ _ZN3CEC10CCECClient11QueueAddKeyERKNS_12cec_keypressE@Base 3.0.1
+ _ZN3CEC10CCECClient11QueueAddLogERKNS_15cec_log_messageE@Base 3.0.1
  _ZN3CEC10CCECClient11SetHDMIPortENS_19cec_logical_addressEhb@Base 2.1.4
  _ZN3CEC10CCECClient12IsRegisteredEv@Base 2.1.4
  _ZN3CEC10CCECClient12OnUnregisterEv@Base 2.1.4
@@ -40,6 +43,7 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC10CCECClient15AudioToggleMuteEv@Base 2.1.4
  _ZN3CEC10CCECClient15EnableCallbacksEPvPNS_13ICECCallbacksE@Base 2.1.4
  _ZN3CEC10CCECClient15GetActiveSourceEv@Base 2.1.4
+ _ZN3CEC10CCECClient15QueueAddCommandERKNS_11cec_commandE@Base 3.0.1
  _ZN3CEC10CCECClient15SendSetDeckInfoENS_13cec_deck_infoEb@Base 2.1.4
  _ZN3CEC10CCECClient15SourceActivatedENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC10CCECClient16ChangeDeviceTypeENS_15cec_device_typeES1_@Base 2.1.4
@@ -48,10 +52,9 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC10CCECClient16GetConfigurationEv@Base 2.1.4
  _ZN3CEC10CCECClient16GetDeviceOSDNameENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC10CCECClient16GetPrimaryDeviceEv@Base 2.1.4
- _ZN3CEC10CCECClient16MenuStateChangedENS_14cec_menu_stateE@Base 2.1.4
  _ZN3CEC10CCECClient16SendSetMenuStateENS_14cec_menu_stateEb@Base 2.1.4
  _ZN3CEC10CCECClient16SendSetOSDStringENS_19cec_logical_addressENS_19cec_display_controlEPKc@Base 2.1.4
- _ZN3CEC10CCECClient16SetClientVersionENS_18cec_client_versionE@Base 2.1.4
+ _ZN3CEC10CCECClient16SetClientVersionEj@Base 3.0.1
  _ZN3CEC10CCECClient16SetConfigurationERKNS_20libcec_configurationE@Base 2.1.4
  _ZN3CEC10CCECClient16SetCurrentButtonENS_21cec_user_control_codeE@Base 2.1.4
  _ZN3CEC10CCECClient16SwitchMonitoringEb@Base 2.1.4
@@ -78,8 +81,10 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC10CCECClient20GetDevicePowerStatusENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC10CCECClient20IsLibCECActiveSourceEv@Base 2.1.4
  _ZN3CEC10CCECClient20PersistConfigurationERKNS_20libcec_configurationE@Base 2.1.4
+ _ZN3CEC10CCECClient20QueueSourceActivatedEbNS_19cec_logical_addressE@Base 3.0.1
  _ZN3CEC10CCECClient20ResetPhysicalAddressEv@Base 2.1.4
  _ZN3CEC10CCECClient21GetDeviceMenuLanguageENS_19cec_logical_addressERNS_17cec_menu_languageE@Base 2.1.4
+ _ZN3CEC10CCECClient21QueueMenuStateChangedENS_14cec_menu_stateE@Base 3.0.1
  _ZN3CEC10CCECClient22SendSetDeckControlModeENS_21cec_deck_control_modeEb@Base 2.1.4
  _ZN3CEC10CCECClient23CallbackSourceActivatedEbNS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC10CCECClient23CanPersistConfigurationEv@Base 2.1.4
@@ -91,6 +96,7 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC10CCECClient24SetDevicePhysicalAddressEt@Base 2.1.4
  _ZN3CEC10CCECClient25AutodetectPhysicalAddressEv@Base 2.1.4
  _ZN3CEC10CCECClient25GetPrimaryLogicalAdddressEv@Base 2.1.4
+ _ZN3CEC10CCECClient25QueueConfigurationChangedERKNS_20libcec_configurationE@Base 3.0.1
  _ZN3CEC10CCECClient27AllocateLogicalAddressTunerEv@Base 2.1.4
  _ZN3CEC10CCECClient28CallbackConfigurationChangedERKNS_20libcec_configurationE@Base 2.1.4
  _ZN3CEC10CCECClient33AllocateLogicalAddressAudioSystemEv@Base 2.1.4
@@ -100,6 +106,7 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC10CCECClient6AddKeyERKNS_12cec_keypressE@Base 2.1.4
  _ZN3CEC10CCECClient6AddKeyEb@Base 2.1.4
  _ZN3CEC10CCECClient6AddLogERKNS_15cec_log_messageE@Base 2.1.4
+ _ZN3CEC10CCECClient7ProcessEv@Base 3.0.1
  _ZN3CEC10CCECClient8TransmitERKNS_11cec_commandEb@Base 2.1.4
  _ZN3CEC10CCECClient9AudioMuteEv@Base 2.1.4
  _ZN3CEC10CCECClientC1EPNS_13CCECProcessorERKNS_20libcec_configurationE@Base 2.1.4
@@ -107,10 +114,11 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC10CCECClientD0Ev@Base 2.1.4
  _ZN3CEC10CCECClientD1Ev@Base 2.1.4
  _ZN3CEC10CCECClientD2Ev@Base 2.1.4
+ _ZN3CEC11ICECAdapter8ToStringENS_13cec_vendor_idE@Base 3.0.1
  _ZN3CEC13CCECBusDevice10GetHandlerEv@Base 2.1.4
  _ZN3CEC13CCECBusDevice10GetOSDNameENS_19cec_logical_addressEb@Base 2.1.4
  _ZN3CEC13CCECBusDevice10HandlePollENS_19cec_logical_addressE@Base 2.1.4
- _ZN3CEC13CCECBusDevice10SetOSDNameE7CStdStrIcE@Base 2.1.4
+ _ZN3CEC13CCECBusDevice10SetOSDNameERKSs@Base 3.0.1
  _ZN3CEC13CCECBusDevice11GetVendorIdENS_19cec_logical_addressEb@Base 2.1.4
  (optional)_ZN3CEC13CCECBusDevice11SetVendorIdEm@Base 2.1.4
  (optional)_ZN3CEC13CCECBusDevice11SetVendorIdEy@Base 2.1.4
@@ -230,16 +238,19 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC13CCECProcessor14PowerOnDevicesENS_19cec_logical_addressERKSt6vectorIPNS_13CCECBusDeviceESaIS4_EE@Base 2.1.4
  _ZN3CEC13CCECProcessor14ProcessCommandERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC13CCECProcessor14RegisterClientEPNS_10CCECClientE@Base 2.1.4
+ _ZN3CEC13CCECProcessor14RegisterClientESt10shared_ptrINS_10CCECClientEE@Base 3.0.1
  _ZN3CEC13CCECProcessor14StandbyDevicesENS_19cec_logical_addressERKSt6vectorIPNS_13CCECBusDeviceESaIS4_EE@Base 2.1.4
  _ZN3CEC13CCECProcessor15GetActiveSourceEb@Base 2.1.4
  _ZN3CEC13CCECProcessor15IsPresentDeviceENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC13CCECProcessor15ReplaceHandlersEv@Base 2.1.4
  _ZN3CEC13CCECProcessor15SetActiveSourceEbb@Base 2.1.4
  _ZN3CEC13CCECProcessor15StartBootloaderEPKc@Base 2.1.4
+ _ZN3CEC13CCECProcessor16ChangeDeviceTypeESt10shared_ptrINS_10CCECClientEENS_15cec_device_typeES4_@Base 3.0.1
  _ZN3CEC13CCECProcessor16GetPrimaryClientEv@Base 2.1.4
  _ZN3CEC13CCECProcessor16GetPrimaryDeviceEv@Base 2.1.4
  _ZN3CEC13CCECProcessor16SwitchMonitoringEb@Base 2.1.4
  _ZN3CEC13CCECProcessor16UnregisterClientEPNS_10CCECClientE@Base 2.1.4
+ _ZN3CEC13CCECProcessor16UnregisterClientESt10shared_ptrINS_10CCECClientEE@Base 3.0.1
  _ZN3CEC13CCECProcessor17GetLogicalAddressEv@Base 2.1.4
  _ZN3CEC13CCECProcessor17OnCommandReceivedERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC13CCECProcessor17SetCECInitialisedEb@Base 2.1.4
@@ -260,7 +271,7 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC13CCECProcessor22SetStandardLineTimeoutEh@Base 2.1.4
  _ZN3CEC13CCECProcessor23CanPersistConfigurationEv@Base 2.1.4
  _ZN3CEC13CCECProcessor23IsRunningLatestFirmwareEv@Base 2.1.4
- _ZN3CEC13CCECProcessor24AllocateLogicalAddressesEPNS_10CCECClientE@Base 2.1.4
+ _ZN3CEC13CCECProcessor24AllocateLogicalAddressesESt10shared_ptrINS_10CCECClientEE@Base 3.0.1
  _ZN3CEC13CCECProcessor24HandleLogicalAddressLostENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC13CCECProcessor26GetDeviceByPhysicalAddressEtb@Base 2.1.4
  _ZN3CEC13CCECProcessor28GetPhysicalAddressFromEepromEv@Base 2.1.4
@@ -280,6 +291,7 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC13CCECTypeUtils14GetMaskForTypeENS_15cec_device_typeE@Base 2.1.4
  (optional)_ZN3CEC13CCECTypeUtils8ToStringENS_10cec_opcodeE@Base 2.1.4
  (optional)_ZN3CEC13CCECTypeUtils8ToStringENS_19cec_logical_addressE@Base 2.1.4
+ _ZN3CEC13CCECTypeUtils8ToStringENS_21cec_user_control_codeE@Base 3.0.1
  _ZN3CEC15CAdapterFactory11GetInstanceEPKct@Base 2.1.4
  _ZN3CEC15CAdapterFactory12FindAdaptersEPNS_11cec_adapterEhPKc@Base 2.1.4
  _ZN3CEC15CAdapterFactory14DetectAdaptersEPNS_22cec_adapter_descriptorEhPKc@Base 2.1.4
@@ -595,12 +607,11 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC25CAdapterEepromWriteThreadD1Ev@Base 2.1.4
  _ZN3CEC25CAdapterEepromWriteThreadD2Ev@Base 2.1.4
  _ZN3CEC26CCECAllocateLogicalAddress7ProcessEv@Base 2.1.4
- _ZN3CEC26CCECAllocateLogicalAddressC1EPNS_13CCECProcessorEPNS_10CCECClientE@Base 2.1.4
- _ZN3CEC26CCECAllocateLogicalAddressC2EPNS_13CCECProcessorEPNS_10CCECClientE@Base 2.1.4
+ _ZN3CEC26CCECAllocateLogicalAddressC1EPNS_13CCECProcessorESt10shared_ptrINS_10CCECClientEE@Base 3.0.1
+ _ZN3CEC26CCECAllocateLogicalAddressC2EPNS_13CCECProcessorESt10shared_ptrINS_10CCECClientEE@Base 3.0.1
  _ZN3CEC26CCECAllocateLogicalAddressD0Ev@Base 2.1.4
  _ZN3CEC26CCECAllocateLogicalAddressD1Ev@Base 2.1.4
  _ZN3CEC26CCECAllocateLogicalAddressD2Ev@Base 2.1.4
- _ZN3CEC26CExynosCECAdapterDetection11FindAdapterEv@Base 2.2.0
  _ZN3CEC27CUSBCECAdapterCommunication10HandlePollERKNS_18CCECAdapterMessageE@Base 2.1.4
  _ZN3CEC27CUSBCECAdapterCommunication11GetPortNameEv@Base 2.1.4
  _ZN3CEC27CUSBCECAdapterCommunication11GetVendorIdEv@Base 2.1.4
@@ -657,34 +668,6 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC28CCECAdapterMessageQueueEntryD0Ev@Base 2.1.4
  _ZN3CEC28CCECAdapterMessageQueueEntryD1Ev@Base 2.1.4
  _ZN3CEC28CCECAdapterMessageQueueEntryD2Ev@Base 2.1.4
- _ZN3CEC30CExynosCECAdapterCommunication11GetPortNameEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication11GetVendorIdEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication11PingAdapterEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication14GetAdapterTypeEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication14SetLineTimeoutEh@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication15SetActiveSourceEbb@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication15StartBootloaderEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication16GetConfigurationERNS_20libcec_configurationE@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication17SetControlledModeEb@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication18GetFirmwareVersionEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication18GetPhysicalAddressEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication19GetLogicalAddressesEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication19SetLogicalAddressesERKNS_21cec_logical_addressesE@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication20GetFirmwareBuildDateEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication20PersistConfigurationERKNS_20libcec_configurationE@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication23IsRunningLatestFirmwareEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication24HandleLogicalAddressLostENS_19cec_logical_addressE@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication28SupportsSourceLogicalAddressENS_19cec_logical_addressE@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication4OpenEjbb@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication5CloseEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication5WriteERKNS_11cec_commandERbhb@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication6IsOpenEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunication7ProcessEv@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunicationC1EPNS_29IAdapterCommunicationCallbackE@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunicationC2EPNS_29IAdapterCommunicationCallbackE@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunicationD0Ev@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunicationD1Ev@Base 2.2.0
- _ZN3CEC30CExynosCECAdapterCommunicationD2Ev@Base 2.2.0
  _ZN3CEC6CCECTV17ResetDeviceStatusEv@Base 2.1.4
  _ZN3CEC6CCECTVC1EPNS_13CCECProcessorENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC6CCECTVC2EPNS_13CCECProcessorENS_19cec_logical_addressE@Base 2.1.4
@@ -701,6 +684,7 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC7CLibCEC11SetDeckInfoENS_13cec_deck_infoEb@Base 2.1.4
  _ZN3CEC7CLibCEC11SetHDMIPortENS_19cec_logical_addressEh@Base 2.1.4
  _ZN3CEC7CLibCEC12FindAdaptersEPNS_11cec_adapterEhPKc@Base 2.1.4
+ _ZN3CEC7CLibCEC12PrintVersionEjPcm@Base 3.0.1
  _ZN3CEC7CLibCEC12SendKeypressENS_19cec_logical_addressENS_21cec_user_control_codeEb@Base 2.1.4
  _ZN3CEC7CLibCEC12SetMenuStateENS_14cec_menu_stateEb@Base 2.1.4
  _ZN3CEC7CLibCEC12SetOSDStringENS_19cec_logical_addressENS_19cec_display_controlEPKc@Base 2.1.4
@@ -721,13 +705,15 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC7CLibCEC15SetActiveSourceENS_15cec_device_typeE@Base 2.1.4
  _ZN3CEC7CLibCEC15SetInactiveViewEv@Base 2.1.4
  _ZN3CEC7CLibCEC15StartBootloaderEv@Base 2.1.4
+ _ZN3CEC7CLibCEC15VersionToStringEj@Base 3.0.1
  _ZN3CEC7CLibCEC16GetActiveDevicesEv@Base 2.1.4
  _ZN3CEC7CLibCEC16GetDeviceOSDNameENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC7CLibCEC16SetConfigurationEPKNS_20libcec_configurationE@Base 2.1.4
  _ZN3CEC7CLibCEC16SwitchMonitoringEb@Base 2.1.4
+ _ZN3CEC7CLibCEC16VendorIdToStringEj@Base 3.0.1
+ _ZN3CEC7CLibCEC17CommandFromStringEPKc@Base 3.0.1
  _ZN3CEC7CLibCEC17GetDeviceVendorIdENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC7CLibCEC17SetLogicalAddressENS_19cec_logical_addressE@Base 2.1.4
- _ZN3CEC7CLibCEC17UnregisterClientsEv@Base 2.1.4
  _ZN3CEC7CLibCEC18IsActiveDeviceTypeENS_15cec_device_typeE@Base 2.1.4
  _ZN3CEC7CLibCEC18SetDeckControlModeENS_21cec_deck_control_modeEb@Base 2.1.4
  _ZN3CEC7CLibCEC18SetPhysicalAddressEt@Base 2.1.4
@@ -753,13 +739,11 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC7CLibCEC8ToStringENS_10cec_opcodeE@Base 2.1.4
  _ZN3CEC7CLibCEC8ToStringENS_11cec_versionE@Base 2.1.4
  _ZN3CEC7CLibCEC8ToStringENS_13cec_deck_infoE@Base 2.1.4
- _ZN3CEC7CLibCEC8ToStringENS_13cec_vendor_idE@Base 2.1.4
  _ZN3CEC7CLibCEC8ToStringENS_14cec_menu_stateE@Base 2.1.4
+ _ZN3CEC7CLibCEC8ToStringENS_15cec_device_typeE@Base 3.0.1
  _ZN3CEC7CLibCEC8ToStringENS_16cec_adapter_typeE@Base 2.1.4
  _ZN3CEC7CLibCEC8ToStringENS_16cec_audio_statusE@Base 2.1.4
  _ZN3CEC7CLibCEC8ToStringENS_16cec_power_statusE@Base 2.1.4
- _ZN3CEC7CLibCEC8ToStringENS_18cec_client_versionE@Base 2.1.4
- _ZN3CEC7CLibCEC8ToStringENS_18cec_server_versionE@Base 2.1.4
  _ZN3CEC7CLibCEC8ToStringENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC7CLibCEC8ToStringENS_21cec_deck_control_modeE@Base 2.1.4
  _ZN3CEC7CLibCEC8ToStringENS_21cec_user_control_codeE@Base 2.1.4
@@ -785,13 +769,8 @@ libcec.so.3 libcec2 #MINVER#
  _ZN3CEC9CResponseC2ENS_10cec_opcodeE@Base 2.1.4
  _ZN3CEC9CResponseD1Ev@Base 2.1.4
  _ZN3CEC9CResponseD2Ev@Base 2.1.4
- _ZN7CStdStrIcE12AppendFormatEPKcz@Base 2.1.4
- (optional)_ZN7CStdStrIcE13AppendFormatVEPKcP13__va_list_tag@Base 2.1.4
- (optional)_ZN7CStdStrIcE13AppendFormatVEPKcPc@Base 2.1.4
- _ZN7CStdStrIcE3FmtEPKcz@Base 2.1.4
- (optional)_ZN7CStdStrIcE7FormatVEPKcP13__va_list_tag@Base 2.1.4
- (optional)_ZN7CStdStrIcE7FormatVEPKcPc@Base 2.1.4
- (optional)_ZN8PLATFORM10SocketReadEiPiPvjy@Base 2.1.4
+ _ZN8PLATFORM10CConditionIVbE25_PredicateCallbackDefaultEPv@Base 3.0.1
+ _ZN8PLATFORM10CConditionIbE25_PredicateCallbackDefaultEPv@Base 3.0.1
  (optional)_ZN8PLATFORM10SocketReadEiPiPvmm@Base 2.1.4
  _ZN8PLATFORM11CEDIDParser18GetPhysicalAddressEv@Base 2.1.4
  _ZN8PLATFORM11CLockObjectD1Ev@Base 2.1.4
@@ -802,17 +781,15 @@ libcec.so.3 libcec2 #MINVER#
  _ZN8PLATFORM12SyncedBufferIN3CEC11cec_commandEED0Ev@Base 2.1.4
  _ZN8PLATFORM12SyncedBufferIN3CEC11cec_commandEED1Ev@Base 2.1.4
  _ZN8PLATFORM12SyncedBufferIN3CEC11cec_commandEED2Ev@Base 2.1.4
- (optional)_ZN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEEC1Em@Base 2.2.0+dfsg1-3~
- (optional)_ZN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEEC2Em@Base 2.2.0+dfsg1-3~
+ _ZN8PLATFORM12SyncedBufferIPN3CEC13CCallbackWrapEED0Ev@Base 3.0.1
+ _ZN8PLATFORM12SyncedBufferIPN3CEC13CCallbackWrapEED1Ev@Base 3.0.1
+ _ZN8PLATFORM12SyncedBufferIPN3CEC13CCallbackWrapEED2Ev@Base 3.0.1
  _ZN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEED0Ev@Base 2.1.4
  _ZN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEED1Ev@Base 2.1.4
  _ZN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEED2Ev@Base 2.1.4
  _ZN8PLATFORM13CCommonSocketIiE14GetErrorNumberEv@Base 2.1.4
  _ZN8PLATFORM13CCommonSocketIiE7GetNameEv@Base 2.1.4
  _ZN8PLATFORM13CCommonSocketIiE8GetErrorEv@Base 2.1.4
- _ZN8PLATFORM13CCommonSocketIiED0Ev@Base 2.1.4
- _ZN8PLATFORM13CCommonSocketIiED1Ev@Base 2.1.4
- _ZN8PLATFORM13CCommonSocketIiED2Ev@Base 2.1.4
  _ZN8PLATFORM13CNVEdidParser18GetPhysicalAddressEv@Base 2.1.4
  _ZN8PLATFORM13CNVEdidParserD0Ev@Base 2.1.4
  _ZN8PLATFORM13CNVEdidParserD1Ev@Base 2.1.4
@@ -845,6 +822,10 @@ libcec.so.3 libcec2 #MINVER#
  _ZN8PLATFORM14CConditionImplD0Ev@Base 2.1.4
  _ZN8PLATFORM14CConditionImplD1Ev@Base 2.1.4
  _ZN8PLATFORM14CConditionImplD2Ev@Base 2.1.4
+ _ZN8PLATFORM14CDRMEdidParser18GetPhysicalAddressEv@Base 3.0.1
+ _ZN8PLATFORM14CDRMEdidParserD0Ev@Base 3.0.1
+ _ZN8PLATFORM14CDRMEdidParserD1Ev@Base 3.0.1
+ _ZN8PLATFORM14CDRMEdidParserD2Ev@Base 3.0.1
  _ZN8PLATFORM16CProtectedSocketINS_13CSerialSocketEE14GetErrorNumberEv@Base 2.1.4
  (optional)_ZN8PLATFORM16CProtectedSocketINS_13CSerialSocketEE4OpenEm@Base 2.1.4
  (optional)_ZN8PLATFORM16CProtectedSocketINS_13CSerialSocketEE4OpenEy@Base 2.1.4
@@ -872,7 +853,7 @@ libcec.so.3 libcec2 #MINVER#
  _ZN8PLATFORM6CMutex5ClearEv@Base 2.1.4
  _ZN8PLATFORM7CThread10StopThreadEi@Base 2.1.4
  _ZN8PLATFORM7CThread12CreateThreadEb@Base 2.1.4
- _ZN8PLATFORM7CThread13ThreadHandlerEPS0_@Base 2.1.4
+ _ZN8PLATFORM7CThread13ThreadHandlerEPv@Base 3.0.1
  _ZN8PLATFORM7CThread5SleepEj@Base 2.1.4
  _ZN8PLATFORM7CThread9IsRunningEv@Base 2.1.4
  _ZN8PLATFORM7CThread9IsStoppedEv@Base 2.1.4
@@ -942,50 +923,61 @@ libcec.so.3 libcec2 #MINVER#
  _ZNK3CEC27CUSBCECAdapterCommunication8GetErrorEv@Base 2.1.4
  _ZNK3CEC28CCECAdapterMessageQueueEntry19TimedOutOrSucceededEv@Base 2.1.4
  _ZNK3CEC28CCECAdapterMessageQueueEntry8ToStringEv@Base 2.1.4
- _ZNK3CEC30CExynosCECAdapterCommunication18GetAdapterVendorIdEv@Base 2.2.0
- _ZNK3CEC30CExynosCECAdapterCommunication19GetAdapterProductIdEv@Base 2.2.0
- _ZNK3CEC30CExynosCECAdapterCommunication8GetErrorEv@Base 2.2.0
  _ZNK3CEC7CLibCEC18GetAdapterVendorIdEv@Base 2.1.4
  _ZNK3CEC7CLibCEC19GetAdapterProductIdEv@Base 2.1.4
+ _ZNKSt5ctypeIcE8do_widenEc@Base 3.0.1
  (optional)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EE17_M_initialize_mapEj@Base 2.1.4
  (optional)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EE17_M_initialize_mapEm@Base 2.1.4
  _ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EED1Ev@Base 2.1.4
  _ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EED2Ev@Base 2.1.4
+ _ZNSt11_Deque_baseIPN3CEC13CCallbackWrapESaIS2_EE17_M_initialize_mapEm@Base 3.0.1
  (optional)_ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE17_M_initialize_mapEj@Base 2.1.4
  (optional)_ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE17_M_initialize_mapEm@Base 2.1.4
- _ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EED1Ev@Base 2.1.4
- _ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EED2Ev@Base 2.1.4
- (optional)_ZNSt5dequeIN3CEC11cec_commandESaIS1_EE16_M_pop_front_auxEv@Base 2.1.4
- _ZNSt5dequeIN3CEC11cec_commandESaIS1_EE16_M_push_back_auxERKS1_@Base 2.1.4
- (optional)_ZNSt5dequeIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE16_M_pop_front_auxEv@Base 2.1.4
- _ZNSt5dequeIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE16_M_push_back_auxERKS2_@Base 2.1.4
- _ZNSt6vectorIN3CEC11cec_commandESaIS1_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS1_S3_EERKS1_@Base 2.1.4
- _ZNSt6vectorIPN3CEC10CCECClientESaIS2_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS2_S4_EERKS2_@Base 2.1.4
- _ZNSt6vectorIPN3CEC13CCECBusDeviceESaIS2_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS2_S4_EERKS2_@Base 2.1.4
+ _ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv@Base 3.0.1
+ _ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv@Base 3.0.1
+ _ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 3.0.1
+ _ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 3.0.1
+ _ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 3.0.1
+ _ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.1
+ _ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv@Base 3.0.1
+ _ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@Base 3.0.1
+ _ZNSt5dequeIN3CEC11cec_commandESaIS1_EE16_M_push_back_auxIIRKS1_EEEvDpOT_@Base 3.0.1
+ _ZNSt5dequeIN3CEC11cec_commandESaIS1_EE16_M_push_back_auxIJRKS1_EEEvDpOT_@Base 3.0.1
+ _ZNSt5dequeIPN3CEC13CCallbackWrapESaIS2_EE16_M_push_back_auxIIRKS2_EEEvDpOT_@Base 3.0.1
+ _ZNSt5dequeIPN3CEC13CCallbackWrapESaIS2_EE16_M_push_back_auxIJRKS2_EEEvDpOT_@Base 3.0.1
+ _ZNSt5dequeIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE16_M_push_back_auxIIRKS2_EEEvDpOT_@Base 3.0.1
+ _ZNSt5dequeIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE16_M_push_back_auxIJRKS2_EEEvDpOT_@Base 3.0.1
+ _ZNSt6vectorIN3CEC11cec_commandESaIS1_EE19_M_emplace_back_auxIIRKS1_EEEvDpOT_@Base 3.0.1
+ _ZNSt6vectorIN3CEC11cec_commandESaIS1_EE19_M_emplace_back_auxIJRKS1_EEEvDpOT_@Base 3.0.1
+ _ZNSt6vectorIN3CEC20device_type_change_tESaIS1_EE19_M_emplace_back_auxIIRKS1_EEEvDpOT_@Base 3.0.1
+ _ZNSt6vectorIN3CEC20device_type_change_tESaIS1_EE19_M_emplace_back_auxIJRKS1_EEEvDpOT_@Base 3.0.1
+ _ZNSt6vectorIN3CEC20device_type_change_tESaIS1_EED1Ev@Base 3.0.1
+ _ZNSt6vectorIN3CEC20device_type_change_tESaIS1_EED2Ev@Base 3.0.1
+ _ZNSt6vectorIPN3CEC13CCECBusDeviceESaIS2_EE19_M_emplace_back_auxIIRKS2_EEEvDpOT_@Base 3.0.1
+ _ZNSt6vectorIPN3CEC13CCECBusDeviceESaIS2_EE19_M_emplace_back_auxIIS2_EEEvDpOT_@Base 3.0.1
+ _ZNSt6vectorIPN3CEC13CCECBusDeviceESaIS2_EE19_M_emplace_back_auxIJRKS2_EEEvDpOT_@Base 3.0.1
+ _ZNSt6vectorIPN3CEC13CCECBusDeviceESaIS2_EE19_M_emplace_back_auxIJS2_EEEvDpOT_@Base 3.0.1
  _ZNSt6vectorIPN3CEC13CCECBusDeviceESaIS2_EEaSERKS4_@Base 2.1.4
- (optional)_ZNSt6vectorImSaImEE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPmS1_EERKm@Base 2.1.4
- (optional)_ZNSt6vectorIySaIyEE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPyS1_EERKy@Base 2.1.4
- _ZNSt8_Rb_treeIN3CEC10cec_opcodeES1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE16_M_insert_uniqueERKS1_@Base 2.1.4
- (optional)_ZNSt8_Rb_treeIN3CEC10cec_opcodeES1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE4findERKS1_@Base 2.1.4
+ _ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EE19_M_emplace_back_auxIIRKS3_EEEvDpOT_@Base 3.0.1
+ _ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EE19_M_emplace_back_auxIJRKS3_EEEvDpOT_@Base 3.0.1
+ _ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EED1Ev@Base 3.0.1
+ _ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EED2Ev@Base 3.0.1
+ _ZNSt6vectorImSaImEE19_M_emplace_back_auxIIRKmEEEvDpOT_@Base 3.0.1
+ _ZNSt6vectorImSaImEE19_M_emplace_back_auxIJRKmEEEvDpOT_@Base 3.0.1
+ _ZNSt8_Rb_treeIN3CEC10cec_opcodeES1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE16_M_insert_uniqueIRKS1_EESt4pairISt17_Rb_tree_iteratorIS1_EbEOT_@Base 3.0.1
  _ZNSt8_Rb_treeIN3CEC10cec_opcodeES1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE8_M_eraseEPSt13_Rb_tree_nodeIS1_E@Base 2.1.4
- (optional)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE17_M_insert_unique_ESt23_Rb_tree_const_iteratorIS6_ERKS6_@Base 2.1.4
- _ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE24_M_get_insert_unique_posERS3_@Base 2.1.4
  (optional)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE29_M_get_insert_hint_unique_posESt23_Rb_tree_const_iteratorIS6_ERS3_@Base 2.1.4
  _ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE8_M_eraseEPSt13_Rb_tree_nodeIS6_E@Base 2.1.4
- _ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_St6vectorINS0_11cec_commandESaIS5_EEESt10_Select1stIS8_ESt4lessIS1_ESaIS8_EE16_M_insert_uniqueERKS8_@Base 2.1.4
+ _ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_St6vectorINS0_11cec_commandESaIS5_EEESt10_Select1stIS8_ESt4lessIS1_ESaIS8_EE16_M_insert_uniqueIS2_IS1_S7_EEES2_ISt17_Rb_tree_iteratorIS8_EbEOT_@Base 3.0.1
  _ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_St6vectorINS0_11cec_commandESaIS5_EEESt10_Select1stIS8_ESt4lessIS1_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E@Base 2.1.4
- (optional)_ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_10CCECClientEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE16_M_insert_uniqueERKS6_@Base 2.1.4
- (optional)_ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_10CCECClientEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE4findERS3_@Base 2.1.4
- _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_10CCECClientEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE5eraseERS3_@Base 2.1.4
- _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_10CCECClientEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE8_M_eraseEPSt13_Rb_tree_nodeIS6_E@Base 2.1.4
- _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_13CCECBusDeviceEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE16_M_insert_uniqueERKS6_@Base 2.1.4
+ _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_13CCECBusDeviceEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE16_M_insert_uniqueIS2_IS1_S5_EEES2_ISt17_Rb_tree_iteratorIS6_EbEOT_@Base 3.0.1
  _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_13CCECBusDeviceEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE8_M_eraseEPSt13_Rb_tree_nodeIS6_E@Base 2.1.4
- (optional)_ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE16_M_insert_uniqueERKS5_@Base 2.1.4
+ _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_St10shared_ptrINS0_10CCECClientEEESt10_Select1stIS7_ESt4lessIS1_ESaIS7_EE16_M_insert_uniqueIS2_IS1_S6_EEES2_ISt17_Rb_tree_iteratorIS7_EbEOT_@Base 3.0.1
+ _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_St10shared_ptrINS0_10CCECClientEEESt10_Select1stIS7_ESt4lessIS1_ESaIS7_EE5eraseERS3_@Base 3.0.1
+ _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_St10shared_ptrINS0_10CCECClientEEESt10_Select1stIS7_ESt4lessIS1_ESaIS7_EE8_M_eraseEPSt13_Rb_tree_nodeIS7_E@Base 3.0.1
+ _ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE16_M_insert_uniqueIS0_ImS4_EEES0_ISt17_Rb_tree_iteratorIS5_EbEOT_@Base 3.0.1
  (optional)_ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE5eraseERS1_@Base 2.1.4
  (optional)_ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE8_M_eraseEPSt13_Rb_tree_nodeIS5_E@Base 2.1.4
- (optional)_ZNSt8_Rb_treeIySt4pairIKyPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessIyESaIS5_EE16_M_insert_uniqueERKS5_@Base 2.1.4
- (optional)_ZNSt8_Rb_treeIySt4pairIKyPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessIyESaIS5_EE5eraseERS1_@Base 2.1.4
- (optional)_ZNSt8_Rb_treeIySt4pairIKyPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessIyESaIS5_EE8_M_eraseEPSt13_Rb_tree_nodeIS5_E@Base 2.1.4
  _ZTIN3CEC10CCECClientE@Base 2.1.4
  _ZTIN3CEC11ICECAdapterE@Base 2.1.4
  _ZTIN3CEC13CCECBusDeviceE@Base 2.1.4
@@ -1015,24 +1007,28 @@ libcec.so.3 libcec2 #MINVER#
  _ZTIN3CEC27CUSBCECAdapterCommunicationE@Base 2.1.4
  _ZTIN3CEC28CCECAdapterMessageQueueEntryE@Base 2.1.4
  _ZTIN3CEC29IAdapterCommunicationCallbackE@Base 2.1.4
- _ZTIN3CEC30CExynosCECAdapterCommunicationE@Base 2.2.0
  _ZTIN3CEC6CCECTVE@Base 2.1.4
  _ZTIN3CEC7CLibCECE@Base 2.1.4
  _ZTIN3CEC9CCECTunerE@Base 2.1.4
  _ZTIN8PLATFORM11CSerialPortE@Base 2.1.4
  _ZTIN8PLATFORM11PreventCopyE@Base 2.1.4
  _ZTIN8PLATFORM12SyncedBufferIN3CEC11cec_commandEEE@Base 2.1.4
+ _ZTIN8PLATFORM12SyncedBufferIPN3CEC13CCallbackWrapEEE@Base 3.0.1
  _ZTIN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEEE@Base 2.1.4
  _ZTIN8PLATFORM13CCommonSocketIiEE@Base 2.1.4
  _ZTIN8PLATFORM13CNVEdidParserE@Base 2.1.4
  _ZTIN8PLATFORM13CSerialSocketE@Base 2.1.4
  _ZTIN8PLATFORM14CADLEdidParserE@Base 2.1.4
  _ZTIN8PLATFORM14CConditionImplE@Base 2.1.4
+ _ZTIN8PLATFORM14CDRMEdidParserE@Base 3.0.1
  _ZTIN8PLATFORM16CProtectedSocketINS_13CSerialSocketEEE@Base 2.1.4
  (optional)_ZTIN8PLATFORM16CRandrEdidParserE@Base 2.2.0
  _ZTIN8PLATFORM6CEventE@Base 2.1.4
  _ZTIN8PLATFORM7CThreadE@Base 2.1.4
  _ZTIN8PLATFORM7ISocketE@Base 2.1.4
+ _ZTISt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ _ZTISt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ _ZTISt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
  _ZTSN3CEC10CCECClientE@Base 2.1.4
  _ZTSN3CEC11ICECAdapterE@Base 2.1.4
  _ZTSN3CEC13CCECBusDeviceE@Base 2.1.4
@@ -1062,24 +1058,28 @@ libcec.so.3 libcec2 #MINVER#
  _ZTSN3CEC27CUSBCECAdapterCommunicationE@Base 2.1.4
  _ZTSN3CEC28CCECAdapterMessageQueueEntryE@Base 2.1.4
  _ZTSN3CEC29IAdapterCommunicationCallbackE@Base 2.1.4
- _ZTSN3CEC30CExynosCECAdapterCommunicationE@Base 2.2.0
  _ZTSN3CEC6CCECTVE@Base 2.1.4
  _ZTSN3CEC7CLibCECE@Base 2.1.4
  _ZTSN3CEC9CCECTunerE@Base 2.1.4
  _ZTSN8PLATFORM11CSerialPortE@Base 2.1.4
  _ZTSN8PLATFORM11PreventCopyE@Base 2.1.4
  _ZTSN8PLATFORM12SyncedBufferIN3CEC11cec_commandEEE@Base 2.1.4
+ _ZTSN8PLATFORM12SyncedBufferIPN3CEC13CCallbackWrapEEE@Base 3.0.1
  _ZTSN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEEE@Base 2.1.4
  _ZTSN8PLATFORM13CCommonSocketIiEE@Base 2.1.4
  _ZTSN8PLATFORM13CNVEdidParserE@Base 2.1.4
  _ZTSN8PLATFORM13CSerialSocketE@Base 2.1.4
  _ZTSN8PLATFORM14CADLEdidParserE@Base 2.1.4
  _ZTSN8PLATFORM14CConditionImplE@Base 2.1.4
+ _ZTSN8PLATFORM14CDRMEdidParserE@Base 3.0.1
  _ZTSN8PLATFORM16CProtectedSocketINS_13CSerialSocketEEE@Base 2.1.4
  (optional)_ZTSN8PLATFORM16CRandrEdidParserE@Base 2.2.0
  _ZTSN8PLATFORM6CEventE@Base 2.1.4
  _ZTSN8PLATFORM7CThreadE@Base 2.1.4
  _ZTSN8PLATFORM7ISocketE@Base 2.1.4
+ _ZTSSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ _ZTSSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ _ZTSSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
  _ZTVN3CEC10CCECClientE@Base 2.1.4
  (optional)_ZTVN3CEC11ICECAdapterE@Base 2.1.4
  _ZTVN3CEC13CCECBusDeviceE@Base 2.1.4
@@ -1109,23 +1109,26 @@ libcec.so.3 libcec2 #MINVER#
  _ZTVN3CEC27CUSBCECAdapterCommunicationE@Base 2.1.4
  _ZTVN3CEC28CCECAdapterMessageQueueEntryE@Base 2.1.4
  (optional)_ZTVN3CEC29IAdapterCommunicationCallbackE@Base 2.1.4
- _ZTVN3CEC30CExynosCECAdapterCommunicationE@Base 2.2.0
  _ZTVN3CEC6CCECTVE@Base 2.1.4
  _ZTVN3CEC7CLibCECE@Base 2.1.4
  _ZTVN3CEC9CCECTunerE@Base 2.1.4
  _ZTVN8PLATFORM11CSerialPortE@Base 2.1.4
  _ZTVN8PLATFORM12SyncedBufferIN3CEC11cec_commandEEE@Base 2.1.4
+ _ZTVN8PLATFORM12SyncedBufferIPN3CEC13CCallbackWrapEEE@Base 3.0.1
  _ZTVN8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEEE@Base 2.1.4
  _ZTVN8PLATFORM13CCommonSocketIiEE@Base 2.1.4
  _ZTVN8PLATFORM13CNVEdidParserE@Base 2.1.4
  _ZTVN8PLATFORM13CSerialSocketE@Base 2.1.4
  _ZTVN8PLATFORM14CADLEdidParserE@Base 2.1.4
  _ZTVN8PLATFORM14CConditionImplE@Base 2.1.4
+ _ZTVN8PLATFORM14CDRMEdidParserE@Base 3.0.1
  _ZTVN8PLATFORM16CProtectedSocketINS_13CSerialSocketEEE@Base 2.1.4
  (optional)_ZTVN8PLATFORM16CRandrEdidParserE@Base 2.2.0
  _ZTVN8PLATFORM6CEventE@Base 2.1.4
  _ZTVN8PLATFORM7CThreadE@Base 2.1.4
  (optional)_ZTVN8PLATFORM7ISocketE@Base 2.1.4
+ _ZTVSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ _ZTVSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
  (optional)_ZThn128_N3CEC13CCECProcessor10HandlePollENS_19cec_logical_addressES1_@Base 2.1.4
  (optional)_ZThn128_N3CEC13CCECProcessor17OnCommandReceivedERKNS_11cec_commandE@Base 2.1.4
  (optional)_ZThn128_N3CEC13CCECProcessor19HandleReceiveFailedENS_19cec_logical_addressE@Base 2.1.4
@@ -1137,80 +1140,78 @@ libcec.so.3 libcec2 #MINVER#
  (optional)_ZThn16_N3CEC27CUSBCECAdapterCommunication7ProcessEv@Base 2.1.4
  (optional)_ZThn16_N3CEC27CUSBCECAdapterCommunicationD0Ev@Base 2.1.4
  (optional)_ZThn16_N3CEC27CUSBCECAdapterCommunicationD1Ev@Base 2.1.4
- (optional)_ZThn16_N3CEC30CExynosCECAdapterCommunication7ProcessEv@Base 2.2.0
- (optional)_ZThn16_N3CEC30CExynosCECAdapterCommunicationD0Ev@Base 2.2.0
- (optional)_ZThn16_N3CEC30CExynosCECAdapterCommunicationD1Ev@Base 2.2.0
- (optional)_ZThn8_N3CEC27CUSBCECAdapterCommunication7ProcessEv@Base 2.1.4
- (optional)_ZThn8_N3CEC27CUSBCECAdapterCommunicationD0Ev@Base 2.1.4
- (optional)_ZThn8_N3CEC27CUSBCECAdapterCommunicationD1Ev@Base 2.1.4
- (optional)_ZThn8_N3CEC30CExynosCECAdapterCommunication7ProcessEv@Base 2.2.0
- (optional)_ZThn8_N3CEC30CExynosCECAdapterCommunicationD0Ev@Base 2.2.0
- (optional)_ZThn8_N3CEC30CExynosCECAdapterCommunicationD1Ev@Base 2.2.0
- (optional)_ZThn92_N3CEC13CCECProcessor10HandlePollENS_19cec_logical_addressES1_@Base 2.1.4
- (optional)_ZThn92_N3CEC13CCECProcessor17OnCommandReceivedERKNS_11cec_commandE@Base 2.1.4
- (optional)_ZThn92_N3CEC13CCECProcessor19HandleReceiveFailedENS_19cec_logical_addressE@Base 2.1.4
- (optional)_ZThn92_N3CEC13CCECProcessor24HandleLogicalAddressLostENS_19cec_logical_addressE@Base 2.1.4
- (optional)_ZThn92_N3CEC13CCECProcessor28HandlePhysicalAddressChangedEt@Base 2.1.4
- (optional)_ZThn92_N3CEC13CCECProcessorD0Ev@Base 2.1.4
- (optional)_ZThn92_N3CEC13CCECProcessorD1Ev@Base 2.1.4
- (optional)_ZThn92_NK3CEC13CCECProcessor6GetLibEv@Base 2.1.4
+ _ZZN8PLATFORM26GetDetachedThreadAttributeEvE12g_threadAttr@Base 3.0.1
+ _ZZN8PLATFORM26GetDetachedThreadAttributeEvE21bAttributeInitialised@Base 3.0.1
  _ZZN8PLATFORM26GetRecursiveMutexAttributeEvE11g_mutexAttr@Base 2.1.4
  _ZZN8PLATFORM26GetRecursiveMutexAttributeEvE21bAttributeInitialised@Base 2.1.4
- cec_audio_get_status@Base 2.1.4
- cec_audio_mute@Base 2.1.4
- cec_audio_toggle_mute@Base 2.1.4
- cec_audio_unmute@Base 2.1.4
- cec_can_persist_configuration@Base 2.1.4
- cec_close@Base 2.1.4
- cec_destroy@Base 2.1.4
- cec_detect_adapters@Base 2.1.4
- cec_enable_callbacks@Base 2.1.4
- cec_find_adapters@Base 2.1.4
- cec_get_active_devices@Base 2.1.4
- cec_get_active_source@Base 2.1.4
- cec_get_adapter_product_id@Base 2.1.4
- cec_get_adapter_vendor_id@Base 2.1.4
- cec_get_current_configuration@Base 2.1.4
- cec_get_device_cec_version@Base 2.1.4
- cec_get_device_information@Base 2.1.4
- cec_get_device_menu_language@Base 2.1.4
- cec_get_device_osd_name@Base 2.1.4
- cec_get_device_physical_address@Base 2.1.4
- cec_get_device_power_status@Base 2.1.4
- cec_get_device_vendor_id@Base 2.1.4
- cec_get_lib_info@Base 2.1.4
- cec_get_logical_addresses@Base 2.1.4
- cec_init_video_standalone@Base 2.1.4
- cec_initialise@Base 2.1.4
- cec_is_active_device@Base 2.1.4
- cec_is_active_device_type@Base 2.1.4
- cec_is_active_source@Base 2.1.4
- cec_is_libcec_active_source@Base 2.1.4
- cec_mute_audio@Base 2.1.4
- cec_open@Base 2.1.4
- cec_parser@Base 2.1.4
- cec_persist_configuration@Base 2.1.4
- cec_ping_adapters@Base 2.1.4
- cec_poll_device@Base 2.1.4
- cec_power_on_devices@Base 2.1.4
- cec_rescan_devices@Base 2.1.4
- cec_send_key_release@Base 2.1.4
- cec_send_keypress@Base 2.1.4
- cec_set_active_source@Base 2.1.4
- cec_set_configuration@Base 2.2.0
- cec_set_deck_control_mode@Base 2.1.4
- cec_set_deck_info@Base 2.1.4
- cec_set_hdmi_port@Base 2.1.4
- cec_set_inactive_view@Base 2.1.4
- cec_set_logical_address@Base 2.1.4
- cec_set_menu_state@Base 2.1.4
- cec_set_osd_string@Base 2.1.4
- cec_set_physical_address@Base 2.1.4
- cec_set_stream_path_logical@Base 2.1.4
- cec_set_stream_path_physical@Base 2.1.4
- cec_standby_devices@Base 2.1.4
- cec_start_bootloader@Base 2.1.4
- cec_switch_monitoring@Base 2.1.4
- cec_transmit@Base 2.1.4
- cec_volume_down@Base 2.1.4
- cec_volume_up@Base 2.1.4
+ libcec_adapter_type_to_string@Base 3.0.1
+ libcec_audio_get_status@Base 3.0.1
+ libcec_audio_mute@Base 3.0.1
+ libcec_audio_status_to_string@Base 3.0.1
+ libcec_audio_toggle_mute@Base 3.0.1
+ libcec_audio_unmute@Base 3.0.1
+ libcec_can_persist_configuration@Base 3.0.1
+ libcec_cec_version_to_string@Base 3.0.1
+ libcec_clear_configuration@Base 3.0.1
+ libcec_close@Base 3.0.1
+ libcec_deck_control_mode_to_string@Base 3.0.1
+ libcec_deck_status_to_string@Base 3.0.1
+ libcec_destroy@Base 3.0.1
+ libcec_detect_adapters@Base 3.0.1
+ libcec_enable_callbacks@Base 3.0.1
+ libcec_find_adapters@Base 3.0.1
+ libcec_get_active_devices@Base 3.0.1
+ libcec_get_active_source@Base 3.0.1
+ libcec_get_adapter_product_id@Base 3.0.1
+ libcec_get_adapter_vendor_id@Base 3.0.1
+ libcec_get_current_configuration@Base 3.0.1
+ libcec_get_device_cec_version@Base 3.0.1
+ libcec_get_device_information@Base 3.0.1
+ libcec_get_device_menu_language@Base 3.0.1
+ libcec_get_device_osd_name@Base 3.0.1
+ libcec_get_device_physical_address@Base 3.0.1
+ libcec_get_device_power_status@Base 3.0.1
+ libcec_get_device_vendor_id@Base 3.0.1
+ libcec_get_lib_info@Base 3.0.1
+ libcec_get_logical_addresses@Base 3.0.1
+ libcec_init_video_standalone@Base 3.0.1
+ libcec_initialise@Base 3.0.1
+ libcec_is_active_device@Base 3.0.1
+ libcec_is_active_device_type@Base 3.0.1
+ libcec_is_active_source@Base 3.0.1
+ libcec_is_libcec_active_source@Base 3.0.1
+ libcec_logical_address_to_string@Base 3.0.1
+ libcec_menu_state_to_string@Base 3.0.1
+ libcec_mute_audio@Base 3.0.1
+ libcec_opcode_to_string@Base 3.0.1
+ libcec_open@Base 3.0.1
+ libcec_persist_configuration@Base 3.0.1
+ libcec_ping_adapters@Base 3.0.1
+ libcec_poll_device@Base 3.0.1
+ libcec_power_on_devices@Base 3.0.1
+ libcec_power_status_to_string@Base 3.0.1
+ libcec_rescan_devices@Base 3.0.1
+ libcec_send_key_release@Base 3.0.1
+ libcec_send_keypress@Base 3.0.1
+ libcec_set_active_source@Base 3.0.1
+ libcec_set_configuration@Base 3.0.1
+ libcec_set_deck_control_mode@Base 3.0.1
+ libcec_set_deck_info@Base 3.0.1
+ libcec_set_hdmi_port@Base 3.0.1
+ libcec_set_inactive_view@Base 3.0.1
+ libcec_set_logical_address@Base 3.0.1
+ libcec_set_menu_state@Base 3.0.1
+ libcec_set_osd_string@Base 3.0.1
+ libcec_set_physical_address@Base 3.0.1
+ libcec_set_stream_path_logical@Base 3.0.1
+ libcec_set_stream_path_physical@Base 3.0.1
+ libcec_standby_devices@Base 3.0.1
+ libcec_start_bootloader@Base 3.0.1
+ libcec_switch_monitoring@Base 3.0.1
+ libcec_system_audio_status_to_string@Base 3.0.1
+ libcec_transmit@Base 3.0.1
+ libcec_user_control_key_to_string@Base 3.0.1
+ libcec_vendor_id_to_string@Base 3.0.1
+ libcec_version_to_string@Base 3.0.1
+ libcec_volume_down@Base 3.0.1
+ libcec_volume_up@Base 3.0.1
