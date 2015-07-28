@@ -1,8 +1,29 @@
-libcec (3.0.1+dfsg1-1) UNRELEASED; urgency=medium
+libcec (3.0.1+dfsg2-1) experimental; urgency=medium
 
-  * Imported Upstream version 3.0.1+dfsg1
+  * New Upstream version 3.0.1
   * Merge upstream packaging changes
   * Drop patches integrated upstream
+  * Add libcec-platform-dev as build dependency
+  * Use cec-platform
+  * Call cmake from debian/rules more conventionally
+  * Fix pkgconfig file install location
+  * Stop shipping libcec.a
+  * Fix missing space in debian/control
+  * Add misc:Depends to python-libcec dependencies
+  * Update debian/copyright with changed and excluded files
+  * Build depend on Debhelper 9
+  * Drop libcec meta package
+  * Fix library SONAME version
+  * Update symbols file
+  * Install CLI utilities in cec-utils and Python scripts in python-libcec
+  * Add shlibs:Depends and python:Depends to python-libcec dependencies
+  * Build depend on dh-python
+  * Extend extended description a bit
+  * Call debhelper with python2 in debian/rules
+  * Install Python client script as an example
+  * Add repack suffix to debian/watch
+  * Drop prebuilt windows binary from source
+  * Drop obsoleted Lintian override
 
  -- Balint Reczey <balint@balintreczey.hu>  Tue, 07 Jul 2015 16:17:34 -0700
 
