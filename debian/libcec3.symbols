@@ -684,7 +684,8 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC7CLibCEC11SetDeckInfoENS_13cec_deck_infoEb@Base 2.1.4
  _ZN3CEC7CLibCEC11SetHDMIPortENS_19cec_logical_addressEh@Base 2.1.4
  _ZN3CEC7CLibCEC12FindAdaptersEPNS_11cec_adapterEhPKc@Base 2.1.4
- _ZN3CEC7CLibCEC12PrintVersionEjPcm@Base 3.0.1
+ (optional)_ZN3CEC7CLibCEC12PrintVersionEjPcj@Base 3.0.1
+ (optional)_ZN3CEC7CLibCEC12PrintVersionEjPcm@Base 3.0.1
  _ZN3CEC7CLibCEC12SendKeypressENS_19cec_logical_addressENS_21cec_user_control_codeEb@Base 2.1.4
  _ZN3CEC7CLibCEC12SetMenuStateENS_14cec_menu_stateEb@Base 2.1.4
  _ZN3CEC7CLibCEC12SetOSDStringENS_19cec_logical_addressENS_19cec_display_controlEPKc@Base 2.1.4
@@ -771,6 +772,7 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC9CResponseD2Ev@Base 2.1.4
  _ZN8PLATFORM10CConditionIVbE25_PredicateCallbackDefaultEPv@Base 3.0.1
  _ZN8PLATFORM10CConditionIbE25_PredicateCallbackDefaultEPv@Base 3.0.1
+ (optional)_ZN8PLATFORM10SocketReadEiPiPvjy@Base 3.0.1
  (optional)_ZN8PLATFORM10SocketReadEiPiPvmm@Base 2.1.4
  _ZN8PLATFORM11CEDIDParser18GetPhysicalAddressEv@Base 2.1.4
  _ZN8PLATFORM11CLockObjectD1Ev@Base 2.1.4
@@ -930,17 +932,26 @@ libcec.so.3 libcec3 #MINVER#
  (optional)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EE17_M_initialize_mapEm@Base 2.1.4
  _ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EED1Ev@Base 2.1.4
  _ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EED2Ev@Base 2.1.4
- _ZNSt11_Deque_baseIPN3CEC13CCallbackWrapESaIS2_EE17_M_initialize_mapEm@Base 3.0.1
+ (optional)_ZNSt11_Deque_baseIPN3CEC13CCallbackWrapESaIS2_EE17_M_initialize_mapEj@Base 3.0.1
+ (optional)_ZNSt11_Deque_baseIPN3CEC13CCallbackWrapESaIS2_EE17_M_initialize_mapEm@Base 3.0.1
  (optional)_ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE17_M_initialize_mapEj@Base 2.1.4
  (optional)_ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE17_M_initialize_mapEm@Base 2.1.4
- _ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv@Base 3.0.1
- _ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv@Base 3.0.1
- _ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 3.0.1
- _ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 3.0.1
- _ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 3.0.1
- _ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.1
- _ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv@Base 3.0.1
- _ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@Base 3.0.1
+ (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 3.0.1
+ (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 3.0.1
+ (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 3.0.1
+ (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EED0Ev@Base 3.0.1
+ (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EED1Ev@Base 3.0.1
+ (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EED2Ev@Base 3.0.1
+ (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv@Base 3.0.1
+ (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv@Base 3.0.1
+ (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 3.0.1
+ (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 3.0.1
+ (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 3.0.1
+ (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.1
+ (optional)_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 3.0.1
+ (optional)_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE10_M_releaseEv@Base 3.0.1
+ (optional)_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv@Base 3.0.1
+ (optional)_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@Base 3.0.1
  _ZNSt5dequeIN3CEC11cec_commandESaIS1_EE16_M_push_back_auxIIRKS1_EEEvDpOT_@Base 3.0.1
  _ZNSt5dequeIN3CEC11cec_commandESaIS1_EE16_M_push_back_auxIJRKS1_EEEvDpOT_@Base 3.0.1
  _ZNSt5dequeIPN3CEC13CCallbackWrapESaIS2_EE16_M_push_back_auxIIRKS2_EEEvDpOT_@Base 3.0.1
@@ -962,10 +973,14 @@ libcec.so.3 libcec3 #MINVER#
  _ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EE19_M_emplace_back_auxIJRKS3_EEEvDpOT_@Base 3.0.1
  _ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EED1Ev@Base 3.0.1
  _ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EED2Ev@Base 3.0.1
- _ZNSt6vectorImSaImEE19_M_emplace_back_auxIIRKmEEEvDpOT_@Base 3.0.1
- _ZNSt6vectorImSaImEE19_M_emplace_back_auxIJRKmEEEvDpOT_@Base 3.0.1
+ (optional)_ZNSt6vectorImSaImEE19_M_emplace_back_auxIIRKmEEEvDpOT_@Base 3.0.1
+ (optional)_ZNSt6vectorImSaImEE19_M_emplace_back_auxIJRKmEEEvDpOT_@Base 3.0.1
+ (optional)_ZNSt6vectorIySaIyEE19_M_emplace_back_auxIIRKyEEEvDpOT_@Base 3.0.1
+ (optional)_ZNSt6vectorIySaIyEE19_M_emplace_back_auxIJRKyEEEvDpOT_@Base 3.0.1
  _ZNSt8_Rb_treeIN3CEC10cec_opcodeES1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE16_M_insert_uniqueIRKS1_EESt4pairISt17_Rb_tree_iteratorIS1_EbEOT_@Base 3.0.1
  _ZNSt8_Rb_treeIN3CEC10cec_opcodeES1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE8_M_eraseEPSt13_Rb_tree_nodeIS1_E@Base 2.1.4
+ (optional)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE22_M_emplace_hint_uniqueIIRKSt21piecewise_construct_tSt5tupleIIRS3_EESH_IIEEEEESt17_Rb_tree_iteratorIS6_ESt23_Rb_tree_const_iteratorIS6_EDpOT_@Base 3.0.1
+ (optional)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE22_M_emplace_hint_uniqueIJRKSt21piecewise_construct_tSt5tupleIJRS3_EESH_IJEEEEESt17_Rb_tree_iteratorIS6_ESt23_Rb_tree_const_iteratorIS6_EDpOT_@Base 3.0.1
  (optional)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE29_M_get_insert_hint_unique_posESt23_Rb_tree_const_iteratorIS6_ERS3_@Base 2.1.4
  _ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE8_M_eraseEPSt13_Rb_tree_nodeIS6_E@Base 2.1.4
  _ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_St6vectorINS0_11cec_commandESaIS5_EEESt10_Select1stIS8_ESt4lessIS1_ESaIS8_EE16_M_insert_uniqueIS2_IS1_S7_EEES2_ISt17_Rb_tree_iteratorIS8_EbEOT_@Base 3.0.1
@@ -975,9 +990,12 @@ libcec.so.3 libcec3 #MINVER#
  _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_St10shared_ptrINS0_10CCECClientEEESt10_Select1stIS7_ESt4lessIS1_ESaIS7_EE16_M_insert_uniqueIS2_IS1_S6_EEES2_ISt17_Rb_tree_iteratorIS7_EbEOT_@Base 3.0.1
  _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_St10shared_ptrINS0_10CCECClientEEESt10_Select1stIS7_ESt4lessIS1_ESaIS7_EE5eraseERS3_@Base 3.0.1
  _ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_St10shared_ptrINS0_10CCECClientEEESt10_Select1stIS7_ESt4lessIS1_ESaIS7_EE8_M_eraseEPSt13_Rb_tree_nodeIS7_E@Base 3.0.1
- _ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE16_M_insert_uniqueIS0_ImS4_EEES0_ISt17_Rb_tree_iteratorIS5_EbEOT_@Base 3.0.1
+ (optional)_ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE16_M_insert_uniqueIS0_ImS4_EEES0_ISt17_Rb_tree_iteratorIS5_EbEOT_@Base 3.0.1
  (optional)_ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE5eraseERS1_@Base 2.1.4
  (optional)_ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE8_M_eraseEPSt13_Rb_tree_nodeIS5_E@Base 2.1.4
+ (optional)_ZNSt8_Rb_treeIySt4pairIKyPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessIyESaIS5_EE16_M_insert_uniqueIS0_IyS4_EEES0_ISt17_Rb_tree_iteratorIS5_EbEOT_@Base 3.0.1
+ (optional)_ZNSt8_Rb_treeIySt4pairIKyPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessIyESaIS5_EE5eraseERS1_@Base 3.0.1
+ (optional)_ZNSt8_Rb_treeIySt4pairIKyPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessIyESaIS5_EE8_M_eraseEPSt13_Rb_tree_nodeIS5_E@Base 3.0.1
  _ZTIN3CEC10CCECClientE@Base 2.1.4
  _ZTIN3CEC11ICECAdapterE@Base 2.1.4
  _ZTIN3CEC13CCECBusDeviceE@Base 2.1.4
@@ -1026,9 +1044,13 @@ libcec.so.3 libcec3 #MINVER#
  _ZTIN8PLATFORM6CEventE@Base 2.1.4
  _ZTIN8PLATFORM7CThreadE@Base 2.1.4
  _ZTIN8PLATFORM7ISocketE@Base 2.1.4
- _ZTISt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
- _ZTISt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
- _ZTISt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ (optional)_ZTIN9__gnu_cxx7__mutexE@Base 3.0.1
+ (optional)_ZTISt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 3.0.1
+ (optional)_ZTISt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ (optional)_ZTISt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE@Base 3.0.1
+ (optional)_ZTISt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ (optional)_ZTISt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 3.0.1
+ (optional)_ZTISt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
  _ZTSN3CEC10CCECClientE@Base 2.1.4
  _ZTSN3CEC11ICECAdapterE@Base 2.1.4
  _ZTSN3CEC13CCECBusDeviceE@Base 2.1.4
@@ -1077,9 +1099,13 @@ libcec.so.3 libcec3 #MINVER#
  _ZTSN8PLATFORM6CEventE@Base 2.1.4
  _ZTSN8PLATFORM7CThreadE@Base 2.1.4
  _ZTSN8PLATFORM7ISocketE@Base 2.1.4
- _ZTSSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
- _ZTSSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
- _ZTSSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ (optional)_ZTSN9__gnu_cxx7__mutexE@Base 3.0.1
+ (optional)_ZTSSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 3.0.1
+ (optional)_ZTSSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ (optional)_ZTSSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE@Base 3.0.1
+ (optional)_ZTSSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ (optional)_ZTSSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 3.0.1
+ (optional)_ZTSSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
  _ZTVN3CEC10CCECClientE@Base 2.1.4
  (optional)_ZTVN3CEC11ICECAdapterE@Base 2.1.4
  _ZTVN3CEC13CCECBusDeviceE@Base 2.1.4
@@ -1127,8 +1153,10 @@ libcec.so.3 libcec3 #MINVER#
  _ZTVN8PLATFORM6CEventE@Base 2.1.4
  _ZTVN8PLATFORM7CThreadE@Base 2.1.4
  (optional)_ZTVN8PLATFORM7ISocketE@Base 2.1.4
- _ZTVSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
- _ZTVSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ (optional)_ZTVSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE@Base 3.0.1
+ (optional)_ZTVSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ (optional)_ZTVSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 3.0.1
+ (optional)_ZTVSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
  (optional)_ZThn128_N3CEC13CCECProcessor10HandlePollENS_19cec_logical_addressES1_@Base 2.1.4
  (optional)_ZThn128_N3CEC13CCECProcessor17OnCommandReceivedERKNS_11cec_commandE@Base 2.1.4
  (optional)_ZThn128_N3CEC13CCECProcessor19HandleReceiveFailedENS_19cec_logical_addressE@Base 2.1.4
@@ -1140,6 +1168,17 @@ libcec.so.3 libcec3 #MINVER#
  (optional)_ZThn16_N3CEC27CUSBCECAdapterCommunication7ProcessEv@Base 2.1.4
  (optional)_ZThn16_N3CEC27CUSBCECAdapterCommunicationD0Ev@Base 2.1.4
  (optional)_ZThn16_N3CEC27CUSBCECAdapterCommunicationD1Ev@Base 2.1.4
+ (optional)_ZThn8_N3CEC27CUSBCECAdapterCommunication7ProcessEv@Base 3.0.1
+ (optional)_ZThn8_N3CEC27CUSBCECAdapterCommunicationD0Ev@Base 3.0.1
+ (optional)_ZThn8_N3CEC27CUSBCECAdapterCommunicationD1Ev@Base 3.0.1
+ (optional)_ZThn96_N3CEC13CCECProcessor10HandlePollENS_19cec_logical_addressES1_@Base 3.0.1
+ (optional)_ZThn96_N3CEC13CCECProcessor17OnCommandReceivedERKNS_11cec_commandE@Base 3.0.1
+ (optional)_ZThn96_N3CEC13CCECProcessor19HandleReceiveFailedENS_19cec_logical_addressE@Base 3.0.1
+ (optional)_ZThn96_N3CEC13CCECProcessor24HandleLogicalAddressLostENS_19cec_logical_addressE@Base 3.0.1
+ (optional)_ZThn96_N3CEC13CCECProcessor28HandlePhysicalAddressChangedEt@Base 3.0.1
+ (optional)_ZThn96_N3CEC13CCECProcessorD0Ev@Base 3.0.1
+ (optional)_ZThn96_N3CEC13CCECProcessorD1Ev@Base 3.0.1
+ (optional)_ZThn96_NK3CEC13CCECProcessor6GetLibEv@Base 3.0.1
  _ZZN8PLATFORM26GetDetachedThreadAttributeEvE12g_threadAttr@Base 3.0.1
  _ZZN8PLATFORM26GetDetachedThreadAttributeEvE21bAttributeInitialised@Base 3.0.1
  _ZZN8PLATFORM26GetRecursiveMutexAttributeEvE11g_mutexAttr@Base 2.1.4
