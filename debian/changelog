@@ -1,6 +1,6 @@
-libcec (3.0.1+dfsg2-2) UNRELEASED; urgency=medium
+libcec (3.0.1+dfsg2-2) experimental; urgency=medium
 
-  *
+  * Update symbols file based on powerpc build
 
  -- Balint Reczey <balint@balintreczey.hu>  Sat, 01 Aug 2015 13:38:00 +0200
 
