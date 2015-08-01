@@ -770,7 +770,7 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC9CResponseC2ENS_10cec_opcodeE@Base 2.1.4
  _ZN3CEC9CResponseD1Ev@Base 2.1.4
  _ZN3CEC9CResponseD2Ev@Base 2.1.4
- _ZN8PLATFORM10CConditionIVbE25_PredicateCallbackDefaultEPv@Base 3.0.1
+ (optional)_ZN8PLATFORM10CConditionIVbE25_PredicateCallbackDefaultEPv@Base 3.0.1
  _ZN8PLATFORM10CConditionIbE25_PredicateCallbackDefaultEPv@Base 3.0.1
  (optional)_ZN8PLATFORM10SocketReadEiPiPvjy@Base 3.0.1
  (optional)_ZN8PLATFORM10SocketReadEiPiPvmm@Base 2.1.4
@@ -783,6 +783,7 @@ libcec.so.3 libcec3 #MINVER#
  _ZN8PLATFORM12SyncedBufferIN3CEC11cec_commandEED0Ev@Base 2.1.4
  _ZN8PLATFORM12SyncedBufferIN3CEC11cec_commandEED1Ev@Base 2.1.4
  _ZN8PLATFORM12SyncedBufferIN3CEC11cec_commandEED2Ev@Base 2.1.4
+ (optional)_ZN8PLATFORM12SyncedBufferIPN3CEC13CCallbackWrapEE4PushES3_@Base 3.0.1
  _ZN8PLATFORM12SyncedBufferIPN3CEC13CCallbackWrapEED0Ev@Base 3.0.1
  _ZN8PLATFORM12SyncedBufferIPN3CEC13CCallbackWrapEED1Ev@Base 3.0.1
  _ZN8PLATFORM12SyncedBufferIPN3CEC13CCallbackWrapEED2Ev@Base 3.0.1
