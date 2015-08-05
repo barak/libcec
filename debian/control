@@ -4,10 +4,11 @@ Priority: optional
 Maintainer: Sjoerd Simons <sjoerd@debian.org>
 Uploaders: Balint Reczey <balint@balintreczey.hu>
 Build-Depends: debhelper (>= 9),
+ g++ (>= 4:5.2),
  pkg-config,
  libudev-dev [linux-any],
  liblockdev1-dev,
- libcec-platform-dev (>= 1.0.10+dfsg1-3),
+ libcec-platform-dev (>= 1.0.10+dfsg1-5),
  python-dev,
  dh-python,
  cmake (>= 2.8.9),
