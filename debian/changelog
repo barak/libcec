@@ -1,8 +1,11 @@
-libcec (3.0.1+dfsg2-3) UNRELEASED; urgency=medium
+libcec (3.0.1+dfsg2-3) experimental; urgency=medium
 
-  *
+  * Add versioned build dependencies for the GCC 5 transition (Closes: #791103)
+  * Update symbols file with the GCC 5 transition changes
+  * Make build more deterministic
+  * Fix libdir in pkgconfig file
 
- -- Balint Reczey <balint@balintreczey.hu>  Wed, 05 Aug 2015 21:07:02 +0200
+ -- Balint Reczey <balint@balintreczey.hu>  Fri, 07 Aug 2015 00:07:02 +0200
 
 libcec (3.0.1+dfsg2-2) experimental; urgency=medium
 
