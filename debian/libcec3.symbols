@@ -937,6 +937,8 @@ libcec.so.3 libcec3 #MINVER#
  (optional)_ZNSt11_Deque_baseIPN3CEC13CCallbackWrapESaIS2_EE17_M_initialize_mapEm@Base 3.0.1
  (optional)_ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE17_M_initialize_mapEj@Base 2.1.4
  (optional)_ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE17_M_initialize_mapEm@Base 2.1.4
+ (optional)_ZNSt12__shared_ptrIN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EEC1ERKS4_@Base 3.0.1
+ (optional)_ZNSt12__shared_ptrIN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EEC2ERKS4_@Base 3.0.1
  _ZNSt15_Sp_counted_ptrIDnLN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv@Base 3.0.1
  (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 3.0.1
  (optional)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 3.0.1
@@ -1180,6 +1182,14 @@ libcec.so.3 libcec3 #MINVER#
  (optional)_ZThn96_N3CEC13CCECProcessorD0Ev@Base 3.0.1
  (optional)_ZThn96_N3CEC13CCECProcessorD1Ev@Base 3.0.1
  (optional)_ZThn96_NK3CEC13CCECProcessor6GetLibEv@Base 3.0.1
+ (optional)_ZThn92_N3CEC13CCECProcessor10HandlePollENS_19cec_logical_addressES1_@Base 3.0.1
+ (optional)_ZThn92_N3CEC13CCECProcessor17OnCommandReceivedERKNS_11cec_commandE@Base 3.0.1
+ (optional)_ZThn92_N3CEC13CCECProcessor19HandleReceiveFailedENS_19cec_logical_addressE@Base 3.0.1
+ (optional)_ZThn92_N3CEC13CCECProcessor24HandleLogicalAddressLostENS_19cec_logical_addressE@Base 3.0.1
+ (optional)_ZThn92_N3CEC13CCECProcessor28HandlePhysicalAddressChangedEt@Base 3.0.1
+ (optional)_ZThn92_N3CEC13CCECProcessorD0Ev@Base 3.0.1
+ (optional)_ZThn92_N3CEC13CCECProcessorD1Ev@Base 3.0.1
+ (optional)_ZThn92_NK3CEC13CCECProcessor6GetLibEv@Base 3.0.1
  _ZZN8PLATFORM26GetDetachedThreadAttributeEvE12g_threadAttr@Base 3.0.1
  _ZZN8PLATFORM26GetDetachedThreadAttributeEvE21bAttributeInitialised@Base 3.0.1
  _ZZN8PLATFORM26GetRecursiveMutexAttributeEvE11g_mutexAttr@Base 2.1.4
