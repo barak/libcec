@@ -1,6 +1,6 @@
-libcec (3.0.1+dfsg2-4) UNRELEASED; urgency=medium
+libcec (3.0.1+dfsg2-4) unstable; urgency=medium
 
-  *
+  * Update symbols based on armel build failure
 
  -- Balint Reczey <balint@balintreczey.hu>  Sun, 16 Aug 2015 21:06:33 +0200
 
