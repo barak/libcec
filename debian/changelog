@@ -1,6 +1,6 @@
-libcec (3.0.1+dfsg2-5) UNRELEASED; urgency=medium
+libcec (3.0.1+dfsg2-5) unstable; urgency=medium
 
-  *
+  * Fix crash on systems lacking /sys/class/drm (Closes: #798190)
 
  -- Balint Reczey <balint@balintreczey.hu>  Sun, 06 Sep 2015 19:11:37 +0200
 
