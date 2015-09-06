@@ -1,3 +1,4 @@
+0001-fixed-Crash-on-systems-without-sys-class-drm.patch
 01_use_cec-platform.patch
 02_proper_so_version.patch
 03_reproducible_build.patch
