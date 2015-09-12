@@ -1,3 +1,9 @@
+libcec (3.0.1+dfsg2-6) UNRELEASED; urgency=medium
+
+  *
+
+ -- Balint Reczey <balint@balintreczey.hu>  Sat, 12 Sep 2015 21:42:38 +0200
+
 libcec (3.0.1+dfsg2-5) unstable; urgency=medium
 
   * Fix crash on systems lacking /sys/class/drm (Closes: #798190)
