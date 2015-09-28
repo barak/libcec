@@ -1,3 +1,9 @@
+libcec (3.0.1+dfsg2-7) UNRELEASED; urgency=medium
+
+  *
+
+ -- Balint Reczey <balint@balintreczey.hu>  Mon, 28 Sep 2015 10:49:52 +0200
+
 libcec (3.0.1+dfsg2-6) unstable; urgency=medium
 
   * Fix SOVERSION handling in CEC clients (Closes: #798472)
