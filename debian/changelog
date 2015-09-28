@@ -1,6 +1,6 @@
-libcec (3.0.1+dfsg2-7) UNRELEASED; urgency=medium
+libcec (3.0.1+dfsg2-7) unstable; urgency=medium
 
-  *
+  * Stop using lockdev again (Closes: #728023)
 
  -- Balint Reczey <balint@balintreczey.hu>  Mon, 28 Sep 2015 10:49:52 +0200
 
