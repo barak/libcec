@@ -1,3 +1,9 @@
+libcec (3.0.1+dfsg2-9) UNRELEASED; urgency=medium
+
+  *
+
+ -- Balint Reczey <balint@balintreczey.hu>  Sat, 28 Nov 2015 08:57:33 +0100
+
 libcec (3.0.1+dfsg2-8) unstable; urgency=medium
 
   * Handle transition from libcec3v4 to libcec3
