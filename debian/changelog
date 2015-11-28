@@ -1,6 +1,6 @@
-libcec (3.0.1+dfsg2-9) UNRELEASED; urgency=medium
+libcec (3.0.1+dfsg2-9) unstable; urgency=medium
 
-  *
+  * Cherry-pick patch from upstream for locking with flock()
 
  -- Balint Reczey <balint@balintreczey.hu>  Sat, 28 Nov 2015 08:57:33 +0100
 
