@@ -46,8 +46,8 @@
 #include "implementations/AQCommandHandler.h"
 #include "LibCEC.h"
 #include "CECTypeUtils.h"
-#include "platform/util/timeutils.h"
-#include "platform/util/util.h"
+#include <p8-platform/util/timeutils.h>
+#include <p8-platform/util/util.h>
 
 #include "CECAudioSystem.h"
 #include "CECPlaybackDevice.h"
@@ -56,7 +56,7 @@
 #include "CECTV.h"
 
 using namespace CEC;
-using namespace PLATFORM;
+using namespace P8PLATFORM;
 
 #define LIB_CEC     m_processor->GetLib()
 #define ToString(p) CCECTypeUtils::ToString(p)
@@ -92,7 +92,7 @@ CWaitForResponse::~CWaitForResponse(void)
 
 void CWaitForResponse::Clear()
 {
-  PLATFORM::CLockObject lock(m_mutex);
+  P8PLATFORM::CLockObject lock(m_mutex);
   for (std::map<cec_opcode, CResponse*>::iterator it = m_waitingFor.begin(); it != m_waitingFor.end(); it++)
   {
     it->second->Broadcast();
@@ -118,7 +118,7 @@ CResponse* CWaitForResponse::GetEvent(cec_opcode opcode)
 {
   CResponse *retVal(NULL);
   {
-    PLATFORM::CLockObject lock(m_mutex);
+    P8PLATFORM::CLockObject lock(m_mutex);
     std::map<cec_opcode, CResponse*>::iterator it = m_waitingFor.find(opcode);
     if (it != m_waitingFor.end())
     {
@@ -219,6 +219,7 @@ bool CCECBusDevice::ReplaceHandler(bool bActivateSource /* = true */)
           m_handler = new CRHCommandHandler(this, iTransmitTimeout, iTransmitWait, iTransmitRetries, iActiveSourcePending);
           break;
         case CEC_VENDOR_SHARP:
+        case CEC_VENDOR_SHARP2:
           m_handler = new CAQCommandHandler(this, iTransmitTimeout, iTransmitWait, iTransmitRetries, iActiveSourcePending);
           break;
         default:
@@ -226,6 +227,7 @@ bool CCECBusDevice::ReplaceHandler(bool bActivateSource /* = true */)
           break;
         }
 
+        /** override the vendor ID set in the handler, as a single vendor may have multiple IDs */
         m_handler->SetVendorId(m_vendor);
         bInitHandler = true;
       }
