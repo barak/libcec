@@ -1,3 +1,9 @@
+libcec (3.1.0+dfsg1-1) UNRELEASED; urgency=medium
+
+  * New upstream version 3.1.0
+
+ -- Balint Reczey <balint@balintreczey.hu>  Mon, 22 Feb 2016 22:11:33 +0100
+
 libcec (3.0.1+dfsg2-9) unstable; urgency=medium
 
   * Cherry-pick patch from upstream for locking with flock()
