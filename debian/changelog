@@ -1,8 +1,11 @@
-libcec (3.1.0+dfsg1-1) UNRELEASED; urgency=medium
+libcec (3.1.0+dfsg1-1) unstable; urgency=medium
 
   * New upstream version 3.1.0
+  * Refresh patches including dropping patches integrated upstream
+  * Use (cec-)platform libraries under the new p8-platform name
+  * Update symbols file using pkgkde-symbolshelper (Closes: #811979)
 
- -- Balint Reczey <balint@balintreczey.hu>  Mon, 22 Feb 2016 22:11:33 +0100
+ -- Balint Reczey <balint@balintreczey.hu>  Wed, 24 Feb 2016 11:11:33 +0100
 
 libcec (3.0.1+dfsg2-9) unstable; urgency=medium
 
