@@ -1,9 +1,11 @@
-# SymbolsHelper-Confirmed: 3.1.0 amd64 arm64 armhf i386 powerpc
+# SymbolsHelper-Confirmed: 3.1.0 amd64 arm64 armel armhf i386 m68k mips mips64el mipsel powerpc ppc64el s390x
 libcec.so.3 libcec3 #MINVER#
  CECDestroy@Base 2.1.4
  CECInitialise@Base 2.1.4
  CECStartBootloader@Base 2.1.4
+ (arch=m68k mips64el)_Z11FindComPortRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE@Base 3.1.0
  _Z15ADL_AllocMemoryi@Base 2.1.4
+ (arch=m68k mips64el)_Z16TranslateComPortRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE@Base 3.1.0
  _Z24libcec_set_configurationPN3CEC11ICECAdapterEPNS_20libcec_configurationE@Base 3.0.1
  _Z7CECInitPKcN3CEC20cec_device_type_listE@Base 2.1.4
  (optional=templinst)_ZN10P8PLATFORM10CConditionIVbE25_PredicateCallbackDefaultEPv@Base 3.1.0
@@ -31,13 +33,13 @@ libcec.so.3 libcec3 #MINVER#
  _ZN10P8PLATFORM13CNVEdidParserD1Ev@Base 3.1.0
  _ZN10P8PLATFORM13CNVEdidParserD2Ev@Base 3.1.0
  _ZN10P8PLATFORM13CSerialSocket11SetBaudRateEj@Base 3.1.0
- (arch=amd64)_ZN10P8PLATFORM13CSerialSocket4OpenEm@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN10P8PLATFORM13CSerialSocket4OpenEy@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN10P8PLATFORM13CSerialSocket4ReadEPvjy@Base 3.1.0
- (arch=amd64)_ZN10P8PLATFORM13CSerialSocket4ReadEPvmm@Base 3.1.0
+ (arch-bits=64)_ZN10P8PLATFORM13CSerialSocket4OpenEm@Base 3.1.0
+ (arch-bits=32)_ZN10P8PLATFORM13CSerialSocket4OpenEy@Base 3.1.0
+ (arch-bits=32)_ZN10P8PLATFORM13CSerialSocket4ReadEPvjy@Base 3.1.0
+ (arch-bits=64)_ZN10P8PLATFORM13CSerialSocket4ReadEPvmm@Base 3.1.0
  _ZN10P8PLATFORM13CSerialSocket5CloseEv@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN10P8PLATFORM13CSerialSocket5WriteEPvj@Base 3.1.0
- (arch=amd64)_ZN10P8PLATFORM13CSerialSocket5WriteEPvm@Base 3.1.0
+ (arch-bits=32)_ZN10P8PLATFORM13CSerialSocket5WriteEPvj@Base 3.1.0
+ (arch-bits=64)_ZN10P8PLATFORM13CSerialSocket5WriteEPvm@Base 3.1.0
  _ZN10P8PLATFORM13CSerialSocket6IsOpenEv@Base 3.1.0
  _ZN10P8PLATFORM13CSerialSocket8ShutdownEv@Base 3.1.0
  _ZN10P8PLATFORM13CSerialSocketD0Ev@Base 3.1.0
@@ -59,13 +61,13 @@ libcec.so.3 libcec3 #MINVER#
  _ZN10P8PLATFORM14CConditionImplD1Ev@Base 3.1.0
  _ZN10P8PLATFORM14CConditionImplD2Ev@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE14GetErrorNumberEv@Base 3.1.0
- (arch=amd64)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE4OpenEm@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE4OpenEy@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE4ReadEPvjy@Base 3.1.0
- (arch=amd64)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE4ReadEPvmm@Base 3.1.0
+ (arch-bits=64)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE4OpenEm@Base 3.1.0
+ (arch-bits=32)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE4OpenEy@Base 3.1.0
+ (arch-bits=32)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE4ReadEPvjy@Base 3.1.0
+ (arch-bits=64)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE4ReadEPvmm@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE5CloseEv@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE5WriteEPvj@Base 3.1.0
- (arch=amd64)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE5WriteEPvm@Base 3.1.0
+ (arch-bits=32)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE5WriteEPvj@Base 3.1.0
+ (arch-bits=64)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE5WriteEPvm@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE6IsBusyEv@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE6IsIdleEv@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE6IsOpenEv@Base 3.1.0
@@ -205,8 +207,8 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC13CCECBusDevice10HandlePollENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC13CCECBusDevice10SetOSDNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE@Base 3.0.1
  _ZN3CEC13CCECBusDevice11GetVendorIdENS_19cec_logical_addressEb@Base 2.1.4
- (arch=amd64)_ZN3CEC13CCECBusDevice11SetVendorIdEm@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC13CCECBusDevice11SetVendorIdEy@Base 3.1.0
+ (arch-bits=64)_ZN3CEC13CCECBusDevice11SetVendorIdEm@Base 3.1.0
+ (arch-bits=32)_ZN3CEC13CCECBusDevice11SetVendorIdEy@Base 3.1.0
  _ZN3CEC13CCECBusDevice12GetMenuStateENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC13CCECBusDevice12SetMenuStateENS_14cec_menu_stateE@Base 2.1.4
  _ZN3CEC13CCECBusDevice12SignalOpcodeENS_10cec_opcodeE@Base 2.1.4
@@ -219,8 +221,8 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC13CCECBusDevice13SetCecVersionENS_11cec_versionE@Base 2.1.4
  _ZN3CEC13CCECBusDevice13SetStreamPathEtt@Base 2.1.4
  _ZN3CEC13CCECBusDevice13WaitForOpcodeENS_10cec_opcodeE@Base 2.1.4
- (arch=amd64)_ZN3CEC13CCECBusDevice14ActivateSourceEm@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC13CCECBusDevice14ActivateSourceEy@Base 3.1.0
+ (arch-bits=64)_ZN3CEC13CCECBusDevice14ActivateSourceEm@Base 3.1.0
+ (arch-bits=32)_ZN3CEC13CCECBusDevice14ActivateSourceEy@Base 3.1.0
  _ZN3CEC13CCECBusDevice14GetPowerStatusENS_19cec_logical_addressEb@Base 2.1.4
  _ZN3CEC13CCECBusDevice14HandlePollFromENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC13CCECBusDevice14ReplaceHandlerEb@Base 2.1.4
@@ -414,18 +416,18 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC17CANCommandHandler28HandleVendorRemoteButtonDownERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC17CANCommandHandler31HandleDeviceVendorCommandWithIdERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC17CANCommandHandler7PowerOnENS_19cec_logical_addressES1_@Base 2.1.4
- (arch=amd64)_ZN3CEC17CANCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CANCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
- (arch=amd64)_ZN3CEC17CANCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CANCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CANCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CANCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CANCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CANCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
  _ZN3CEC17CANCommandHandlerD0Ev@Base 2.1.4
  _ZN3CEC17CANCommandHandlerD1Ev@Base 2.1.4
  _ZN3CEC17CANCommandHandlerD2Ev@Base 2.1.4
  _ZN3CEC17CAQCommandHandler7PowerOnENS_19cec_logical_addressES1_@Base 2.1.4
- (arch=amd64)_ZN3CEC17CAQCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CAQCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
- (arch=amd64)_ZN3CEC17CAQCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CAQCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CAQCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CAQCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CAQCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CAQCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
  _ZN3CEC17CAQCommandHandlerD0Ev@Base 2.1.4
  _ZN3CEC17CAQCommandHandlerD1Ev@Base 2.1.4
  _ZN3CEC17CAQCommandHandlerD2Ev@Base 2.1.4
@@ -435,32 +437,32 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC17CImageViewOnCheckD2Ev@Base 2.1.4
  _ZN3CEC17CPHCommandHandler11InitHandlerEv@Base 2.1.4
  _ZN3CEC17CPHCommandHandler14ActivateSourceEb@Base 2.1.4
- (arch=amd64)_ZN3CEC17CPHCommandHandler16TransmitVendorIDENS_19cec_logical_addressES1_mb@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CPHCommandHandler16TransmitVendorIDENS_19cec_logical_addressES1_yb@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CPHCommandHandler16TransmitVendorIDENS_19cec_logical_addressES1_mb@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CPHCommandHandler16TransmitVendorIDENS_19cec_logical_addressES1_yb@Base 3.1.0
  _ZN3CEC17CPHCommandHandler20HandleDeviceVendorIdERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC17CPHCommandHandler24HandleUserControlPressedERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC17CPHCommandHandler24HandleUserControlReleaseERKNS_11cec_commandE@Base 2.1.4
- (arch=amd64)_ZN3CEC17CPHCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CPHCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
- (arch=amd64)_ZN3CEC17CPHCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CPHCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CPHCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CPHCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CPHCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CPHCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
  _ZN3CEC17CPHCommandHandlerD0Ev@Base 2.1.4
  _ZN3CEC17CPHCommandHandlerD1Ev@Base 2.1.4
  _ZN3CEC17CPHCommandHandlerD2Ev@Base 2.1.4
  _ZN3CEC17CRHCommandHandler31HandleDeviceVendorCommandWithIdERKNS_11cec_commandE@Base 2.1.4
- (arch=amd64)_ZN3CEC17CRHCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CRHCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
- (arch=amd64)_ZN3CEC17CRHCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CRHCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CRHCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CRHCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CRHCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CRHCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
  _ZN3CEC17CRHCommandHandlerD0Ev@Base 2.1.4
  _ZN3CEC17CRHCommandHandlerD1Ev@Base 2.1.4
  _ZN3CEC17CRHCommandHandlerD2Ev@Base 2.1.4
  _ZN3CEC17CRLCommandHandler11InitHandlerEv@Base 2.1.4
  _ZN3CEC17CRLCommandHandler31HandleDeviceVendorCommandWithIdERKNS_11cec_commandE@Base 2.1.4
- (arch=amd64)_ZN3CEC17CRLCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CRLCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
- (arch=amd64)_ZN3CEC17CRLCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CRLCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CRLCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CRLCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CRLCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CRLCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
  _ZN3CEC17CRLCommandHandlerD0Ev@Base 2.1.4
  _ZN3CEC17CRLCommandHandlerD1Ev@Base 2.1.4
  _ZN3CEC17CRLCommandHandlerD2Ev@Base 2.1.4
@@ -483,10 +485,10 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC17CSLCommandHandler32HandleVendorCommandPowerOnStatusERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC17CSLCommandHandler34TransmitVendorCommandSetDeviceModeENS_19cec_logical_addressES1_NS_15cec_device_typeE@Base 2.1.4
  _ZN3CEC17CSLCommandHandler7PowerOnENS_19cec_logical_addressES1_@Base 2.1.4
- (arch=amd64)_ZN3CEC17CSLCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CSLCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
- (arch=amd64)_ZN3CEC17CSLCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CSLCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CSLCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CSLCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CSLCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CSLCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
  _ZN3CEC17CSLCommandHandlerD0Ev@Base 2.1.4
  _ZN3CEC17CSLCommandHandlerD1Ev@Base 2.1.4
  _ZN3CEC17CSLCommandHandlerD2Ev@Base 2.1.4
@@ -500,10 +502,10 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC17CVLCommandHandler28HandleSystemAudioModeRequestERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC17CVLCommandHandler29SendVendorCommandCapabilitiesENS_19cec_logical_addressES1_@Base 2.1.4
  _ZN3CEC17CVLCommandHandler31HandleDeviceVendorCommandWithIdERKNS_11cec_commandE@Base 2.1.4
- (arch=amd64)_ZN3CEC17CVLCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CVLCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
- (arch=amd64)_ZN3CEC17CVLCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC17CVLCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CVLCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CVLCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC17CVLCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC17CVLCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
  _ZN3CEC17CVLCommandHandlerD0Ev@Base 2.1.4
  _ZN3CEC17CVLCommandHandlerD1Ev@Base 2.1.4
  _ZN3CEC17CVLCommandHandlerD2Ev@Base 2.1.4
@@ -538,8 +540,8 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC18CCECCommandHandler16HandleSetOSDNameERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC18CCECCommandHandler16HandleTextViewOnERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC18CCECCommandHandler16TransmitKeypressENS_19cec_logical_addressES1_NS_21cec_user_control_codeEb@Base 2.1.4
- (arch=amd64)_ZN3CEC18CCECCommandHandler16TransmitVendorIDENS_19cec_logical_addressES1_mb@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC18CCECCommandHandler16TransmitVendorIDENS_19cec_logical_addressES1_yb@Base 3.1.0
+ (arch-bits=64)_ZN3CEC18CCECCommandHandler16TransmitVendorIDENS_19cec_logical_addressES1_mb@Base 3.1.0
+ (arch-bits=32)_ZN3CEC18CCECCommandHandler16TransmitVendorIDENS_19cec_logical_addressES1_yb@Base 3.1.0
  _ZN3CEC18CCECCommandHandler16UnhandledCommandERKNS_11cec_commandENS_16cec_abort_reasonE@Base 2.1.4
  _ZN3CEC18CCECCommandHandler17HandleDeckControlERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC18CCECCommandHandler17HandleGiveOSDNameERKNS_11cec_commandE@Base 2.1.4
@@ -569,8 +571,8 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC18CCECCommandHandler21TransmitSetStreamPathEtb@Base 2.1.4
  _ZN3CEC18CCECCommandHandler22HandleDeviceCecVersionERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC18CCECCommandHandler22HandleGiveMenuLanguageERKNS_11cec_commandE@Base 2.1.4
- (arch=amd64)_ZN3CEC18CCECCommandHandler22ScheduleActivateSourceEm@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC18CCECCommandHandler22ScheduleActivateSourceEy@Base 3.1.0
+ (arch-bits=64)_ZN3CEC18CCECCommandHandler22ScheduleActivateSourceEm@Base 3.1.0
+ (arch-bits=32)_ZN3CEC18CCECCommandHandler22ScheduleActivateSourceEy@Base 3.1.0
  _ZN3CEC18CCECCommandHandler22TransmitInactiveSourceENS_19cec_logical_addressEt@Base 2.1.4
  _ZN3CEC18CCECCommandHandler22TransmitRequestOSDNameENS_19cec_logical_addressES1_b@Base 2.1.4
  _ZN3CEC18CCECCommandHandler23HandleReportAudioStatusERKNS_11cec_commandE@Base 2.1.4
@@ -605,10 +607,10 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC18CCECCommandHandler31HandleGiveSystemAudioModeStatusERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC18CCECCommandHandler7PowerOnENS_19cec_logical_addressES1_@Base 2.1.4
  _ZN3CEC18CCECCommandHandler8TransmitERNS_11cec_commandEbb@Base 2.1.4
- (arch=amd64)_ZN3CEC18CCECCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC18CCECCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
- (arch=amd64)_ZN3CEC18CCECCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
- (arch=armhf i386 powerpc)_ZN3CEC18CCECCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC18CCECCommandHandlerC1EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC18CCECCommandHandlerC1EPNS_13CCECBusDeviceEiiax@Base 3.1.0
+ (arch-bits=64)_ZN3CEC18CCECCommandHandlerC2EPNS_13CCECBusDeviceEiial@Base 3.1.0
+ (arch-bits=32)_ZN3CEC18CCECCommandHandlerC2EPNS_13CCECBusDeviceEiiax@Base 3.1.0
  _ZN3CEC18CCECCommandHandlerD0Ev@Base 2.1.4
  _ZN3CEC18CCECCommandHandlerD1Ev@Base 2.1.4
  _ZN3CEC18CCECCommandHandlerD2Ev@Base 2.1.4
@@ -675,8 +677,8 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC23CCECAdapterMessageQueue24ProvidesExtendedResponseEv@Base 2.1.4
  _ZN3CEC23CCECAdapterMessageQueue5ClearEv@Base 2.1.4
  _ZN3CEC23CCECAdapterMessageQueue5WriteEPNS_18CCECAdapterMessageE@Base 2.1.4
- (arch=armhf i386 powerpc)_ZN3CEC23CCECAdapterMessageQueue7AddDataEPhj@Base 3.1.0
- (arch=amd64)_ZN3CEC23CCECAdapterMessageQueue7AddDataEPhm@Base 3.1.0
+ (arch-bits=32)_ZN3CEC23CCECAdapterMessageQueue7AddDataEPhj@Base 3.1.0
+ (arch-bits=64)_ZN3CEC23CCECAdapterMessageQueue7AddDataEPhm@Base 3.1.0
  _ZN3CEC23CCECAdapterMessageQueue7ProcessEv@Base 2.1.4
  _ZN3CEC23CCECAdapterMessageQueueC1EPNS_27CUSBCECAdapterCommunicationE@Base 2.1.4
  _ZN3CEC23CCECAdapterMessageQueueC2EPNS_27CUSBCECAdapterCommunicationE@Base 2.1.4
@@ -711,8 +713,8 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC27CUSBCECAdapterCommunication13MarkAsWaitingENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC27CUSBCECAdapterCommunication13WriteToDeviceEPNS_18CCECAdapterMessageE@Base 2.1.4
  _ZN3CEC27CUSBCECAdapterCommunication14GetAdapterTypeEv@Base 2.1.4
- (arch=armhf i386 powerpc)_ZN3CEC27CUSBCECAdapterCommunication14ReadFromDeviceEjj@Base 3.1.0
- (arch=amd64)_ZN3CEC27CUSBCECAdapterCommunication14ReadFromDeviceEjm@Base 3.1.0
+ (arch-bits=32)_ZN3CEC27CUSBCECAdapterCommunication14ReadFromDeviceEjj@Base 3.1.0
+ (arch-bits=64)_ZN3CEC27CUSBCECAdapterCommunication14ReadFromDeviceEjm@Base 3.1.0
  _ZN3CEC27CUSBCECAdapterCommunication14SetInitialisedEb@Base 2.1.4
  _ZN3CEC27CUSBCECAdapterCommunication14SetLineTimeoutEh@Base 2.1.4
  _ZN3CEC27CUSBCECAdapterCommunication15ClearInputBytesEj@Base 2.1.4
@@ -773,8 +775,8 @@ libcec.so.3 libcec3 #MINVER#
  _ZN3CEC7CLibCEC11SetDeckInfoENS_13cec_deck_infoEb@Base 2.1.4
  _ZN3CEC7CLibCEC11SetHDMIPortENS_19cec_logical_addressEh@Base 2.1.4
  _ZN3CEC7CLibCEC12FindAdaptersEPNS_11cec_adapterEhPKc@Base 2.1.4
- (arch=armhf i386 powerpc)_ZN3CEC7CLibCEC12PrintVersionEjPcj@Base 3.1.0
- (arch=amd64)_ZN3CEC7CLibCEC12PrintVersionEjPcm@Base 3.1.0
+ (arch-bits=32)_ZN3CEC7CLibCEC12PrintVersionEjPcj@Base 3.1.0
+ (arch-bits=64)_ZN3CEC7CLibCEC12PrintVersionEjPcm@Base 3.1.0
  _ZN3CEC7CLibCEC12SendKeypressENS_19cec_logical_addressENS_21cec_user_control_codeEb@Base 2.1.4
  _ZN3CEC7CLibCEC12SetMenuStateENS_14cec_menu_stateEb@Base 2.1.4
  _ZN3CEC7CLibCEC12SetOSDStringENS_19cec_logical_addressENS_19cec_display_controlEPKc@Base 2.1.4
@@ -924,25 +926,36 @@ libcec.so.3 libcec3 #MINVER#
  _ZNK3CEC28CCECAdapterMessageQueueEntry8ToStringEv@Base 2.1.4
  _ZNK3CEC7CLibCEC18GetAdapterVendorIdEv@Base 2.1.4
  _ZNK3CEC7CLibCEC19GetAdapterProductIdEv@Base 2.1.4
- (arch=armhf i386 powerpc)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EE17_M_initialize_mapEj@Base 3.1.0
- (arch=amd64)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EE17_M_initialize_mapEm@Base 3.1.0
+ (arch-bits=32)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EE17_M_initialize_mapEj@Base 3.1.0
+ (arch-bits=64)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EE17_M_initialize_mapEm@Base 3.1.0
  (optional=templinst)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EED1Ev@Base 2.1.4
  (optional=templinst)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EED2Ev@Base 2.1.4
- (arch=armhf i386 powerpc)_ZNSt11_Deque_baseIPN3CEC13CCallbackWrapESaIS2_EE17_M_initialize_mapEj@Base 3.1.0
- (arch=amd64)_ZNSt11_Deque_baseIPN3CEC13CCallbackWrapESaIS2_EE17_M_initialize_mapEm@Base 3.1.0
- (arch=armhf i386 powerpc)_ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE17_M_initialize_mapEj@Base 3.1.0
- (arch=amd64)_ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE17_M_initialize_mapEm@Base 3.1.0
- (optional=templinst|arch=armhf)_ZNSt12__shared_ptrIN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EEC1ERKS4_@Base 3.1.0
- (optional=templinst|arch=armhf)_ZNSt12__shared_ptrIN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EEC2ERKS4_@Base 3.1.0
- (optional=templinst)_ZNSt15_Sp_counted_ptrIDnLN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv@Base 3.0.1
- (optional=templinst)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv@Base 3.0.1
- (optional=templinst)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv@Base 3.0.1
- (optional=templinst)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 3.0.1
- (optional=templinst)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 3.0.1
- (optional=templinst)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 3.0.1
- (optional=templinst)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.1
- (optional=templinst)_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv@Base 3.0.1
- (optional=templinst)_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@Base 3.0.1
+ (arch-bits=32)_ZNSt11_Deque_baseIPN3CEC13CCallbackWrapESaIS2_EE17_M_initialize_mapEj@Base 3.1.0
+ (arch-bits=64)_ZNSt11_Deque_baseIPN3CEC13CCallbackWrapESaIS2_EE17_M_initialize_mapEm@Base 3.1.0
+ (arch-bits=32)_ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE17_M_initialize_mapEj@Base 3.1.0
+ (arch-bits=64)_ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE17_M_initialize_mapEm@Base 3.1.0
+ (optional=templinst|arch=armel)_ZNSt12__shared_ptrIN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EEC1ERKS4_@Base 3.1.0
+ (optional=templinst|arch=armel)_ZNSt12__shared_ptrIN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EEC2ERKS4_@Base 3.1.0
+ (optional=templinst|arch=armhf m68k mips mips64el mipsel ppc64el)_ZNSt12__shared_ptrIN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EEC1ERKS4_@Base 3.1.0
+ (optional=templinst|arch=armhf m68k mips mips64el mipsel ppc64el)_ZNSt12__shared_ptrIN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EEC2ERKS4_@Base 3.1.0
+ (optional=templinst|arch=armel)_ZNSt15_Sp_counted_ptrIDnLN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 3.1.0
+ (optional=templinst|arch=!armel)_ZNSt15_Sp_counted_ptrIDnLN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv@Base 3.0.1
+ (optional=templinst|arch=armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 3.1.0
+ (optional=templinst|arch=armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 3.1.0
+ (optional=templinst|arch=armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE14_M_get_deleterERKSt9type_info@Base 3.1.0
+ (optional=templinst|arch=armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EED0Ev@Base 3.1.0
+ (optional=templinst|arch=armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EED1Ev@Base 3.1.0
+ (optional=templinst|arch=armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EED2Ev@Base 3.1.0
+ (optional=templinst|arch=!armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv@Base 3.0.1
+ (optional=templinst|arch=!armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv@Base 3.0.1
+ (optional=templinst|arch=!armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE14_M_get_deleterERKSt9type_info@Base 3.0.1
+ (optional=templinst|arch=!armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED0Ev@Base 3.0.1
+ (optional=templinst|arch=!armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED1Ev@Base 3.0.1
+ (optional=templinst|arch=!armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EED2Ev@Base 3.0.1
+ (optional=templinst|arch=armel)_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 3.1.0
+ (optional=templinst|arch=armel)_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE10_M_releaseEv@Base 3.1.0
+ (optional=templinst|arch=!armel)_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_destroyEv@Base 3.0.1
+ (optional=templinst|arch=!armel)_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@Base 3.0.1
  (optional=templinst)_ZNSt5dequeIN3CEC11cec_commandESaIS1_EE16_M_push_back_auxIIRKS1_EEEvDpOT_@Base 3.0.1
  (optional=templinst)_ZNSt5dequeIN3CEC11cec_commandESaIS1_EE16_M_push_back_auxIJRKS1_EEEvDpOT_@Base 3.0.1
  (optional=templinst)_ZNSt5dequeIPN3CEC13CCallbackWrapESaIS2_EE16_M_push_back_auxIIRKS2_EEEvDpOT_@Base 3.0.1
@@ -964,15 +977,15 @@ libcec.so.3 libcec3 #MINVER#
  (optional=templinst)_ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EE19_M_emplace_back_auxIJRKS3_EEEvDpOT_@Base 3.0.1
  (optional=templinst)_ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EED1Ev@Base 3.0.1
  (optional=templinst)_ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EED2Ev@Base 3.0.1
- (arch=amd64)_ZNSt6vectorImSaImEE19_M_emplace_back_auxIIRKmEEEvDpOT_@Base 3.1.0
- (arch=amd64)_ZNSt6vectorImSaImEE19_M_emplace_back_auxIJRKmEEEvDpOT_@Base 3.1.0
- (arch=armhf i386 powerpc)_ZNSt6vectorIySaIyEE19_M_emplace_back_auxIIRKyEEEvDpOT_@Base 3.1.0
- (arch=armhf i386 powerpc)_ZNSt6vectorIySaIyEE19_M_emplace_back_auxIJRKyEEEvDpOT_@Base 3.1.0
+ (arch-bits=64)_ZNSt6vectorImSaImEE19_M_emplace_back_auxIIRKmEEEvDpOT_@Base 3.1.0
+ (arch-bits=64)_ZNSt6vectorImSaImEE19_M_emplace_back_auxIJRKmEEEvDpOT_@Base 3.1.0
+ (arch-bits=32)_ZNSt6vectorIySaIyEE19_M_emplace_back_auxIIRKyEEEvDpOT_@Base 3.1.0
+ (arch-bits=32)_ZNSt6vectorIySaIyEE19_M_emplace_back_auxIJRKyEEEvDpOT_@Base 3.1.0
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeES1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE16_M_insert_uniqueIRKS1_EESt4pairISt17_Rb_tree_iteratorIS1_EbEOT_@Base 3.0.1
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeES1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE8_M_eraseEPSt13_Rb_tree_nodeIS1_E@Base 2.1.4
- (optional=templinst|arch=armhf i386 powerpc)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE22_M_emplace_hint_uniqueIIRKSt21piecewise_construct_tSt5tupleIIRS3_EESH_IIEEEEESt17_Rb_tree_iteratorIS6_ESt23_Rb_tree_const_iteratorIS6_EDpOT_@Base 3.1.0
- (optional=templinst|arch=armhf i386 powerpc)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE22_M_emplace_hint_uniqueIJRKSt21piecewise_construct_tSt5tupleIJRS3_EESH_IJEEEEESt17_Rb_tree_iteratorIS6_ESt23_Rb_tree_const_iteratorIS6_EDpOT_@Base 3.1.0
- (optional=templinst|arch=amd64 arm64)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE29_M_get_insert_hint_unique_posESt23_Rb_tree_const_iteratorIS6_ERS3_@Base 3.0.1
+ (optional=templinst|arch=armel armhf i386 mips mipsel powerpc s390x)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE22_M_emplace_hint_uniqueIIRKSt21piecewise_construct_tSt5tupleIIRS3_EESH_IIEEEEESt17_Rb_tree_iteratorIS6_ESt23_Rb_tree_const_iteratorIS6_EDpOT_@Base 3.1.0
+ (optional=templinst|arch=armel armhf i386 mips mipsel powerpc s390x)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE22_M_emplace_hint_uniqueIJRKSt21piecewise_construct_tSt5tupleIJRS3_EESH_IJEEEEESt17_Rb_tree_iteratorIS6_ESt23_Rb_tree_const_iteratorIS6_EDpOT_@Base 3.1.0
+ (optional=templinst|arch=amd64 arm64 m68k mips64el ppc64el)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE29_M_get_insert_hint_unique_posESt23_Rb_tree_const_iteratorIS6_ERS3_@Base 3.0.1
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE8_M_eraseEPSt13_Rb_tree_nodeIS6_E@Base 2.1.4
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_St6vectorINS0_11cec_commandESaIS5_EEESt10_Select1stIS8_ESt4lessIS1_ESaIS8_EE16_M_insert_uniqueIS2_IS1_S7_EEES2_ISt17_Rb_tree_iteratorIS8_EbEOT_@Base 3.0.1
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_St6vectorINS0_11cec_commandESaIS5_EEESt10_Select1stIS8_ESt4lessIS1_ESaIS8_EE8_M_eraseEPSt13_Rb_tree_nodeIS8_E@Base 2.1.4
@@ -980,12 +993,12 @@ libcec.so.3 libcec3 #MINVER#
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_PNS0_13CCECBusDeviceEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE8_M_eraseEPSt13_Rb_tree_nodeIS6_E@Base 2.1.4
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_St10shared_ptrINS0_10CCECClientEEESt10_Select1stIS7_ESt4lessIS1_ESaIS7_EE5eraseERS3_@Base 3.0.1
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC19cec_logical_addressESt4pairIKS1_St10shared_ptrINS0_10CCECClientEEESt10_Select1stIS7_ESt4lessIS1_ESaIS7_EE8_M_eraseEPSt13_Rb_tree_nodeIS7_E@Base 3.0.1
- (arch=amd64)_ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE16_M_insert_uniqueIS0_ImS4_EEES0_ISt17_Rb_tree_iteratorIS5_EbEOT_@Base 3.1.0
- (arch=amd64)_ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE5eraseERS1_@Base 3.1.0
- (arch=amd64)_ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE8_M_eraseEPSt13_Rb_tree_nodeIS5_E@Base 3.1.0
- (arch=armhf i386 powerpc)_ZNSt8_Rb_treeIySt4pairIKyPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessIyESaIS5_EE16_M_insert_uniqueIS0_IyS4_EEES0_ISt17_Rb_tree_iteratorIS5_EbEOT_@Base 3.1.0
- (arch=armhf i386 powerpc)_ZNSt8_Rb_treeIySt4pairIKyPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessIyESaIS5_EE5eraseERS1_@Base 3.1.0
- (arch=armhf i386 powerpc)_ZNSt8_Rb_treeIySt4pairIKyPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessIyESaIS5_EE8_M_eraseEPSt13_Rb_tree_nodeIS5_E@Base 3.1.0
+ (arch-bits=64)_ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE16_M_insert_uniqueIS0_ImS4_EEES0_ISt17_Rb_tree_iteratorIS5_EbEOT_@Base 3.1.0
+ (arch-bits=64)_ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE5eraseERS1_@Base 3.1.0
+ (arch-bits=64)_ZNSt8_Rb_treeImSt4pairIKmPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessImESaIS5_EE8_M_eraseEPSt13_Rb_tree_nodeIS5_E@Base 3.1.0
+ (arch-bits=32)_ZNSt8_Rb_treeIySt4pairIKyPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessIyESaIS5_EE16_M_insert_uniqueIS0_IyS4_EEES0_ISt17_Rb_tree_iteratorIS5_EbEOT_@Base 3.1.0
+ (arch-bits=32)_ZNSt8_Rb_treeIySt4pairIKyPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessIyESaIS5_EE5eraseERS1_@Base 3.1.0
+ (arch-bits=32)_ZNSt8_Rb_treeIySt4pairIKyPN3CEC28CCECAdapterMessageQueueEntryEESt10_Select1stIS5_ESt4lessIyESaIS5_EE8_M_eraseEPSt13_Rb_tree_nodeIS5_E@Base 3.1.0
  _ZTIN10P8PLATFORM11CSerialPortE@Base 3.1.0
  _ZTIN10P8PLATFORM11PreventCopyE@Base 3.1.0
  _ZTIN10P8PLATFORM12SyncedBufferIN3CEC11cec_commandEEE@Base 3.1.0
@@ -1033,9 +1046,13 @@ libcec.so.3 libcec3 #MINVER#
  _ZTIN3CEC6CCECTVE@Base 2.1.4
  _ZTIN3CEC7CLibCECE@Base 2.1.4
  _ZTIN3CEC9CCECTunerE@Base 2.1.4
- _ZTISt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
- _ZTISt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
- _ZTISt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ (arch=armel)_ZTIN9__gnu_cxx7__mutexE@Base 3.1.0
+ (arch=armel)_ZTISt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 3.1.0
+ (arch=!armel)_ZTISt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.1.0
+ (arch=armel)_ZTISt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE@Base 3.1.0
+ (arch=!armel)_ZTISt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.1.0
+ (arch=armel)_ZTISt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 3.1.0
+ (arch=!armel)_ZTISt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.1.0
  _ZTSN10P8PLATFORM11CSerialPortE@Base 3.1.0
  _ZTSN10P8PLATFORM11PreventCopyE@Base 3.1.0
  _ZTSN10P8PLATFORM12SyncedBufferIN3CEC11cec_commandEEE@Base 3.1.0
@@ -1083,9 +1100,13 @@ libcec.so.3 libcec3 #MINVER#
  _ZTSN3CEC6CCECTVE@Base 2.1.4
  _ZTSN3CEC7CLibCECE@Base 2.1.4
  _ZTSN3CEC9CCECTunerE@Base 2.1.4
- _ZTSSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
- _ZTSSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
- _ZTSSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ (arch=armel)_ZTSN9__gnu_cxx7__mutexE@Base 3.1.0
+ (arch=armel)_ZTSSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 3.1.0
+ (arch=!armel)_ZTSSt11_Mutex_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.1.0
+ (arch=armel)_ZTSSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE@Base 3.1.0
+ (arch=!armel)_ZTSSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.1.0
+ (arch=armel)_ZTSSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE1EE@Base 3.1.0
+ (arch=!armel)_ZTSSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE@Base 3.1.0
  _ZTVN10P8PLATFORM11CSerialPortE@Base 3.1.0
  _ZTVN10P8PLATFORM12SyncedBufferIN3CEC11cec_commandEEE@Base 3.1.0
  _ZTVN10P8PLATFORM12SyncedBufferIPN3CEC13CCallbackWrapEEE@Base 3.1.0
@@ -1129,7 +1150,8 @@ libcec.so.3 libcec3 #MINVER#
  _ZTVN3CEC6CCECTVE@Base 2.1.4
  _ZTVN3CEC7CLibCECE@Base 2.1.4
  _ZTVN3CEC9CCECTunerE@Base 2.1.4
- _ZTVSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.0.1
+ (arch=armel)_ZTVSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE@Base 3.1.0
+ (arch=!armel)_ZTVSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE2EE@Base 3.1.0
  _ZZN10P8PLATFORM26GetDetachedThreadAttributeEvE12g_threadAttr@Base 3.1.0
  _ZZN10P8PLATFORM26GetDetachedThreadAttributeEvE21bAttributeInitialised@Base 3.1.0
  _ZZN10P8PLATFORM26GetRecursiveMutexAttributeEvE11g_mutexAttr@Base 3.1.0
