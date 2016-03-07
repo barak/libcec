@@ -1,6 +1,6 @@
-libcec (3.1.0+dfsg1-4) UNRELEASED; urgency=medium
+libcec (3.1.0+dfsg1-4) unstable; urgency=medium
 
-  *
+  * Fall back to use libudev.pc when udev.pc is not usable (Closes: #817051)
 
  -- Balint Reczey <balint@balintreczey.hu>  Mon, 07 Mar 2016 20:24:16 +0100
 
