@@ -1,8 +1,16 @@
-libcec (4.0.0+dfsg1-1) UNRELEASED; urgency=medium
+libcec (4.0.0+dfsg1-1) experimental; urgency=medium
 
   * Imported Upstream version 4.0.0+dfsg1
+  * Refresh patches
+  * Bump SO version in packaging scripts
+  * Remove files from debian/copyright which are removed from upstream
+    tarball
+  * Use secure URI in Vcs-Git
+  * Bump standards version
+  * Update symbols file for amd64 and i386
+  * Enable all hardening features
 
- -- Balint Reczey <balint@balintreczey.hu>  Sat, 17 Dec 2016 00:26:22 +0100
+ -- Balint Reczey <balint@balintreczey.hu>  Sat, 17 Dec 2016 20:15:34 +0100
 
 libcec (3.1.0+dfsg1-4) unstable; urgency=medium
 
