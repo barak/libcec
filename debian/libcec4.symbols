@@ -26,7 +26,9 @@ libcec.so.4 libcec4 #MINVER#
  (optional=templinst)_ZN10P8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEED1Ev@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM12SyncedBufferIPN3CEC28CCECAdapterMessageQueueEntryEED2Ev@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM13CCommonSocketIiE14GetErrorNumberEv@Base 3.1.0
+ (optional=templinst)_ZN10P8PLATFORM13CCommonSocketIiE7GetNameB5cxx11Ev@Base 4.0
  (optional=templinst)_ZN10P8PLATFORM13CCommonSocketIiE7GetNameEv@Base 3.1.0
+ (optional=templinst)_ZN10P8PLATFORM13CCommonSocketIiE8GetErrorB5cxx11Ev@Base 4.0
  (optional=templinst)_ZN10P8PLATFORM13CCommonSocketIiE8GetErrorEv@Base 3.1.0
  _ZN10P8PLATFORM13CNVEdidParser18GetPhysicalAddressEv@Base 3.1.0
  _ZN10P8PLATFORM13CNVEdidParserD0Ev@Base 3.1.0
@@ -71,16 +73,15 @@ libcec.so.4 libcec4 #MINVER#
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE6IsBusyEv@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE6IsIdleEv@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE6IsOpenEv@Base 3.1.0
+ (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE7GetNameB5cxx11Ev@Base 4.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE7GetNameEv@Base 3.1.0
+ (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE8GetErrorB5cxx11Ev@Base 4.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE8GetErrorEv@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE8ShutdownEv@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEED0Ev@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEED1Ev@Base 3.1.0
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEED2Ev@Base 3.1.0
  _ZN10P8PLATFORM16CRandrEdidParser18GetPhysicalAddressEv@Base 3.1.0
- _ZN10P8PLATFORM16CRandrEdidParserD0Ev@Base 3.1.0
- _ZN10P8PLATFORM16CRandrEdidParserD1Ev@Base 3.1.0
- _ZN10P8PLATFORM16CRandrEdidParserD2Ev@Base 3.1.0
  _ZN10P8PLATFORM6CEventD0Ev@Base 3.1.0
  _ZN10P8PLATFORM6CEventD1Ev@Base 3.1.0
  _ZN10P8PLATFORM6CEventD2Ev@Base 3.1.0
@@ -100,11 +101,12 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC10CCECClient10PollDeviceENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC10CCECClient10QueueAlertENS_12libcec_alertERKNS_16libcec_parameterE@Base 3.0.1
  _ZN3CEC10CCECClient10SetOSDNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE@Base 3.0.1
+ _ZN3CEC10CCECClient11AudioEnableEb@Base 4.0
  _ZN3CEC10CCECClient11AudioStatusEv@Base 2.1.4
  _ZN3CEC10CCECClient11AudioUnmuteEv@Base 2.1.4
  _ZN3CEC10CCECClient11PingAdapterEv@Base 2.1.4
  _ZN3CEC10CCECClient11QueueAddKeyERKNS_12cec_keypressE@Base 3.0.1
- _ZN3CEC10CCECClient11QueueAddLogERKNS_15cec_log_messageE@Base 3.0.1
+ _ZN3CEC10CCECClient11QueueAddLogERKNS_19cec_log_message_cppE@Base 4.0
  _ZN3CEC10CCECClient11SetHDMIPortENS_19cec_logical_addressEhb@Base 2.1.4
  _ZN3CEC10CCECClient12IsRegisteredEv@Base 2.1.4
  _ZN3CEC10CCECClient12OnUnregisterEv@Base 2.1.4
@@ -117,7 +119,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC10CCECClient13SetStreamPathENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC10CCECClient13SetStreamPathEt@Base 2.1.4
  _ZN3CEC10CCECClient14CallbackAddKeyERKNS_12cec_keypressE@Base 2.1.4
- _ZN3CEC10CCECClient14CallbackAddLogERKNS_15cec_log_messageE@Base 2.1.4
+ _ZN3CEC10CCECClient14CallbackAddLogERKNS_19cec_log_message_cppE@Base 4.0
  _ZN3CEC10CCECClient14GetDeviceTypesEv@Base 2.1.4
  _ZN3CEC10CCECClient14GetWakeDevicesEv@Base 2.1.4
  _ZN3CEC10CCECClient14IsActiveDeviceENS_19cec_logical_addressE@Base 2.1.4
@@ -137,7 +139,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC10CCECClient16GetActiveDevicesEv@Base 2.1.4
  _ZN3CEC10CCECClient16GetClientVersionEv@Base 2.1.4
  _ZN3CEC10CCECClient16GetConfigurationEv@Base 2.1.4
- _ZN3CEC10CCECClient16GetDeviceOSDNameENS_19cec_logical_addressE@Base 2.1.4
+ _ZN3CEC10CCECClient16GetDeviceOSDNameB5cxx11ENS_19cec_logical_addressE@Base 4.0
  _ZN3CEC10CCECClient16GetPrimaryDeviceEv@Base 2.1.4
  _ZN3CEC10CCECClient16SendSetMenuStateENS_14cec_menu_stateEb@Base 2.1.4
  _ZN3CEC10CCECClient16SendSetOSDStringENS_19cec_logical_addressENS_19cec_display_controlEPKc@Base 2.1.4
@@ -170,7 +172,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC10CCECClient20PersistConfigurationERKNS_20libcec_configurationE@Base 2.1.4
  _ZN3CEC10CCECClient20QueueSourceActivatedEbNS_19cec_logical_addressE@Base 3.0.1
  _ZN3CEC10CCECClient20ResetPhysicalAddressEv@Base 2.1.4
- _ZN3CEC10CCECClient21GetDeviceMenuLanguageENS_19cec_logical_addressERNS_17cec_menu_languageE@Base 2.1.4
+ _ZN3CEC10CCECClient21GetDeviceMenuLanguageB5cxx11ENS_19cec_logical_addressE@Base 4.0
  _ZN3CEC10CCECClient21QueueMenuStateChangedENS_14cec_menu_stateE@Base 3.0.1
  _ZN3CEC10CCECClient22SendSetDeckControlModeENS_21cec_deck_control_modeEb@Base 2.1.4
  _ZN3CEC10CCECClient23CallbackSourceActivatedEbNS_19cec_logical_addressE@Base 2.1.4
@@ -180,9 +182,9 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC10CCECClient24AllocateLogicalAddressesEv@Base 2.1.4
  _ZN3CEC10CCECClient24CallbackMenuStateChangedENS_14cec_menu_stateE@Base 2.1.4
  _ZN3CEC10CCECClient24GetDevicePhysicalAddressENS_19cec_logical_addressE@Base 2.1.4
+ _ZN3CEC10CCECClient24GetPrimaryLogicalAddressEv@Base 4.0
  _ZN3CEC10CCECClient24SetDevicePhysicalAddressEt@Base 2.1.4
  _ZN3CEC10CCECClient25AutodetectPhysicalAddressEv@Base 2.1.4
- _ZN3CEC10CCECClient25GetPrimaryLogicalAdddressEv@Base 2.1.4
  _ZN3CEC10CCECClient25QueueConfigurationChangedERKNS_20libcec_configurationE@Base 3.0.1
  _ZN3CEC10CCECClient27AllocateLogicalAddressTunerEv@Base 2.1.4
  _ZN3CEC10CCECClient28CallbackConfigurationChangedERKNS_20libcec_configurationE@Base 2.1.4
@@ -192,7 +194,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC10CCECClient5AlertENS_12libcec_alertERKNS_16libcec_parameterE@Base 2.1.4
  _ZN3CEC10CCECClient6AddKeyERKNS_12cec_keypressE@Base 2.1.4
  _ZN3CEC10CCECClient6AddKeyEbb@Base 3.1.0
- _ZN3CEC10CCECClient6AddLogERKNS_15cec_log_messageE@Base 2.1.4
+ _ZN3CEC10CCECClient6AddLogERKNS_19cec_log_message_cppE@Base 4.0
  _ZN3CEC10CCECClient7ProcessEv@Base 3.0.1
  _ZN3CEC10CCECClient8TransmitERKNS_11cec_commandEb@Base 2.1.4
  _ZN3CEC10CCECClient9AudioMuteEv@Base 2.1.4
@@ -229,12 +231,12 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC13CCECBusDevice14RequestOSDNameENS_19cec_logical_addressEb@Base 2.1.4
  _ZN3CEC13CCECBusDevice14SetActiveRouteEt@Base 2.1.4
  _ZN3CEC13CCECBusDevice14SetPowerStatusENS_16cec_power_statusE@Base 2.1.4
- _ZN3CEC13CCECBusDevice15GetMenuLanguageENS_19cec_logical_addressEb@Base 2.1.4
+ _ZN3CEC13CCECBusDevice15GetMenuLanguageB5cxx11ENS_19cec_logical_addressEb@Base 4.0
  _ZN3CEC13CCECBusDevice15ImageViewOnSentEv@Base 2.1.4
  _ZN3CEC13CCECBusDevice15RequestVendorIdENS_19cec_logical_addressEb@Base 2.1.4
  _ZN3CEC13CCECBusDevice15SetDeviceStatusENS_21cec_bus_device_statusENS_11cec_versionE@Base 2.1.4
- _ZN3CEC13CCECBusDevice15SetMenuLanguageEPKc@Base 2.1.4
- _ZN3CEC13CCECBusDevice15SetMenuLanguageERKNS_17cec_menu_languageE@Base 2.1.4
+ _ZN3CEC13CCECBusDevice15SetMenuLanguageERA4_Kc@Base 4.0
+ _ZN3CEC13CCECBusDevice15SetMenuLanguageERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE@Base 4.0
  _ZN3CEC13CCECBusDevice15TransmitOSDNameENS_19cec_logical_addressEb@Base 2.1.4
  _ZN3CEC13CCECBusDevice16AsPlaybackDeviceEPS0_@Base 2.1.4
  _ZN3CEC13CCECBusDevice16AsPlaybackDeviceEv@Base 2.1.4
@@ -242,6 +244,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC13CCECBusDevice16MarkHandlerReadyEv@Base 2.1.4
  _ZN3CEC13CCECBusDevice16TransmitKeypressENS_19cec_logical_addressENS_21cec_user_control_codeEb@Base 2.1.4
  _ZN3CEC13CCECBusDevice16TransmitVendorIDENS_19cec_logical_addressEbb@Base 2.1.4
+ _ZN3CEC13CCECBusDevice16TransmitVolumeUpENS_19cec_logical_addressEb@Base 4.0
  _ZN3CEC13CCECBusDevice17AsRecordingDeviceEPS0_@Base 2.1.4
  _ZN3CEC13CCECBusDevice17AsRecordingDeviceEv@Base 2.1.4
  _ZN3CEC13CCECBusDevice17GetCurrentOSDNameB5cxx11Ev@Base 3.0.1
@@ -250,6 +253,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC13CCECBusDevice17RequestCecVersionENS_19cec_logical_addressEb@Base 2.1.4
  _ZN3CEC13CCECBusDevice17ResetDeviceStatusEb@Base 2.1.4
  _ZN3CEC13CCECBusDevice17TransmitMenuStateENS_19cec_logical_addressEb@Base 2.1.4
+ _ZN3CEC13CCECBusDevice17TransmitMuteAudioENS_19cec_logical_addressE@Base 4.0
  _ZN3CEC13CCECBusDevice17TransmitOSDStringENS_19cec_logical_addressENS_19cec_display_controlEPKcb@Base 2.1.4
  _ZN3CEC13CCECBusDevice17TryLogicalAddressENS_11cec_versionE@Base 2.1.4
  _ZN3CEC13CCECBusDevice18GetCurrentVendorIdEv@Base 2.1.4
@@ -260,6 +264,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC13CCECBusDevice18TransmitCECVersionENS_19cec_logical_addressEb@Base 2.1.4
  _ZN3CEC13CCECBusDevice18TransmitKeyReleaseENS_19cec_logical_addressEb@Base 2.1.4
  _ZN3CEC13CCECBusDevice18TransmitPowerStateENS_19cec_logical_addressEb@Base 2.1.4
+ _ZN3CEC13CCECBusDevice18TransmitVolumeDownENS_19cec_logical_addressEb@Base 4.0
  _ZN3CEC13CCECBusDevice19HandleReceiveFailedEv@Base 2.1.4
  _ZN3CEC13CCECBusDevice19RequestActiveSourceEb@Base 2.1.4
  _ZN3CEC13CCECBusDevice19RequestMenuLanguageENS_19cec_logical_addressEb@Base 2.1.4
@@ -271,6 +276,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC13CCECBusDevice21SetUnsupportedFeatureENS_10cec_opcodeE@Base 2.1.4
  _ZN3CEC13CCECBusDevice22CheckVendorIdRequestedENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC13CCECBusDevice22RequestPhysicalAddressENS_19cec_logical_addressEb@Base 2.1.4
+ _ZN3CEC13CCECBusDevice22SystemAudioModeRequestEv@Base 4.0
  _ZN3CEC13CCECBusDevice22TransmitInactiveSourceEv@Base 2.1.4
  _ZN3CEC13CCECBusDevice23HasValidPhysicalAddressEv@Base 2.1.4
  _ZN3CEC13CCECBusDevice23TransmitPhysicalAddressEb@Base 2.1.4
@@ -387,6 +393,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC15CAdapterFactoryD1Ev@Base 2.1.4
  _ZN3CEC15CAdapterFactoryD2Ev@Base 2.1.4
  _ZN3CEC15CCECAudioSystem10VolumeDownENS_19cec_logical_addressEb@Base 2.1.4
+ _ZN3CEC15CCECAudioSystem11EnableAudioEPNS_13CCECBusDeviceE@Base 4.0
  _ZN3CEC15CCECAudioSystem14GetAudioStatusENS_19cec_logical_addressEb@Base 2.1.4
  _ZN3CEC15CCECAudioSystem14SetAudioStatusEh@Base 2.1.4
  _ZN3CEC15CCECAudioSystem18RequestAudioStatusENS_19cec_logical_addressEb@Base 2.1.4
@@ -603,6 +610,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC18CCECCommandHandler28HandleVendorRemoteButtonDownERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC18CCECCommandHandler29TransmitSystemAudioModeStatusENS_19cec_logical_addressES1_NS_23cec_system_audio_statusEb@Base 2.1.4
  _ZN3CEC18CCECCommandHandler30TransmitRequestPhysicalAddressENS_19cec_logical_addressES1_b@Base 2.1.4
+ _ZN3CEC18CCECCommandHandler30TransmitSystemAudioModeRequestENS_19cec_logical_addressEt@Base 4.0
  _ZN3CEC18CCECCommandHandler31HandleDeviceVendorCommandWithIdERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC18CCECCommandHandler31HandleGiveSystemAudioModeStatusERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC18CCECCommandHandler7PowerOnENS_19cec_logical_addressES1_@Base 2.1.4
@@ -769,6 +777,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC7CLibCEC10GetLibInfoEv@Base 2.1.4
  _ZN3CEC7CLibCEC10PollDeviceENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC7CLibCEC10VolumeDownEb@Base 2.1.4
+ _ZN3CEC7CLibCEC11AudioEnableEb@Base 4.0
  _ZN3CEC7CLibCEC11AudioStatusEv@Base 2.1.4
  _ZN3CEC7CLibCEC11AudioUnmuteEv@Base 2.1.4
  _ZN3CEC7CLibCEC11PingAdapterEv@Base 2.1.4
@@ -799,7 +808,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC7CLibCEC15StartBootloaderEv@Base 2.1.4
  _ZN3CEC7CLibCEC15VersionToStringB5cxx11Ej@Base 3.0.1
  _ZN3CEC7CLibCEC16GetActiveDevicesEv@Base 2.1.4
- _ZN3CEC7CLibCEC16GetDeviceOSDNameENS_19cec_logical_addressE@Base 2.1.4
+ _ZN3CEC7CLibCEC16GetDeviceOSDNameB5cxx11ENS_19cec_logical_addressE@Base 4.0
  _ZN3CEC7CLibCEC16SetConfigurationEPKNS_20libcec_configurationE@Base 2.1.4
  _ZN3CEC7CLibCEC16SwitchMonitoringEb@Base 2.1.4
  _ZN3CEC7CLibCEC16VendorIdToStringEj@Base 3.0.1
@@ -818,7 +827,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC7CLibCEC20GetDevicePowerStatusENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC7CLibCEC20IsLibCECActiveSourceEv@Base 2.1.4
  _ZN3CEC7CLibCEC20PersistConfigurationEPNS_20libcec_configurationE@Base 2.1.4
- _ZN3CEC7CLibCEC21GetDeviceMenuLanguageENS_19cec_logical_addressEPNS_17cec_menu_languageE@Base 2.1.4
+ _ZN3CEC7CLibCEC21GetDeviceMenuLanguageB5cxx11ENS_19cec_logical_addressE@Base 4.0
  _ZN3CEC7CLibCEC22IsValidPhysicalAddressEt@Base 2.1.4
  _ZN3CEC7CLibCEC23CanPersistConfigurationEv@Base 2.1.4
  _ZN3CEC7CLibCEC23GetCurrentConfigurationEPNS_20libcec_configurationE@Base 2.1.4
@@ -843,7 +852,6 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC7CLibCEC8TransmitERKNS_11cec_commandE@Base 2.1.4
  _ZN3CEC7CLibCEC8VolumeUpEb@Base 2.1.4
  _ZN3CEC7CLibCEC9AudioMuteEv@Base 2.1.4
- _ZN3CEC7CLibCEC9MuteAudioEb@Base 2.1.4
  _ZN3CEC7CLibCECC1Ev@Base 2.1.4
  _ZN3CEC7CLibCECC2Ev@Base 2.1.4
  _ZN3CEC7CLibCECD0Ev@Base 2.1.4
@@ -897,7 +905,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZNK3CEC18CCECAdapterMessage10ResponseToEv@Base 2.1.4
  _ZNK3CEC18CCECAdapterMessage11DestinationEv@Base 2.1.4
  _ZNK3CEC18CCECAdapterMessage12ReplyIsErrorEv@Base 2.1.4
- _ZNK3CEC18CCECAdapterMessage13IsTranmissionEv@Base 2.1.4
+ _ZNK3CEC18CCECAdapterMessage14IsTransmissionEv@Base 4.0
  _ZNK3CEC18CCECAdapterMessage15HasStartMessageEv@Base 2.1.4
  _ZNK3CEC18CCECAdapterMessage16PushToCecCommandERNS_11cec_commandE@Base 2.1.4
  _ZNK3CEC18CCECAdapterMessage2AtEh@Base 2.1.4
@@ -985,7 +993,7 @@ libcec.so.4 libcec4 #MINVER#
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeES1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE8_M_eraseEPSt13_Rb_tree_nodeIS1_E@Base 2.1.4
  (optional=templinst|arch=armel armhf i386 mips mipsel powerpc s390x)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE22_M_emplace_hint_uniqueIIRKSt21piecewise_construct_tSt5tupleIIRS3_EESH_IIEEEEESt17_Rb_tree_iteratorIS6_ESt23_Rb_tree_const_iteratorIS6_EDpOT_@Base 3.1.0
  (optional=templinst|arch=armel armhf i386 mips mipsel powerpc s390x)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE22_M_emplace_hint_uniqueIJRKSt21piecewise_construct_tSt5tupleIJRS3_EESH_IJEEEEESt17_Rb_tree_iteratorIS6_ESt23_Rb_tree_const_iteratorIS6_EDpOT_@Base 3.1.0
- (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE24_M_get_insert_unique_posERS3_@Base 3.1.gcc6
+ (optional=templinst|arch=i386)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE24_M_get_insert_unique_posERS3_@Base 3.1.gcc6
  (optional=templinst|arch=amd64 arm64 m68k mips64el ppc64el)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE29_M_get_insert_hint_unique_posESt23_Rb_tree_const_iteratorIS6_ERS3_@Base 3.0.1
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE8_M_eraseEPSt13_Rb_tree_nodeIS6_E@Base 2.1.4
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_St6vectorINS0_11cec_commandESaIS5_EEESt10_Select1stIS8_ESt4lessIS1_ESaIS8_EE16_M_insert_uniqueIS2_IS1_S7_EEES2_ISt17_Rb_tree_iteratorIS8_EbEOT_@Base 3.0.1
@@ -1011,7 +1019,6 @@ libcec.so.4 libcec4 #MINVER#
  _ZTIN10P8PLATFORM14CADLEdidParserE@Base 3.1.0
  _ZTIN10P8PLATFORM14CConditionImplE@Base 3.1.0
  _ZTIN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEEE@Base 3.1.0
- _ZTIN10P8PLATFORM16CRandrEdidParserE@Base 3.1.0
  _ZTIN10P8PLATFORM6CEventE@Base 3.1.0
  _ZTIN10P8PLATFORM7CThreadE@Base 3.1.0
  _ZTIN10P8PLATFORM7ISocketE@Base 3.1.0
@@ -1065,7 +1072,6 @@ libcec.so.4 libcec4 #MINVER#
  _ZTSN10P8PLATFORM14CADLEdidParserE@Base 3.1.0
  _ZTSN10P8PLATFORM14CConditionImplE@Base 3.1.0
  _ZTSN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEEE@Base 3.1.0
- _ZTSN10P8PLATFORM16CRandrEdidParserE@Base 3.1.0
  _ZTSN10P8PLATFORM6CEventE@Base 3.1.0
  _ZTSN10P8PLATFORM7CThreadE@Base 3.1.0
  _ZTSN10P8PLATFORM7ISocketE@Base 3.1.0
@@ -1118,7 +1124,6 @@ libcec.so.4 libcec4 #MINVER#
  _ZTVN10P8PLATFORM14CADLEdidParserE@Base 3.1.0
  _ZTVN10P8PLATFORM14CConditionImplE@Base 3.1.0
  _ZTVN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEEE@Base 3.1.0
- _ZTVN10P8PLATFORM16CRandrEdidParserE@Base 3.1.0
  _ZTVN10P8PLATFORM6CEventE@Base 3.1.0
  _ZTVN10P8PLATFORM7CThreadE@Base 3.1.0
  _ZTVN3CEC10CCECClientE@Base 2.1.4
