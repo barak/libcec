@@ -15,7 +15,7 @@ Build-Depends: debhelper (>= 9),
                libxrandr-dev,
                x11proto-core-dev,
                libncurses5-dev
-Standards-Version: 3.9.7
+Standards-Version: 3.9.8
 Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/libcec.git
 Vcs-Git: https://anonscm.debian.org/git/collab-maint/libcec.git
 Homepage: http://libcec.pulse-eight.com/
