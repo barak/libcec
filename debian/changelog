@@ -1,3 +1,11 @@
+libcec (4.0.1+dfsg1-1) unstable; urgency=medium
+
+  * Update symbols file
+  * Imported Upstream version 4.0.1+dfsg1
+  * Add symbols re-exported from libp8-platform
+
+ -- Balint Reczey <balint@balintreczey.hu>  Wed, 18 Jan 2017 09:16:30 +0100
+
 libcec (4.0.0+dfsg1-1) experimental; urgency=medium
 
   * Imported Upstream version 4.0.0+dfsg1
