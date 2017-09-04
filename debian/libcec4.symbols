@@ -873,7 +873,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC9CResponseC2ENS_10cec_opcodeE@Base 2.1.4
  _ZN3CEC9CResponseD1Ev@Base 2.1.4
  _ZN3CEC9CResponseD2Ev@Base 2.1.4
- _ZNK10P8PLATFORM8CTimeout8TimeLeftEv@Base 4.0.2+dfsg1-1~
+ (arch-bits=64)_ZNK10P8PLATFORM8CTimeout8TimeLeftEv@Base 4.0.2+dfsg1-1~
  _ZNK3CEC10CCECClient15GetDeviceByTypeENS_15cec_device_typeE@Base 2.1.4
  _ZNK3CEC13CCECBusDevice12GetProcessorEv@Base 2.1.4
  _ZNK3CEC13CCECBusDevice13GetLastActiveEv@Base 2.1.4
@@ -940,9 +940,6 @@ libcec.so.4 libcec4 #MINVER#
  _ZNK3CEC7CLibCEC18GetAdapterVendorIdEv@Base 2.1.4
  _ZNK3CEC7CLibCEC19GetAdapterProductIdEv@Base 2.1.4
  _ZNKSt5ctypeIcE8do_widenEc@Base 4.0.2
- (arch-bits=32)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EE17_M_initialize_mapEj@Base 3.1.0
- (arch-bits=32)_ZNSt11_Deque_baseIPN3CEC13CCallbackWrapESaIS2_EE17_M_initialize_mapEj@Base 3.1.0
- (arch-bits=32)_ZNSt11_Deque_baseIPN3CEC28CCECAdapterMessageQueueEntryESaIS2_EE17_M_initialize_mapEj@Base 3.1.0
  (optional=templinst|arch=armel)_ZNSt15_Sp_counted_ptrIDnLN9__gnu_cxx12_Lock_policyE1EE10_M_disposeEv@Base 3.1.0
  (optional=templinst|arch=!armel)_ZNSt15_Sp_counted_ptrIDnLN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv@Base 3.0.1
  (optional=templinst|arch=armel)_ZNSt15_Sp_counted_ptrIPN3CEC10CCECClientELN9__gnu_cxx12_Lock_policyE1EE10_M_destroyEv@Base 3.1.0
@@ -973,11 +970,10 @@ libcec.so.4 libcec4 #MINVER#
  _ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EE17_M_realloc_insertIJRKS3_EEEvN9__gnu_cxx17__normal_iteratorIPS3_S5_EEDpOT_@Base 4.0.2+dfsg1-1~
  (optional=templinst)_ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EED1Ev@Base 3.0.1
  (optional=templinst)_ZNSt6vectorISt10shared_ptrIN3CEC10CCECClientEESaIS3_EED2Ev@Base 3.0.1
- _ZNSt6vectorImSaImEE17_M_realloc_insertIJRKmEEEvN9__gnu_cxx17__normal_iteratorIPmS1_EEDpOT_@Base 4.0.2+dfsg1-1~
- (arch-bits=32)_ZNSt6vectorIySaIyEE19_M_emplace_back_auxIJRKyEEEvDpOT_@Base 3.1.0
+ (arch-bits=64)_ZNSt6vectorImSaImEE17_M_realloc_insertIJRKmEEEvN9__gnu_cxx17__normal_iteratorIPmS1_EEDpOT_@Base 4.0.2+dfsg1-1~
+ (arch-bits=32)_ZNSt6vectorIySaIyEE17_M_realloc_insertIJRKyEEEvN9__gnu_cxx17__normal_iteratorIPyS1_EEDpOT_@Base 4.0.2+dfsg1-1~
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeES1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE16_M_insert_uniqueIRKS1_EESt4pairISt17_Rb_tree_iteratorIS1_EbEOT_@Base 3.0.1
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeES1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE8_M_eraseEPSt13_Rb_tree_nodeIS1_E@Base 2.1.4
- (optional=templinst|arch=alpha armel armhf hurd-i386 i386 mips mipsel powerpc ppc64 s390x)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE24_M_get_insert_unique_posERS3_@Base 3.1.gcc6
  (optional=templinst|arch=amd64 arm64 hppa m68k mips64el ppc64el sparc64 x32)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE29_M_get_insert_hint_unique_posESt23_Rb_tree_const_iteratorIS6_ERS3_@Base 3.0.1
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_PNS0_9CResponseEESt10_Select1stIS6_ESt4lessIS1_ESaIS6_EE8_M_eraseEPSt13_Rb_tree_nodeIS6_E@Base 2.1.4
  (optional=templinst)_ZNSt8_Rb_treeIN3CEC10cec_opcodeESt4pairIKS1_St6vectorINS0_11cec_commandESaIS5_EEESt10_Select1stIS8_ESt4lessIS1_ESaIS8_EE16_M_insert_uniqueIS2_IS1_S7_EEES2_ISt17_Rb_tree_iteratorIS8_EbEOT_@Base 3.0.1
