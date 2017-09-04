@@ -60,6 +60,10 @@ libcec.so.4 libcec4 #MINVER#
  _ZN10P8PLATFORM14CConditionImplD0Ev@Base 3.1.0
  _ZN10P8PLATFORM14CConditionImplD1Ev@Base 3.1.0
  _ZN10P8PLATFORM14CConditionImplD2Ev@Base 3.1.0
+ _ZN10P8PLATFORM14CDRMEdidParser18GetPhysicalAddressEv@Base 4.0.2
+ _ZN10P8PLATFORM14CDRMEdidParserD0Ev@Base 4.0.2
+ _ZN10P8PLATFORM14CDRMEdidParserD1Ev@Base 4.0.2
+ _ZN10P8PLATFORM14CDRMEdidParserD2Ev@Base 4.0.2
  (optional=templinst)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE14GetErrorNumberEv@Base 3.1.0
  (arch-bits=64)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE4OpenEm@Base 3.1.0
  (arch-bits=32)_ZN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEE4OpenEy@Base 3.1.0
@@ -933,6 +937,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZNK3CEC28CCECAdapterMessageQueueEntry8ToStringEv@Base 2.1.4
  _ZNK3CEC7CLibCEC18GetAdapterVendorIdEv@Base 2.1.4
  _ZNK3CEC7CLibCEC19GetAdapterProductIdEv@Base 2.1.4
+ _ZNKSt5ctypeIcE8do_widenEc@Base 4.0.2
  (arch-bits=32)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EE17_M_initialize_mapEj@Base 3.1.0
  (arch-bits=64)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EE17_M_initialize_mapEm@Base 3.1.0
  (optional=templinst)_ZNSt11_Deque_baseIN3CEC11cec_commandESaIS1_EED1Ev@Base 2.1.4
@@ -1001,6 +1006,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZTIN10P8PLATFORM13CSerialSocketE@Base 3.1.0
  _ZTIN10P8PLATFORM14CADLEdidParserE@Base 3.1.0
  _ZTIN10P8PLATFORM14CConditionImplE@Base 3.1.0
+ _ZTIN10P8PLATFORM14CDRMEdidParserE@Base 4.0.2
  _ZTIN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEEE@Base 3.1.0
  _ZTIN10P8PLATFORM16CRandrEdidParserE@Base 4.0.1
  _ZTIN10P8PLATFORM6CEventE@Base 3.1.0
@@ -1055,6 +1061,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZTSN10P8PLATFORM13CSerialSocketE@Base 3.1.0
  _ZTSN10P8PLATFORM14CADLEdidParserE@Base 3.1.0
  _ZTSN10P8PLATFORM14CConditionImplE@Base 3.1.0
+ _ZTSN10P8PLATFORM14CDRMEdidParserE@Base 4.0.2
  _ZTSN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEEE@Base 3.1.0
  _ZTSN10P8PLATFORM16CRandrEdidParserE@Base 4.0.1
  _ZTSN10P8PLATFORM6CEventE@Base 3.1.0
@@ -1108,6 +1115,7 @@ libcec.so.4 libcec4 #MINVER#
  _ZTVN10P8PLATFORM13CSerialSocketE@Base 3.1.0
  _ZTVN10P8PLATFORM14CADLEdidParserE@Base 3.1.0
  _ZTVN10P8PLATFORM14CConditionImplE@Base 3.1.0
+ _ZTVN10P8PLATFORM14CDRMEdidParserE@Base 4.0.2
  _ZTVN10P8PLATFORM16CProtectedSocketINS_13CSerialSocketEEE@Base 3.1.0
  _ZTVN10P8PLATFORM16CRandrEdidParserE@Base 4.0.1
  _ZTVN10P8PLATFORM6CEventE@Base 3.1.0
