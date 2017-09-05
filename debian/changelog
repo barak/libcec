@@ -1,17 +1,18 @@
 libcec (4.0.2+dfsg1-1) experimental; urgency=medium
 
-  * Imported Upstream version 4.0.1+dfsg1
   * Always repack original source with xz compression
   * New upstream version 4.0.2+dfsg1
   * Build-depend on g++ (>= 4:7)
   * Refresh patches
   * Remove workaround to put pkg-config file to the right place
-  * Ship Python 3 bindings in python3-libcec and drop Python2 bindings
   * Update symbols file with new symbols from 4.0.2
   * Update symbols file with symbol changes due to GCC 7 transition
+    (Closes: #853485)
   * Use my @ubuntu.com email address in Uploader field
+  * Keep installing Python modules to dist-packages despite upstream
+    changes which install them to site-packages
 
- -- Balint Reczey <rbalint@ubuntu.com>  Mon, 04 Sep 2017 23:39:22 +0200
+ -- Balint Reczey <rbalint@ubuntu.com>  Tue, 05 Sep 2017 23:36:22 +0200
 
 libcec (4.0.1+dfsg1-1) unstable; urgency=medium
 
