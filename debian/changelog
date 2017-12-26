@@ -1,8 +1,8 @@
-libcec (4.0.2+dfsg1-3) UNRELEASED; urgency=medium
+libcec (4.0.2+dfsg1-3) experimental; urgency=medium
 
-  * 
+  * Enable Exynos and AOCEC API support (Closes: #885177)
 
- -- Balint Reczey <rbalint@ubuntu.com>  Tue, 26 Dec 2017 02:53:06 +0100
+ -- Balint Reczey <rbalint@ubuntu.com>  Tue, 26 Dec 2017 02:55:36 +0100
 
 libcec (4.0.2+dfsg1-2) unstable; urgency=medium
 
