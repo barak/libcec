@@ -1,6 +1,7 @@
 libcec (4.0.2+dfsg1-4) UNRELEASED; urgency=medium
 
   * d/copyright: Use https protocol in Format field
+  * d/control: Fix wrong Vcs-*
 
  -- Ondřej Nový <onovy@debian.org>  Mon, 01 Oct 2018 09:37:22 +0200
 
