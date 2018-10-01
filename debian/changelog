@@ -1,3 +1,9 @@
+libcec (4.0.2+dfsg1-4) UNRELEASED; urgency=medium
+
+  * d/copyright: Use https protocol in Format field
+
+ -- Ondřej Nový <onovy@debian.org>  Mon, 01 Oct 2018 09:37:22 +0200
+
 libcec (4.0.2+dfsg1-3) experimental; urgency=medium
 
   * Enable Exynos and AOCEC API support (Closes: #885177)
