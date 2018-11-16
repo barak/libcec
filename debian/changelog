@@ -1,9 +1,17 @@
-libcec (4.0.2+dfsg1-4) UNRELEASED; urgency=medium
+libcec (4.0.3+dfsg1-1) unstable; urgency=medium
 
+  [ Ondřej Nový ]
   * d/copyright: Use https protocol in Format field
   * d/control: Fix wrong Vcs-*
 
- -- Ondřej Nový <onovy@debian.org>  Mon, 01 Oct 2018 09:37:22 +0200
+  [ Balint Reczey ]
+  * New upstream version 4.0.3+dfsg1
+  * Update symbols after enabling Exynos and AOCEC API support
+  * Update installing Python 2 package content
+  * Update symbols. There are symbol removals, but upstream does not list
+    them as being part of the public API.
+
+ -- Balint Reczey <rbalint@ubuntu.com>  Fri, 16 Nov 2018 03:36:22 +0100
 
 libcec (4.0.2+dfsg1-3) experimental; urgency=medium
 
