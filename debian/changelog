@@ -1,3 +1,10 @@
+libcec (4.0.4+dfsg1-1) unstable; urgency=medium
+
+  * New upstream version 4.0.4+dfsg1
+  * Add Salsa CI configuration
+
+ -- Balint Reczey <rbalint@ubuntu.com>  Mon, 11 Feb 2019 15:57:39 +0700
+
 libcec (4.0.3+dfsg1-1) unstable; urgency=medium
 
   [ Ondřej Nový ]
