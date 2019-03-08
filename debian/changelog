@@ -1,3 +1,11 @@
+libcec (4.0.4+dfsg1-2) unstable; urgency=medium
+
+  [ Balint Reczey ]
+  * Build-depend on pkg-kde-tools
+  * Update symbols file (Closes: #923904)
+
+ -- Balint Reczey <rbalint@ubuntu.com>  Fri, 08 Mar 2019 13:21:44 +0100
+
 libcec (4.0.4+dfsg1-1) unstable; urgency=medium
 
   * New upstream version 4.0.4+dfsg1
