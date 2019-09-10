@@ -1,4 +1,4 @@
-libcec (4.0.4+dfsg1-3) unstable; urgency=medium
+libcec (4.0.4+dfsg1-3) UNRELEASED; urgency=medium
 
   * debian/libcec4.symbols: Refresh symbols to build with GCC 9.
     Thanks to Boyuan Yang for the proposed NMU (Closes: #925738)
