@@ -389,7 +389,6 @@ libcec.so.4 libcec4 #MINVER#
  _ZN3CEC13CCECProcessorD2Ev@Base 2.1.4
  _ZN3CEC13CCECTypeUtils14GetMaskForTypeENS_15cec_device_typeE@Base 2.1.4
  _ZN3CEC13CCECTypeUtils8ToStringENS_10cec_opcodeE@Base 2.1.4
- _ZN3CEC13CCECTypeUtils8ToStringENS_19cec_logical_addressE@Base 2.1.4
  _ZN3CEC13CCECTypeUtils8ToStringENS_21cec_user_control_codeE@Base 3.0.1
  _ZN3CEC15CAdapterFactory11GetInstanceEPKct@Base 2.1.4
  _ZN3CEC15CAdapterFactory12FindAdaptersEPNS_11cec_adapterEhPKc@Base 2.1.4
