@@ -64,7 +64,7 @@ Section: python
 Depends: libcec4 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
-         ${python:Depends}
+         ${python3:Depends}
 Pre-Depends: ${misc:Pre-Depends}
 Description: Python 3 bindings for USB CEC Adaptor
  This library provides support for the Pulse-Eight USB-CEC adapter and
