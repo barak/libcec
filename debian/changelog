@@ -1,3 +1,13 @@
+libcec (4.0.4+dfsg1-4~exp1) experimental; urgency=medium
+
+  * Switch to Python 3.
+    Ship Python 3 modules in python3-cec replacing Python 2 python-libcec
+    (Closes: #936846)
+  * Update symbols file(s)
+  * Fix generated Python 3 dependencies
+
+ -- Balint Reczey <rbalint@ubuntu.com>  Mon, 16 Sep 2019 17:37:57 +0200
+
 libcec (4.0.4+dfsg1-3) unstable; urgency=medium
 
   * debian/libcec4.symbols: Refresh symbols to build with GCC 9.
