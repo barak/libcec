@@ -1,3 +1,9 @@
+libcec (4.0.4+dfsg1-5) unstable; urgency=medium
+
+  * Upload to unstable
+
+ -- Balint Reczey <rbalint@ubuntu.com>  Wed, 25 Sep 2019 14:22:51 +0200
+
 libcec (4.0.4+dfsg1-4~exp1) experimental; urgency=medium
 
   * Switch to Python 3.
