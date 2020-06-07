@@ -3,7 +3,7 @@ Maintainer: Sjoerd Simons <sjoerd@debian.org>
 Uploaders: Balint Reczey <rbalint@ubuntu.com>
 Section: libs
 Priority: optional
-Build-Depends: debhelper (>= 9),
+Build-Depends: debhelper-compat (= 12),
                g++ (>= 4:7),
                pkg-config,
                pkg-kde-tools,
