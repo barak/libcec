@@ -25,7 +25,7 @@ Package: libcec-dev
 Architecture: any
 Multi-Arch: same
 Section: libdevel
-Depends: libcec4 (= ${binary:Version}),
+Depends: libcec6 (= ${binary:Version}),
          ${misc:Depends}
 Description: USB CEC Adaptor communication Library (development files)
  This library provides support for the Pulse-Eight USB-CEC adapter and
@@ -33,14 +33,12 @@ Description: USB CEC Adaptor communication Library (development files)
  .
  This package provides the necessary files needed for development.
 
-Package: libcec4
+Package: libcec6
 Architecture: any
 Multi-Arch: same
 Depends: ${shlibs:Depends},
          ${misc:Depends}
 Pre-Depends: ${misc:Pre-Depends}
-Breaks: libcec4v4
-Replaces: libcec4v4
 Description: USB CEC Adaptor communication Library (shared library)
  This library provides support for the Pulse-Eight USB-CEC adapter and
  other CEC capable hardware, like the Raspberry Pi.
@@ -50,7 +48,7 @@ Description: USB CEC Adaptor communication Library (shared library)
 Package: cec-utils
 Architecture: any
 Section: utils
-Depends: libcec4 (= ${binary:Version}),
+Depends: libcec6 (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
 Description: USB CEC Adaptor communication Library (utility programs)
@@ -62,7 +60,7 @@ Description: USB CEC Adaptor communication Library (utility programs)
 Package: python3-cec
 Architecture: any
 Section: python
-Depends: libcec4 (= ${binary:Version}),
+Depends: libcec6 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
          ${python3:Depends}
