@@ -9,7 +9,9 @@ libcec (6.0.2-1) UNRELEASED; urgency=medium
   [ Balint Reczey ]
   * debian/copyright: Drop obsolete Files-Excluded
   * New upstream version 6.0.2
-  * Rename library package for bumped SO version and replace d/symbols with d/shlibs
+  * Rename library package for bumped SO version and replace
+    debian/*.symbols with debian/*.shlibs (Closes: #957433)
+  * debian/control: Bump Standards-Version, no changes required
 
  -- Balint Reczey <rbalint@ubuntu.com>  Fri, 07 Aug 2020 16:22:52 +0200
 
