@@ -1,11 +1,17 @@
-libcec (4.0.4+dfsg1-5) UNRELEASED; urgency=low
+libcec (6.0.2-1) UNRELEASED; urgency=medium
 
+  [ Debian Janitor ]
   * Bump debhelper from deprecated 9 to 12.
   * Set debhelper-compat version in Build-Depends.
   * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
     Repository-Browse.
 
- -- Debian Janitor <janitor@jelmer.uk>  Tue, 02 Jun 2020 16:19:42 -0000
+  [ Balint Reczey ]
+  * debian/copyright: Drop obsolete Files-Excluded
+  * New upstream version 6.0.2
+  * Rename library package for bumped SO version and replace d/symbols with d/shlibs
+
+ -- Balint Reczey <rbalint@ubuntu.com>  Fri, 07 Aug 2020 16:22:52 +0200
 
 libcec (4.0.4+dfsg1-4) unstable; urgency=medium
 
