@@ -1,4 +1,4 @@
-libcec (6.0.2-1~exp0) experimental; urgency=medium
+libcec (6.0.2-1) unstable; urgency=medium
 
   [ Debian Janitor ]
   * Bump debhelper from deprecated 9 to 12.
