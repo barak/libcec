@@ -1,3 +1,14 @@
+libcec (6.0.2-2) UNRELEASED; urgency=medium
+
+  [ Punit Agrawal ]
+  * debian/rules: Enable Linux API
+    libcec has support for the Linux CEC api that enables interaction with
+    devices that are exposed via "/dev/cec0" on supported systems. Enable
+    Linux API support in the library to allows users to interact with
+    media applications using their remote on such systems. (Closes: #983733)
+
+ -- Balint Reczey <rbalint@ubuntu.com>  Mon, 01 Mar 2021 08:10:46 +0100
+
 libcec (6.0.2-1) unstable; urgency=medium
 
   [ Debian Janitor ]
