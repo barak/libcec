@@ -4,14 +4,13 @@ Uploaders: Balint Reczey <rbalint@ubuntu.com>
 Section: libs
 Priority: optional
 Build-Depends: debhelper-compat (= 12),
-               g++ (>= 4:7),
                pkg-config,
                pkg-kde-tools,
                libudev-dev [linux-any],
                libp8-platform-dev,
                python3-dev,
                dh-python,
-               cmake (>= 2.8.9),
+               cmake,
                swig,
                libxrandr-dev,
                x11proto-core-dev,
