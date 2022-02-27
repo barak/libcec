@@ -1,3 +1,16 @@
+libcec (6.0.2-3) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Remove constraints unnecessary since buster
+    * Build-Depends: Drop versioned constraint on cmake and g++.
+    Changes-By: deb-scrub-obsolete
+
+  [ Balint Reczey ]
+  * Remove myself from Uploaders
+  * Orphaning the package according to our discussion with Sjoerd
+
+ -- Balint Reczey <balint@balintreczey.hu>  Sun, 27 Feb 2022 20:44:29 +0100
+
 libcec (6.0.2-2) unstable; urgency=medium
 
   [ Punit Agrawal ]
