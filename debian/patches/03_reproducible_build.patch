@@ -1,6 +1,7 @@
 Description: Remove non-determinism from build process
  .
 Author: Balint Reczey <balint@balintreczey.hu>
+Updated: Vagrant Cascadian <vagrant@reproducible-builds.org>
 Forwarded: not-needed
 --- a/src/libcec/CMakeLists.txt
 +++ b/src/libcec/CMakeLists.txt
@@ -9,7 +10,7 @@ Forwarded: not-needed
  
  # platform and device specific
 -include(cmake/SetBuildInfo.cmake)
-+set(LIB_INFO "compiled on ${CMAKE_SYSTEM} ... ")
++set(LIB_INFO "compiled on ${CMAKE_SYSTEM_NAME} ... ")
  include(cmake/CheckPlatformSupport.cmake)
  
  ## create project groups
