@@ -1,3 +1,16 @@
+libcec (6.0.2-4) unstable; urgency=medium
+
+  * QA upload.
+  * debian/rules: Pass -DCMAKE_BUILD_RPATH_USE_ORIGIN=ON via
+    dh_auto_configure override.
+  * debian/patches: Update reproducible build patch to use Use
+    CMAKE_SYSTEM_NAME instead of CMAKE_SYSTEM. (Closes: #1010414)
+  * debian/control: Set Rules-Requires-Root to "no".
+  * Update to debhelper-compat 13.
+  * debian/control: Update Standards-Version to 4.6.0.
+
+ -- Vagrant Cascadian <vagrant@debian.org>  Sat, 30 Apr 2022 17:50:08 -0700
+
 libcec (6.0.2-3) unstable; urgency=medium
 
   [ Debian Janitor ]
