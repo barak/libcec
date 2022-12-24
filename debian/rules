@@ -2,7 +2,8 @@
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
-DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+include /usr/share/dpkg/architecture.mk
+# for DEB_HOST_MULTIARCH
 
 %:
 	dh $@  --with python3

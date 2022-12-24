@@ -2,8 +2,9 @@ libcec (6.0.2-5) UNRELEASED; urgency=medium
 
   * Update standards version to 4.6.2, no changes needed.
   * Update watch file format version to 4.
+  * Yak shave debian/rules
 
- -- Barak A. Pearlmutter <bap@debian.org>  Fri, 23 Dec 2022 19:20:22 -0000
+ -- Barak A. Pearlmutter <bap@debian.org>  Sat, 24 Dec 2022 14:52:39 +0000
 
 libcec (6.0.2-4) unstable; urgency=medium
 
