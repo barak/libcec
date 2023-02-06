@@ -1,0 +1,11 @@
+/*.debhelper
+/*.debhelper.log
+/*.substvars
+/.debhelper/
+/cec-utils/
+/debhelper-build-stamp
+/files
+/libcec-dev/
+/libcec6/
+/python3-cec/
+/tmp/
