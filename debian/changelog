@@ -4,8 +4,9 @@ libcec (6.0.2-5) unstable; urgency=medium
   * Update watch file format version to 4.
   * Yak shave debian/rules
   * Adopt (closes: #1006619) thanks Balint for all your work.
+  * Update ncurses build dependency.
 
- -- Barak A. Pearlmutter <bap@debian.org>  Mon, 06 Feb 2023 21:52:49 +0000
+ -- Barak A. Pearlmutter <bap@debian.org>  Mon, 06 Feb 2023 22:09:39 +0000
 
 libcec (6.0.2-4) unstable; urgency=medium
 
