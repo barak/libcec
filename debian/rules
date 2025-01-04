@@ -6,13 +6,14 @@ include /usr/share/dpkg/architecture.mk
 # for DEB_HOST_MULTIARCH
 
 %:
-	dh $@  --with python3
+	dh $@
 
 execute_before_dh_auto_configure:
 	ln -s /usr/include/cec-platform include/platform
 
 override_dh_auto_configure:
 	dh_auto_configure -- -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=/usr/lib/$(DEB_HOST_MULTIARCH) \
+		-DSKIP_PYTHON_WRAPPER=1 \
 		-DCMAKE_BUILD_RPATH_USE_ORIGIN=ON \
 		-DHAVE_EXYNOS_API=1 \
 		-DHAVE_AOCEC_API=1 \

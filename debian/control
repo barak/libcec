@@ -7,8 +7,6 @@ Build-Depends: debhelper-compat (= 13),
                pkg-kde-tools,
                libudev-dev [linux-any],
                libp8-platform-dev,
-               python3-dev,
-               dh-python,
                cmake,
                swig,
                libxrandr-dev,
@@ -55,17 +53,3 @@ Description: USB CEC Adaptor communication Library (utility programs)
  other CEC capable hardware, like the Raspberry Pi.
  .
  This package provides the CEC utility programs.
-
-Package: python3-cec
-Architecture: any
-Section: python
-Depends: libcec6 (= ${binary:Version}),
-         ${misc:Depends},
-         ${shlibs:Depends},
-         ${python3:Depends}
-Pre-Depends: ${misc:Pre-Depends}
-Description: Python 3 bindings for USB CEC Adaptor
- This library provides support for the Pulse-Eight USB-CEC adapter and
- other CEC capable hardware, like the Raspberry Pi.
- .
- This package provides Python 3 bindings for libcec.
