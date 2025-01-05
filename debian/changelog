@@ -1,10 +1,11 @@
-libcec (6.0.2-6) UNRELEASED; urgency=medium
+libcec (6.0.2-6) unstable; urgency=medium
 
   * Disable Python wrapper; fails to build with Python 3.13 (closes: #1092064)
   * Bump standards version
   * Build dependency pkg-config ⇒ pkgconf per lintian
+  * Remove unused man page cec-config(1)
 
- -- Barak A. Pearlmutter <bap@debian.org>  Sun, 05 Jan 2025 11:20:37 +0000
+ -- Barak A. Pearlmutter <bap@debian.org>  Sun, 05 Jan 2025 11:57:18 +0000
 
 libcec (6.0.2-5) unstable; urgency=medium
 
