@@ -1,3 +1,10 @@
+libcec (7.0.0-1) unstable; urgency=medium
+
+  * New upstream version 7.0.0
+  * Bump policy
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Wed, 05 Mar 2025 17:57:40 +0000
+
 libcec (6.0.2-6) unstable; urgency=medium
 
   * Disable Python wrapper; fails to build with Python 3.13 (closes: #1092064)
