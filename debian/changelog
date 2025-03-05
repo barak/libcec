@@ -2,6 +2,7 @@ libcec (7.0.0-1) unstable; urgency=medium
 
   * New upstream version 7.0.0
   * Bump policy
+  * Rename various things from libcec6* to libcec7*
 
  -- Barak A. Pearlmutter <bap@debian.org>  Wed, 05 Mar 2025 17:57:40 +0000
 

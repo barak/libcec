@@ -9,10 +9,10 @@ Forwarded: not-needed
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/libcec/CMakeLists.txt b/src/libcec/CMakeLists.txt
-index 19a070b..15b2ef8 100644
+index e1d8dcb..8cacf10 100644
 --- a/src/libcec/CMakeLists.txt
 +++ b/src/libcec/CMakeLists.txt
-@@ -133,7 +133,7 @@ set(CEC_HEADERS devices/CECRecordingDevice.h
+@@ -134,7 +134,7 @@ set(CEC_HEADERS devices/CECRecordingDevice.h
  source_group("Header Files" FILES ${CEC_HEADERS})
  
  # platform and device specific
