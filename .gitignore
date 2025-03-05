@@ -1,3 +1,4 @@
+/.vscode
 /build
 /cmake-build
 /.cproject
@@ -17,12 +18,17 @@
 *.suo
 *.user
 *.aps
+*.swp
 env.h
 version.h
 .vs
 
 AssemblyInfo.cs
 AssemblyInfo.cpp
+
+*~
+tags
+cscope.*
 
 /support/private
 
@@ -46,10 +52,20 @@ Makefile.in
 missing
 config.h
 config.h.in
+config.h.in~
 stamp-h1
 
-/include/boost
-/include/platform
+/debian/*.log
+/debian/*.substvars
+/debian/*.debhelper
+/debian/files
+/debian/cec-utils
+/debian/libcec-dev
+/debian/libcec
+/debian/libcec2
+/debian/tmp
+
+include/boost
 
 project/bin
 project/Debug/
@@ -93,5 +109,3 @@ src/libcec-wmc/obj
 /src/EventGhost/pulse_eight.egplugin
 
 /src/dotnetlib/LibCecSharp/LibCecSharp.rc
-
-/obj-*/
