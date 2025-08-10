@@ -13,7 +13,6 @@ execute_before_dh_auto_configure:
 
 override_dh_auto_configure:
 	dh_auto_configure -- -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=/usr/lib/$(DEB_HOST_MULTIARCH) \
-		-DSKIP_PYTHON_WRAPPER=1 \
 		-DCMAKE_BUILD_RPATH_USE_ORIGIN=ON \
 		-DHAVE_EXYNOS_API=1 \
 		-DHAVE_AOCEC_API=1 \
@@ -22,3 +21,6 @@ override_dh_auto_configure:
 execute_after_dh_auto_install:
 	rm debian/tmp/usr/bin/cec-client
 	mv debian/tmp/usr/bin/cec-client-* debian/tmp/usr/bin/cec-client
+
+override_dh_installchangelogs:
+	dh_installchangelogs debian/changelog.in
