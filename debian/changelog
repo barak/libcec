@@ -1,3 +1,9 @@
+libcec (7.1.1-2) UNRELEASED; urgency=medium
+
+  * Rules-requires-root now defaults to no
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Tue, 26 Aug 2025 21:28:46 +0100
+
 libcec (7.1.1-1) unstable; urgency=medium
 
   * New upstream version
