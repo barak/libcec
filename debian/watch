@@ -1,10 +1,6 @@
 Version: 5
 
 Template: Github
-Compression: xz
-Dversionmangle: s/.dfsg[0-9]*//
 Owner: Pulse-Eight
 Project: @PACKAGE@
-Repack: yes
-Repacksuffix: +dfsg1
-Uversionmangle: s/_/./g
+Repacksuffix: +dfsg
