@@ -1,0 +1,6 @@
+include/platform
+include/version.h
+src/cec-client/env.h
+src/cecc-client/env.h
+src/libcec/env.h
+src/libcec/libcec.pc
