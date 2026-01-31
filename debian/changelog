@@ -2,7 +2,7 @@ libcec (7.1.1-2) unstable; urgency=medium
 
   * Rules-requires-root now defaults to no
   * Update debian/watch to v5
-  * Populate debian/clean to allow double build (closes: #1049263)
+  * Populate debian/clean to allow double build (closes: #1049263, #1049500)
 
  -- Barak A. Pearlmutter <bap@debian.org>  Sat, 31 Jan 2026 17:05:12 +0000
 
