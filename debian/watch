@@ -1,2 +1,10 @@
-version=4
-opts=compression=xz,dversionmangle=s/.dfsg[0-9]*//,repack,repacksuffix=+dfsg1,uversionmangle=s/_/./g, https://github.com/Pulse-Eight/libcec/tags .*/libcec-(\d[\d\.]+)\.tar\.gz
+Version: 5
+
+Template: Github
+Compression: xz
+Dversionmangle: s/.dfsg[0-9]*//
+Owner: Pulse-Eight
+Project: @PACKAGE@
+Repack: yes
+Repacksuffix: +dfsg1
+Uversionmangle: s/_/./g
