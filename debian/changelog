@@ -1,3 +1,9 @@
+libcec (7.1.1-3) UNRELEASED; urgency=medium
+
+  * bump policy
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Sat, 31 Jan 2026 17:16:31 +0000
+
 libcec (7.1.1-2) unstable; urgency=medium
 
   * Rules-requires-root now defaults to no

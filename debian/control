@@ -1,7 +1,6 @@
 Source: libcec
 Maintainer: Barak A. Pearlmutter <bap@debian.org>
 Section: libs
-Priority: optional
 Build-Depends: debhelper-compat (= 13),
                pkgconf,
                pkg-kde-tools,
@@ -13,7 +12,7 @@ Build-Depends: debhelper-compat (= 13),
                libxrandr-dev,
                x11proto-core-dev,
                libncurses-dev
-Standards-Version: 4.7.2
+Standards-Version: 4.7.3
 Vcs-Browser: https://salsa.debian.org/debian/libcec
 Vcs-Git: https://salsa.debian.org/debian/libcec.git
 Homepage: https://libcec.pulse-eight.com/
