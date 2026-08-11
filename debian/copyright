@@ -2,6 +2,11 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: libcec
 Upstream-Contact: Lars Op den Kamp <lars.opdenkamp@pulse-eight.com>
 Source: https://github.com/Pulse-Eight/libcec
+Files-Excluded: support/windows/libusb0.dll
+  support/windows/p8-usbcec-bootloader-driver-installer.exe
+  support/windows/p8-usbcec-driver-installer.exe
+Comment: The excluded files are prebuilt Windows binaries shipped without
+ corresponding source, so they are removed from the repacked +dfsg tarball.
 
 Files: *
 Copyright: 2011-2015, Pulse-Eight Limited.
