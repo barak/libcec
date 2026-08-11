@@ -26,11 +26,17 @@ version.h
 AssemblyInfo.cs
 AssemblyInfo.cpp
 
+.*
 *~
 tags
 cscope.*
 
 /support/private
+
+# support/ ships prebuilt Windows driver installers and libusb0.dll that
+# create-installer.py stages into the build; keep them despite the *.dll/*.exe rules above
+!/support/windows/libusb0.dll
+!/support/windows/*.exe
 
 /driver/p8usb-cec.cat
 /bootloader-driver/p8_usb_dfu.cat
@@ -93,6 +99,7 @@ src/libcec/libcec.pc
 src/libcec/libcec.rc
 
 src/cec-config-gui/obj
+src/dotnetlib/obj
 src/cec-config/cec-config
 src/cec-config/*.o
 src/cec-config/.deps
@@ -109,3 +116,16 @@ src/libcec-wmc/obj
 /src/EventGhost/pulse_eight.egplugin
 
 /src/dotnetlib/LibCecSharp/LibCecSharp.rc
+
+# Node.js binding: node-gyp build output and npm-installed dependencies
+/src/nodejs/build
+/src/nodejs/node_modules
+/src/nodejs/package-lock.json
+
+# Rust binding: cargo build output. Cargo.lock is not tracked - this is a
+# library crate, so the lock file of whatever builds it is the one that counts.
+/src/rust/target
+/src/rust/Cargo.lock
+
+/windows/version.py
+/windows/__pycache__

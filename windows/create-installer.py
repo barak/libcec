@@ -1,0 +1,605 @@
+import argparse
+from functools import cached_property
+from inspect import getsourcefile
+import shutil
+import subprocess
+from pathbuilder import PathBuilder, replace_path_env
+from toolchain import ToolchainConfigs, ToolchainConfig, Toolchain, ToolchainId, BuildTarget, Architecture
+import mixins
+import codesigner
+from mixins import exec_command, LibVersion
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('libcec-builder')
+
+class BuilderConfig:
+    def __init__(self, toolchain:str|ToolchainId, target:str|BuildTarget, architecture:str|Architecture) -> None:
+        self._toolchain = toolchain if isinstance(toolchain, ToolchainId) else ToolchainId(toolchain)
+        self._target = target if isinstance(target, BuildTarget) else BuildTarget(target)
+        self._architecture = architecture if isinstance(architecture, Architecture) else Architecture(architecture)
+
+    @property
+    def toolchain_id(self) -> ToolchainId:
+        '''Toolchain ID to'''
+        return self._toolchain
+
+    @cached_property
+    def toolchain_config(self) -> ToolchainConfig:
+        return ToolchainConfigs.TOOLCHAINS[self.toolchain_id]
+
+    def cmake_project_type(self, build_type:str='nmake') -> str:
+        if (build_type == 'vs'):
+            project_type = self.toolchain_config.name
+            if not self.toolchain_config.cmake_use_arch:
+                if (self.architecture == Architecture.x64):
+                    project_type += ' Win64'
+                elif (self.architecture == Architecture.x86):
+                    project_type += ' Win32'
+                elif (self.architecture == Architecture.arm):
+                    project_type += ' ARM'
+                elif (self.architecture == Architecture.arm64):
+                    project_type += ' ARM64'
+                else:
+                    raise Exception(f'Invalid architecture: {self.architecture}')
+            return project_type
+        return 'NMake Makefiles'
+
+    def cmake_a_option(self, build_type:str='nmake') -> str:
+        if (build_type == 'vs'):
+            if not self.toolchain_config.cmake_use_arch:
+                if (self.architecture == Architecture.x64):
+                    return '-A x64'
+                elif (self.architecture == Architecture.x86):
+                    return '-A Win32'
+                elif (self.architecture == Architecture.arm):
+                    return '-A ARM'
+                elif (self.architecture == Architecture.arm64):
+                    return ' -A ARM64'
+                else:
+                    raise Exception(f'Invalid architecture: {self.architecture}')
+        return ''
+
+    @cached_property
+    def toolchain_env(self) -> dict[str,str]:
+        rv = subprocess.check_output(f'"{self.toolchain.vcvars}" {self.toolchain.vcvars_opt} && set', shell=True).decode()
+        kvp = {}
+        for l in rv.split('\n'):
+            if l.find('=') < 0:
+                continue
+            tmp = l.split('=')
+            kvp[tmp[0]] = tmp[1].replace('\r', '')
+        return kvp
+
+    @cached_property
+    def dev_env_dir(self) -> PathBuilder:
+        return PathBuilder(self.toolchain_env['DevEnvDir'])
+
+    @cached_property
+    def dev_env(self) -> PathBuilder:
+        return self.dev_env_dir.add('devenv.com')
+
+    @property
+    def cmake_archtitecture_options(self) -> str:
+        if (self.architecture == Architecture.x64):
+            return '-DWIN64=1'
+        if (self.architecture == Architecture.arm64):
+            return '-D_M_ARM64=1 -DCMAKE_SYSTEM_VERSION=10.0'
+        if (self.architecture == Architecture.arm):
+            return '-DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0'
+        if (self.architecture == Architecture.x86):
+            return '-DWIN32=1'
+        return ''
+
+    @cached_property
+    def toolchain(self) -> Toolchain:
+        return self.toolchain_config.toolchains[self.architecture]
+
+    @property
+    def architecture(self) -> Architecture:
+        '''Build architecture (x86/x64/arm64/arm)'''
+        return self._architecture
+
+    @property
+    def target(self) -> BuildTarget:
+        '''Build target (Release/RelWithDebInfo/Debug)'''
+        return self._target
+
+    @property
+    def is_release(self) -> bool:
+        return (self.target == BuildTarget.Release) or (self.target == BuildTarget.ReleaseWithDebugSymbols)
+
+    @property
+    def is_debug(self) -> bool:
+        return (self.target == BuildTarget.Debug)
+
+    @cached_property
+    def script_path(self) -> PathBuilder:
+        '''This script'''
+        return PathBuilder(getsourcefile(lambda:0))
+    
+    @cached_property
+    def script_dir(self) -> PathBuilder:
+        '''Directory of this script'''
+        parent = self.script_path.parent()
+        if (parent is None):
+            raise Exception("Can't find base path")
+        return parent
+
+    @cached_property
+    def repo_dir(self) -> PathBuilder:
+        '''Repository base directory'''
+        parent = self.script_dir.parent()
+        if (parent is None):
+            raise Exception("Can't find base path")
+        return parent
+
+    @cached_property
+    def build_dir(self) -> PathBuilder:
+        '''C/C++ library build directory'''
+        return self.repo_dir.add('build')
+
+    @cached_property
+    def dotnet_build_dir(self) -> PathBuilder:
+        '''.Net build directory'''
+        return self.repo_dir.add('src/dotnet/build')
+
+    def dump(self) -> None:
+        logger.info("============================================================")
+        logger.info(f'Target:               {self.target.value}')
+        try:
+            logger.info(f'Toolchain:            {self.toolchain_config.name}')
+        except:
+            raise Exception(f"Invalid toolchain id: {self.toolchain_id.value}")
+
+        if not self.architecture in self.toolchain_config.toolchains:
+            raise Exception(f"Invalid architecture for toolchain: {self.architecture.value}")
+
+        try:
+            self.toolchain_env
+        except:
+            raise Exception(f"Invalid toolchain id: {self.toolchain_id.value}/{self.architecture.value} is not installed")
+
+        logger.info(f'Architecture:         {self.architecture.value}')
+        logger.info(f'Build Directory:      {self.build_dir}')
+        logger.info(f'.Net Build Directory: {self.dotnet_build_dir}')
+        logger.info(f"DevEnvDir:            {self.dev_env_dir}")
+        logger.info("============================================================")
+
+class CMakeBuilder:
+    def __init__(self, config:BuilderConfig, build_dir:str|PathBuilder, build_type:str='nmake', static_lib:bool=False, check_results:list[str]=[], build_dotnet:bool=False) -> None:
+        self.config = config
+        self.build_type = build_type
+        self.static_lib = static_lib
+        self.build_dir = build_dir
+        self._check_results = check_results
+        # when set, this cmake build also builds the managed .NET binding + apps
+        # (ENABLE_DOTNET_*), so create-installer.py no longer shells out to dotnet
+        # itself. Only enabled for the main shared build, not the static library
+        # or the EventGhost x86 helper.
+        self.build_dotnet = build_dotnet
+
+    def _dotnet_options(self) -> str:
+        # managed assemblies are net8.0 IL; only build them for the shipping
+        # x64/x86 installers, and only from the shared build (the static rebuild
+        # would just repeat the no-op).
+        if self.build_type != 'nmake' or self.config.architecture not in (Architecture.x64, Architecture.x86):
+            return ''
+        if not self.build_dotnet or self.static_lib:
+            return '-DENABLE_DOTNET_LIB=0 -DENABLE_DOTNET_APPS=0'
+        return f'-DENABLE_DOTNET_LIB=1 -DENABLE_DOTNET_APPS=1 -DDOTNET_ARCH={self.config.architecture.value}'
+
+    @cached_property
+    def target_dir(self) -> PathBuilder:
+        return self.config.build_dir.add(f'{self.config.target.value}/{self.config.architecture.value}')
+
+    @cached_property
+    def gen_dir(self) -> PathBuilder:
+        return self.target_dir.add('cmake').add(self.build_dir.filename)
+
+    def needs_compilation(self) -> bool:
+        if (len(self._check_results) == 0):
+            return True
+        try:
+            self.check_results()
+            logger.debug(f"all files exist {self._check_results}")
+            return False
+        except:
+            return True
+
+    def check_results(self) -> None:
+        for f in self._check_results:
+            f = self.target_dir.add(f)
+            f.clear_cache()
+            if not f.exists:
+                raise Exception(f"file {f.path} does not exist")
+
+    def clean(self) -> None:
+        self.target_dir.delete()
+
+    def prepare(self) -> None:
+        self.gen_dir.mkdir()
+
+    def compile(self) -> list[str]:
+        self.prepare()
+        cmake = PathBuilder(ToolchainConfigs.CMAKE)
+        skip_python = f'-DSKIP_PYTHON_WRAPPER={1 if self.config.is_debug else 0}'
+        build_shared = f'-DBUILD_SHARED_LIBS={0 if self.static_lib else 1}'
+        overrides = self.config.repo_dir.add(r'support\windows\cmake')
+        compile_cmd = ' && nmake install' if (self.build_type == 'nmake') else ''
+        cmd_args = f'-G "{self.config.cmake_project_type(build_type=self.build_type)}" {self.config.cmake_a_option(build_type=self.build_type)} ' + \
+            f'-DCMAKE_BUILD_TYPE={self.config.target.value} ' + \
+            f'-DCMAKE_USER_MAKE_RULES_OVERRIDE="{overrides.add("c-flag-overrides.cmake")}" ' + \
+            f'-DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX="{overrides.add("cxx-flag-overrides.cmake")}" ' + \
+            f'-DCMAKE_INSTALL_PREFIX="{self.target_dir}" ' + \
+            f'-DCMAKE_INCLUDE_PATH="{self.target_dir.add('include')}" ' + \
+            f'{skip_python} {build_shared} {self._dotnet_options()} {self.config.cmake_archtitecture_options} {self.build_dir}'
+        cmd = f'"{self.config.toolchain.vcvars}" {self.config.toolchain.vcvars_opt} && "{cmake}" {cmd_args} {compile_cmd}'
+        return exec_command(cmd, cwd=str(self.gen_dir), capture_output=True)
+
+class LibCecLibBuilder:
+    def __init__(self, config:BuilderConfig, buildType:str='nmake', staticlib:bool=False, build_dotnet:bool=False) -> None:
+        self.config = config
+        self.buildType = buildType
+        self.staticlib = staticlib
+        self.builder = CMakeBuilder(config=self.config, build_dir=self.config.repo_dir, static_lib=self.staticlib, build_type=buildType, check_results=[self.libfile_name], build_dotnet=build_dotnet)
+
+    def clean(self) -> None:
+        self.builder.clean()
+
+    def build(self) -> None:
+        if (self.buildType != 'vs') and (not self.builder.needs_compilation()):
+            logger.debug(f"* skipping {'static ' if self.staticlib else ''}libCEC C/C++/Python {self.config.target.value} for {self.config.architecture.value}")
+            return
+
+        logger.info(f"* compiling {'static ' if self.staticlib else ''}libCEC C/C++/Python {self.config.target.value} for {self.config.architecture.value}")
+        rv = []
+        try:
+            rv = self.builder.compile()
+            if (self.buildType != 'vs'):
+                self.builder.check_results()
+            else:
+                logger.info(f"* project files generated in {self.builder.gen_dir}")
+        except Exception as e:
+            logger.warning(e)
+            for line in rv:
+                print(line)
+            raise Exception('Failed to build cec library')
+
+    @property
+    def libfile_name(self) -> str:
+        # the install tree follows GNUInstallDirs: cec.dll in bin/, the import
+        # library in lib/. The static library is cec-static.lib, so it cannot
+        # overwrite the DLL's import library of the same name.
+        return 'lib/cec-static.lib' if self.staticlib else 'bin/cec.dll'
+
+    @property
+    def libfile(self) -> PathBuilder:
+        return self.builder.target_dir.add(self.libfile_name)
+
+    @property
+    def version(self) -> LibVersion|None:
+        # read the version straight from the file NSIS itself uses
+        # (project/nsis/libcec-version.nsh, generated from the .in by cmake during
+        # the build). Reading the file each call - rather than `import version`,
+        # whose module stays cached at the pre-bump value once loaded (e.g. at the
+        # clean step) - keeps the installer's filename in step with what NSIS
+        # actually writes across a version bump.
+        import re
+        nsh = self.config.repo_dir.add('project/nsis/libcec-version.nsh')
+        try:
+            text = open(str(nsh), encoding='utf-8').read()
+        except:
+            return None
+        m = re.search(r'LIBCEC_VERSION_STRING\s+"(\d+)\.(\d+)\.(\d+)"', text)
+        if m is None:
+            return None
+        _major, _minor, _patch = (int(g) for g in m.groups())
+        class _NshVersion(LibVersion):
+            @property
+            def major(self) -> int: return _major
+            @property
+            def minor(self) -> int: return _minor
+            @property
+            def patch(self) -> int: return _patch
+        return _NshVersion()
+
+class NsisBuilder:
+    def __init__(self, config:BuilderConfig, project:PathBuilder, options:str=''):
+        self.config = config
+        self.project = project
+        self.options = options
+        self.nsis = PathBuilder(r'%ProgramFiles%\NSIS\makensis.exe')
+        if not self.nsis.exists:
+            self.nsis = PathBuilder(r'%ProgramFiles(x86)%\NSIS\makensis.exe')
+        if not self.nsis.exists:
+            raise Exception("nsis not found")
+
+    def build(self) -> tuple[bytes, bytes]|list[str]:
+        self.config.repo_dir.add(r'support\windows\p8-usbcec-driver-installer.exe').copy(self.config.build_dir.add('p8-usbcec-driver-installer.exe'))
+        self.config.repo_dir.add(r'support\windows\p8-usbcec-bootloader-driver-installer.exe').copy(self.config.build_dir.add('p8-usbcec-bootloader-driver-installer.exe'))
+        self.config.repo_dir.add(r'support\windows\libusb0.dll').copy(self.config.build_dir.add('libusb0.dll'))
+        self.config.build_dir.add('ref').delete()
+        env = self.config.repo_dir.add('project')
+        return exec_command(f'"{self.nsis}" /V1 {self.options} {self.project}', cwd=str(env))
+
+class EventGhost:
+    def __init__(self, config:BuilderConfig, libcec:LibCecLibBuilder) -> None:
+        self.config = config
+        self.libcec = libcec
+
+    @cached_property
+    def libcec_x86(self) -> LibCecLibBuilder:
+        '''the plugin always embeds the x86 library, whatever the build architecture is'''
+        if (self.libcec.config.architecture == Architecture.x86):
+            return self.libcec
+        config = BuilderConfig(toolchain=self.config.toolchain_id, target=self.config.target, architecture=Architecture.x86)
+        return LibCecLibBuilder(config=config)
+
+    def _libcec_x86(self) -> None:
+        if (self.libcec_x86 is self.libcec):
+            return
+        self.libcec_x86.build()
+        self.libcec = self.libcec_x86
+
+    @property
+    def build_dir(self) -> PathBuilder:
+        return self.config.build_dir.add('EventGhost')
+
+    @property
+    def plugin_build_dir(self) -> PathBuilder:
+        return self.build_dir.add('egplugin_sources')
+
+    @property
+    def plugin(self) -> PathBuilder:
+        return self.build_dir.add('pulse_eight.egplugin')
+
+    def clean(self) -> None:
+        self.libcec.clean()
+        self.libcec_x86.clean()
+        self.build_dir.delete()
+
+    def prepare(self) -> None:
+        self.build_dir.mkdir()
+        self._libcec_x86()
+        plg_sources = self.config.repo_dir.add('src/eventghost/egplugin_sources')
+        plg_sources.copy(self.build_dir.add('egplugin_sources'))
+        plg_sources = self.build_dir.add('egplugin_sources')
+        cec_sources = self.build_dir.add('PulseEight/cec')
+        self.libcec.builder.target_dir.add('python/cec/cec.py').copy(cec_sources)
+        self.libcec.builder.target_dir.add('python/cec/_pycec.pyd').copy(cec_sources)
+        self.libcec.builder.target_dir.add('python/cec/__init__.py').copy(cec_sources)
+        self.libcec.libfile.copy(cec_sources)
+
+    def build(self) -> None:
+        logger.info("* creating EventGhost plugin")
+        self.prepare()
+        cmd = f'PowerShell -ExecutionPolicy ByPass -Command "Add-Type -Assembly System.IO.Compression.FileSystem;[System.IO.Compression.ZipFile]::CreateFromDirectory(\'{str(self.plugin_build_dir)}\', \'{str(self.plugin)}\', [System.IO.Compression.CompressionLevel]::Optimal, $false)"'
+        exec_command(cmd, cwd=str(self.build_dir))
+        if not self.plugin.exists:
+            raise Exception(f"Failed to create EventGhost plugin {self.plugin}")
+
+class NodeJsBuilder:
+    '''Builds the native Node.js addon (src/nodejs) and stages a self-contained,
+    ready-to-require package under the install tree so the installer can ship a
+    prebuilt binding. The addon is N-API (ABI-stable), so one prebuilt works for
+    any Node >= 16. Skipped where there is nothing to build against - no Node on
+    PATH, or an architecture with no addon - and a hard error otherwise, so a
+    broken addon cannot silently drop out of the installer. -nn skips it.
+
+    x64 only: Node dropped its 32-bit Windows builds in v23, so node-gyp cannot
+    fetch an ia32 node.lib and there is nothing to link a 32-bit addon against.
+    The x86 installers therefore carry no Node.js component at all, which
+    project/nsis/sections.nsh mirrors so the option cannot be offered without a
+    payload behind it.'''
+
+    # no addon for x86 (see above) or for arm/arm64
+    _GYP_ARCH = { Architecture.x64: 'x64' }
+
+    def __init__(self, config:BuilderConfig, libcec:LibCecLibBuilder) -> None:
+        self.config = config
+        self.libcec = libcec
+
+    @cached_property
+    def src_dir(self) -> PathBuilder:
+        return self.config.repo_dir.add('src/nodejs')
+
+    @cached_property
+    def addon(self) -> PathBuilder:
+        return self.src_dir.add('build/Release/cec_native.node')
+
+    @cached_property
+    def staging_dir(self) -> PathBuilder:
+        '''where the shippable package is assembled (picked up by NSIS as
+        ${BINARY_SOURCE_DIR}\\nodejs)'''
+        return self.libcec.builder.target_dir.add('nodejs')
+
+    def _compile(self) -> bool:
+        node = shutil.which('node')
+        gyp = self.src_dir.add('node_modules/node-gyp/bin/node-gyp.js')
+        # the addon includes libCEC's (flat) headers and links cec.lib; point it
+        # at the repo headers and at this build's lib/, where the import library
+        # is (the DLL is in bin/, and node-gyp only needs the .lib to link)
+        inc = self.config.repo_dir.add('include')
+        lib = self.libcec.builder.target_dir.add('lib')
+        gyp_arch = self._GYP_ARCH[self.config.architecture]
+        cmd = 'cmd /c "' + \
+            f'set "LIBCEC_INCLUDE_DIR={inc}" && set "LIBCEC_LIB_DIR={lib}" && ' + \
+            'npm install --ignore-scripts && ' + \
+            f'"{node}" "{gyp}" rebuild --arch={gyp_arch}"'
+        rv = exec_command(cmd, cwd=str(self.src_dir), capture_output=True)
+        self.addon.clear_cache()
+        if not self.addon.exists:
+            logger.error("* Node.js addon build failed:")
+            for line in rv:
+                print(line)
+            return False
+        return True
+
+    def _stage(self) -> None:
+        self.staging_dir.delete()
+        for d in ('lib', 'client', 'example'):
+            self.src_dir.add(d).copy(self.staging_dir.add(d))
+        for f in ('package.json', 'README.md'):
+            self.src_dir.add(f).copy(self.staging_dir.add(f))
+        # the addon plus a co-located cec.dll (Windows loads a .node with
+        # LOAD_WITH_ALTERED_SEARCH_PATH, so its dependencies resolve from its own
+        # directory - no need for the install dir to be on PATH)
+        release = self.staging_dir.add('build/Release')
+        release.mkdir()
+        self.addon.copy(release.add('cec_native.node'))
+        self.libcec.libfile.copy(release.add('cec.dll'))
+
+    def build(self) -> bool:
+        if self.config.architecture not in self._GYP_ARCH:
+            logger.info(f"* skipping Node.js binding: no addon for {self.config.architecture.value}")
+            return False
+        if shutil.which('node') is None:
+            logger.info("* skipping Node.js binding: node not found on PATH")
+            return False
+        logger.info("* building the Node.js binding")
+        # A machine without Node is a skip, above; getting this far and failing is
+        # not, so raise rather than quietly drop the component from the installer.
+        if not self._compile():
+            raise Exception('Failed to build the Node.js addon')
+        self._stage()
+        return True
+
+class LibCecInstallerBuilder:
+    def __init__(self, toolchain:str|ToolchainId, target:str|BuildTarget, architecture:str|Architecture, installer:bool, clean:bool, eventghost:bool, visual_studio:bool, nodejs:bool) -> None:
+        self.config = BuilderConfig(toolchain=toolchain, target=target, architecture=architecture)
+        self._installer = installer
+        self._clean = clean
+        self._eventghost = eventghost if self.config.is_release else False
+        self._visual_studio = visual_studio
+        self._nodejs_enabled = nodejs
+        # set once the prebuilt Node.js addon has actually been staged
+        self._nodejs = False
+        self.libcec = LibCecLibBuilder(config=self.config, buildType=('vs' if visual_studio else 'nmake'), build_dotnet=True)
+
+    @cached_property
+    def signer(self) -> 'codesigner.CodeSigner|None':
+        if not codesigner.enabled():
+            return None
+        signer = codesigner.CodeSigner(repo_dir=self.config.repo_dir)
+        signer.prepare()
+        return signer
+
+    def sign_binaries(self) -> None:
+        '''Sign what the installer is about to package. Runs before makensis so
+        the payload is signed inside the installer, not just the installer.'''
+        if self.signer is None:
+            logger.info("* not signing binaries: AZURE_SIGNING_JSON is not set")
+            return
+        self.signer.sign(codesigner.signable(self.libcec.builder.target_dir))
+
+    @property
+    def _options(self) -> str:
+        opts = '/DNSISDOTNETAPPS /DNSISEVENTGHOST' if self._eventghost else ''
+        if self.config.is_debug:
+            opts += ' /DNSISINCLUDEPDB'
+        if (self.config.architecture == Architecture.x86):
+            opts += ' /DNSIS_X86'
+        if self._nodejs:
+            opts += ' /DNSISNODEJS'
+        return opts
+
+    @property
+    def installer_file(self) -> PathBuilder:
+        # not cached: the version is only final after the build regenerates
+        # version.py, so an early access (the clean step) must not freeze the name
+        version = self.libcec.version
+        if (version is None):
+            raise Exception("Can't detect libCEC version")
+        dbg = '-dbg' if self.config.is_debug else ''
+        return self.config.repo_dir.add(f'dist/libcec-{self.config.architecture.value}{dbg}-{str(version)}.exe')
+
+    def create_installer(self) -> None:
+        self.sign_binaries()
+        logger.info(f"* creating {self.installer_file}")
+        self.config.repo_dir.add('dist').mkdir()
+        rv = NsisBuilder(config=self.config, project=self.config.repo_dir.add('project/libCEC.nsi'), options=self._options).build()
+        self.installer_file.clear_cache()   # makensis just wrote it; exists is cached
+        if (not self.installer_file.exists):
+            for line in rv:
+                print(line)
+            raise Exception('Failed to create installer')
+        # the payload was signed before packaging and libCEC.nsi signed the
+        # uninstaller through the shim; the installer itself only exists now
+        if self.signer is not None:
+            self.signer.sign([str(self.installer_file)])
+            self.signer.cleanup()
+
+    def _check_dotnet(self) -> None:
+        # the managed binding + apps are built by cmake as part of the shared
+        # libCEC build (ENABLE_DOTNET_*); make sure they actually landed.
+        if self.config.architecture not in (Architecture.x64, Architecture.x86):
+            return
+        net = self.libcec.builder.target_dir.add(str(ToolchainConfigs.NETCORE))
+        for name in ('LibCecSharp.dll', 'CecSharpTester.exe', 'cec-tray.exe'):
+            f = net.add(name)
+            f.clear_cache()
+            if not f.exists:
+                raise Exception(f"managed .Net build did not produce {f.path}")
+
+    def build(self) -> None:
+        self.config.dump()
+
+        eventghost = EventGhost(config=self.config, libcec=self.libcec)
+
+        if self._eventghost or self._clean:
+            logger.info("* cleaning build files")
+
+        if self._eventghost:
+            eventghost.clean()
+        if self._clean:
+            # the version comes from a cmake-generated file, so it is unknown
+            # until the first build in this tree, and no installer to remove can
+            # exist yet either
+            if self._installer and self.libcec.version is not None:
+                self.installer_file.delete()
+            # this also removes the managed net8.0 outputs under the target dir
+            self.libcec.clean()
+
+        # the shared libCEC build also builds the managed .Net binding + apps via
+        # cmake (ENABLE_DOTNET_LIB / ENABLE_DOTNET_APPS)
+        self.libcec.build()
+        if not self._visual_studio:
+            self.libcec.staticlib = True
+            self.libcec.build()
+            self.libcec.staticlib = False
+
+            self._check_dotnet()
+
+            if self._nodejs_enabled:
+                self._nodejs = NodeJsBuilder(config=self.config, libcec=self.libcec).build()
+
+            if self._eventghost:
+                eventghost.build()
+
+            if self._installer:
+                self.create_installer()
+
+if __name__ == '__main__':
+    argparser = argparse.ArgumentParser(description="libCEC Windows Builder")
+    argparser.add_argument('-t', '--toolchain',  dest='toolchain', help='Toolchain ID', choices=ToolchainId.as_list(), default=ToolchainId.default(), required=False)
+    argparser.add_argument('-m', '--mode', dest='mode', help='Build Mode', choices=BuildTarget.as_list(), default=BuildTarget.default(), required=False)
+    argparser.add_argument('-a', '--arch', dest='arch', help='Build Architecture', choices=Architecture.as_list(), default=Architecture.default(), required=False)
+    argparser.add_argument('-nc', '--no-clean', dest='no_clean', help="Don't clean before compiling (skips existing binaries)", action='store_true', default=None)
+    argparser.add_argument('-ne', '--no-eventghost', dest='no_eventghost', help="Don't create the EventGhost plugin", action='store_true', default=None)
+    argparser.add_argument('-nn', '--no-nodejs', dest='no_nodejs', help="Don't build the Node.js binding", action='store_true', default=None)
+    argparser.add_argument('-ni', '--no-installer', dest='no_installer', help="Don't create an installer", action='store_true', default=None)
+    argparser.add_argument('-v', '--verbose', dest='verbose', help='Echo the output of the commands the build runs', action='store_true', default=False)
+    argparser.add_argument('-vs', dest='visual_studio', help="Create Visual Studio projects", action='store_true', default=None)
+    args = argparser.parse_args()
+    mixins.VERBOSE = args.verbose
+    installer = LibCecInstallerBuilder(
+        toolchain=args.toolchain,
+        target=args.mode,
+        architecture=args.arch,
+        installer=(args.no_installer is None),
+        clean=(args.no_clean is None),
+        eventghost=(args.no_eventghost is None),
+        visual_studio=(args.visual_studio is not None),
+        nodejs=(args.no_nodejs is None))
+    installer.build()

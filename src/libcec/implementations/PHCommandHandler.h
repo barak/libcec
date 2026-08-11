@@ -34,13 +34,13 @@
 
 #include "env.h"
 #include "CECCommandHandler.h"
-#include "p8-platform/threads/threads.h"
+#include "platform/threads/threads.h"
 
 namespace CEC
 {
   class CPHCommandHandler;
 
-  class CImageViewOnCheck : public P8PLATFORM::CThread
+  class CImageViewOnCheck : public CThread
   {
   public:
     CImageViewOnCheck(CPHCommandHandler* handler):
@@ -51,7 +51,7 @@ namespace CEC
 
   private:
     CPHCommandHandler* m_handler;
-    P8PLATFORM::CEvent m_event;
+    CEvent             m_event;
   };
 
   class CPHCommandHandler : public CCECCommandHandler
@@ -68,12 +68,29 @@ namespace CEC
     bool InitHandler(void);
 
   protected:
+    /**
+     * How far the TV is into its power-up sequence. It routes 0.0.0.0 to 0.0.0.0 first, and
+     * settles on the HDMI port it was last on second.
+     */
+    enum PHPowerUpState
+    {
+      PH_POWER_UNKNOWN,
+      PH_POWERING_UP,
+      PH_POWERED_UP
+    };
+
     virtual bool ActivateSource(bool bTransmitDelayedCommandsOnly = false);
     virtual int HandleUserControlPressed(const cec_command& command);
     virtual int HandleUserControlRelease(const cec_command& command);
-    virtual bool TransmitVendorID(const cec_logical_address iInitiator, const cec_logical_address iDestination, uint64_t iVendorId, bool bIsReply);
     virtual int HandleDeviceVendorId(const cec_command& command);
+    virtual int HandleRoutingChange(const cec_command& command);
+    virtual int HandleSetStreamPath(const cec_command& command);
+    virtual int HandleStandby(const cec_command& command);
+
+    bool ClaimRouteWhilePoweringUp(const cec_command& command, uint16_t iOldAddress, uint16_t iNewAddress);
+
     uint8_t            m_iLastKeyCode;
     CImageViewOnCheck* m_imageViewOnCheck;
+    PHPowerUpState     m_powerUpState;
   };
 };

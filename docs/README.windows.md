@@ -1,43 +1,59 @@
 ## Microsoft Windows
 
-### Developing a .Net Framework application
-To develop a .Net Framework application that uses LibCecSharp:
+### Developing a .Net application
+To develop a .Net application that uses LibCecSharp:
 * download the latest binary version from [our website](http://libcec.pulse-eight.com/Downloads)
-* add a reference to LibCecSharp.dll for the target architecture (x86/amd64). It's installed to `C:\Program Files (x86)\Pulse-Eight\USB-CEC Adapter\netfx` by default
-* the minimum .Net Framework version required for LibCecSharp is 4.0
-
-An example implementation can be found on [Github](https://github.com/Pulse-Eight/cec-dotnet/tree/master/src/CecSharpTester/netfx/).
-
-### Developing a .Net Core application
-To develop a .Net Core application that uses LibCecSharp:
-* download the latest binary version from [our website](http://libcec.pulse-eight.com/Downloads)
-* add a reference to LibCecSharpCore.dll for the target architecture (x86/amd64). It's installed to `C:\Program Files (x86)\Pulse-Eight\USB-CEC Adapter\netcore` by default
-* the minimum .Net Core version required for LibCecSharpCore is 3.1
+* add a reference to `LibCecSharp.dll`. It's installed to `C:\Program Files (x86)\Pulse-Eight\USB-CEC Adapter\net8.0` by default
+* the minimum .Net version required for LibCecSharp is 8.0. `LibCecSharp` is now a single pure-C# assembly (namespace `CecSharp`) — the old C++/CLI `LibCecSharp` (.NET Framework) and `LibCecSharpCore` (net8.0) wrappers have been replaced by this one binding. It also builds and runs on Linux/macOS/Raspberry Pi.
+* WinForms/WPF apps target `net8.0-windows`; console/service apps target `net8.0`
+* running a .Net app that uses it needs the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0) (the installer offers to install it for you)
 
 An example implementation can be found on [Github](https://github.com/Pulse-Eight/cec-dotnet/tree/master/src/CecSharpTester/netcore/).
 
+### Developing a Node.js application
+The **x64** installer (`libcec-x64-<version>.exe`) ships an optional "libCEC for
+Node.js" component: a prebuilt native N-API addon plus its JavaScript wrapper,
+installed to `C:\Program Files\Pulse-Eight\USB-CEC Adapter\nodejs`. Because the
+addon is N-API (ABI-stable) it works with any Node.js >= 16 without recompiling.
+Point your app at it (e.g.
+`require('C:/Program Files/Pulse-Eight/USB-CEC Adapter/nodejs')`); the matching
+`cec.dll` sits next to the addon, so no `PATH` changes are needed. See
+[src/nodejs/README.md](../src/nodejs/README.md) for the API.
+
+The **x86** installer does not offer the component at all. Node.js has had no
+32-bit Windows build since v23, so there is no `node.lib` to link a 32-bit addon
+against. Use the x64 installer if you need the Node.js binding.
+
+To build the addon yourself from a repo checkout you need Node.js and a C++
+toolchain (`node-gyp`). Point it at libCEC's headers and import library with the
+`LIBCEC_INCLUDE_DIR` / `LIBCEC_LIB_DIR` environment variables:
+```
+cd src\nodejs
+set LIBCEC_INCLUDE_DIR=..\..\include
+set LIBCEC_LIB_DIR=..\..\build\Release\x64\lib
+npm install
+```
+`create-installer.py` does exactly this and stages the result (for x64 builds
+only); pass `-nn` to skip building the Node.js binding.
+
 ### Prerequisites
 To compile libCEC on Windows, you'll need the following dependencies:
-* [p8-platform](https://github.com/Pulse-Eight/platform) 2.0 or later
-* [cmake 3.12 or newer](http://www.cmake.org/)
-* [Visual Studio 2019 (v16) or newer](https://www.visualstudio.com/), with the following options selected: Universal Windows Platform development, Desktop development with C++, .NET Core cross platform development
-* [.Net Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+* [cmake 3.12 or newer](https://www.cmake.org/)
+* [Visual Studio 2022 (v17) or newer](https://www.visualstudio.com/) (2017 and 2019 are also supported), with the following options selected: Desktop development with C++ and .NET desktop development
+* [.Net 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+* [Python 3.12 or newer](https://www.python.org/), used by the build orchestrator
 * To create an installer, you'll need [Nullsoft's NSIS](http://nsis.sourceforge.net/)
-* You also need two versions of Python to build an installer: [Python 2.7.13 for x86](https://www.python.org/ftp/python/2.7.13/python-2.7.13.msi), required by the EventGhost plugin and [Python 3.6 or newer for x64](https://www.python.org/)
-
-### Visual Studio
-The build scripts have been configured for building with Visual Studio 2019. To use another version Visual Studio, pass the verion number as parameter: `windows\visual-studio.cmd 2019`
 
 ### Compilation
 To only compile libCEC, follow these instructions:
 * `git submodule update --init --recursive`
-* run `windows\build-all.cmd` to build libCEC and LibCecSharp
+* run `python windows\create-installer.py -ni` to build libCEC and LibCecSharp
 
 To develop for libCEC in Visual Studio:
 * `git submodule update --init --recursive`
-* run `windows\visual-studio.cmd`
+* run `python windows\create-installer.py -vs`
 
 To build an installer on Windows:
 * `git submodule update --init --recursive`
-* run `windows\create-installer.cmd`
-* the installer is stored as `build\libCEC-VERSION.exe`
+* run `python windows\create-installer.py`
+* the installer is stored as `dist\libcec-<arch>-<version>.exe`
