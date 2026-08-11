@@ -32,19 +32,19 @@
  */
 
 #include "env.h"
+#include "platform/util/timeutils.h"
 #include "CECCommandHandler.h"
 
 #include "devices/CECBusDevice.h"
 #include "devices/CECAudioSystem.h"
 #include "devices/CECPlaybackDevice.h"
+#include "devices/CECTV.h"
 #include "CECClient.h"
 #include "CECProcessor.h"
 #include "LibCEC.h"
 #include "CECTypeUtils.h"
-#include "p8-platform/util/util.h"
 
 using namespace CEC;
-using namespace P8PLATFORM;
 
 #define LIB_CEC     m_busDevice->GetProcessor()->GetLib()
 #define ToString(p) CCECTypeUtils::ToString(p)
@@ -61,7 +61,6 @@ CCECCommandHandler::CCECCommandHandler(CCECBusDevice *busDevice,
     m_iTransmitWait(iTransmitWait),
     m_iTransmitRetries(iTransmitRetries),
     m_bHandlerInited(false),
-    m_bOPTSendDeckStatusUpdateOnActiveSource(false),
     m_vendorId(CEC_VENDOR_UNKNOWN),
     m_iActiveSourcePending(iActiveSourcePending),
     m_iPowerStatusRequested(0)
@@ -551,9 +550,18 @@ int CCECCommandHandler::HandleRequestActiveSource(const cec_command &command)
     LIB_CEC->AddLog(CEC_LOG_DEBUG, ">> %i requests active source", (uint8_t) command.initiator);
     m_processor->GetDevice(command.initiator)->SetPowerStatus(CEC_POWER_STATUS_ON);
 
-    std::vector<CCECBusDevice *> devices;
-    for (size_t iDevicePtr = 0; iDevicePtr < GetMyDevices(devices); iDevicePtr++)
-      devices[iDevicePtr]->TransmitActiveSource(true);
+    // don't announce the active source while the TV is off, or devices such as AV
+    // receivers can be woken up again right after the TV was switched off. always
+    // respond when the TV itself is asking, since it's waking up in that case
+    cec_power_status tvPower = m_processor->GetTV()->GetCurrentPowerStatus();
+    if (command.initiator == CECDEVICE_TV ||
+        (tvPower != CEC_POWER_STATUS_STANDBY &&
+         tvPower != CEC_POWER_STATUS_IN_TRANSITION_ON_TO_STANDBY))
+    {
+      std::vector<CCECBusDevice *> devices;
+      for (size_t iDevicePtr = 0; iDevicePtr < GetMyDevices(devices); iDevicePtr++)
+        devices[iDevicePtr]->TransmitActiveSource(true);
+    }
   }
 
   return COMMAND_HANDLED;
@@ -620,9 +628,12 @@ int CCECCommandHandler::HandleSetOSDName(const cec_command &command)
     if (device)
     {
       char buf[17];
-      for (uint8_t iPtr = 0; iPtr < command.parameters.size; iPtr++)
+      uint8_t iLen = command.parameters.size;
+      if (iLen > sizeof(buf) - 1)
+        iLen = sizeof(buf) - 1;
+      for (uint8_t iPtr = 0; iPtr < iLen; iPtr++)
         buf[iPtr] = (char)command.parameters[iPtr];
-      buf[command.parameters.size] = 0;
+      buf[iLen] = 0;
 
       std::string strName(buf);
       device->SetOSDName(strName);
@@ -901,13 +912,12 @@ void CCECCommandHandler::SetPhysicalAddress(cec_logical_address iAddress, uint16
 
     /* another device reported the same physical address as ours */
     if (client)
-    {
-      libcec_parameter param;
-      param.paramType = CEC_PARAMETER_TYPE_STRING;
-      param.paramData = (void*)"Physical address in use by another device. Please verify your settings";
-      client->Alert(CEC_ALERT_PHYSICAL_ADDRESS_ERROR, param);
-      client->ResetPhysicalAddress();
-    }
+      client->PhysicalAddressInUse(iAddress);
+
+    // a client that derives its address from this device can resolve it now
+    std::vector<CECClientPtr> clients = m_processor->GetLib()->GetClients();
+    for (std::vector<CECClientPtr>::iterator it = clients.begin(); it != clients.end(); ++it)
+      (*it)->RefreshPhysicalAddress(iAddress);
   }
   else
   {
@@ -1211,6 +1221,15 @@ bool CCECCommandHandler::TransmitKeyRelease(const cec_logical_address iInitiator
   return Transmit(command, !bWait, false);
 }
 
+bool CCECCommandHandler::TransmitPlay(const cec_logical_address iInitiator, const cec_logical_address iDestination, cec_play_mode mode)
+{
+  cec_command command;
+  cec_command::Format(command, iInitiator, iDestination, CEC_OPCODE_PLAY);
+  command.parameters.PushBack((uint8_t)mode);
+
+  return Transmit(command, false, false);
+}
+
 bool CCECCommandHandler::TransmitSystemAudioModeRequest(const cec_logical_address iInitiator, uint16_t iPhysicalAddress)
 {
   cec_command command;
@@ -1328,14 +1347,6 @@ bool CCECCommandHandler::ActivateSource(bool bTransmitDelayedCommandsOnly /* = f
       bActiveSourceFailed = !m_busDevice->TransmitActiveSource(false);
       if (bTvPresent && !bActiveSourceFailed)
         m_busDevice->TransmitMenuState(CECDEVICE_TV, false);
-
-      // update the deck status for playback devices
-      if (bTvPresent && !bActiveSourceFailed)
-      {
-        CCECPlaybackDevice *playbackDevice = m_busDevice->AsPlaybackDevice();
-        if (playbackDevice && SendDeckStatusUpdateOnActiveSource())
-          bActiveSourceFailed = !playbackDevice->TransmitDeckStatus(CECDEVICE_TV, false);
-      }
 
       // update system audio mode for audiosystem devices
       if (bTvPresent && !bActiveSourceFailed)

@@ -34,9 +34,9 @@
 
 #include "env.h"
 #include "LibCEC.h"
-#include "p8-platform/threads/threads.h"
-#include "p8-platform/util/buffer.h"
-#include "p8-platform/threads/mutex.h"
+#include "platform/threads/threads.h"
+#include "platform/util/buffer.h"
+#include "platform/threads/mutex.h"
 #include <string>
 #include <memory>
 
@@ -142,9 +142,9 @@ namespace CEC
 
     int Result(uint32_t iTimeout)
     {
-      P8PLATFORM::CLockObject lock(m_mutex);
+      CLockObject lock(m_mutex);
 
-      bool bReturn = m_bSucceeded ? true : m_condition.Wait(m_mutex, m_bSucceeded, iTimeout);
+      bool bReturn = m_bSucceeded ? true : m_condition.Wait(lock, m_bSucceeded, iTimeout);
       if (bReturn)
         return m_result;
       m_keepResult = false;
@@ -153,7 +153,7 @@ namespace CEC
 
     bool Report(int result)
     {
-      P8PLATFORM::CLockObject lock(m_mutex);
+      CLockObject lock(m_mutex);
 
       m_result = result;
       m_bSucceeded = true;
@@ -183,12 +183,12 @@ namespace CEC
     cec_logical_address          m_logicalAddress;
     bool                         m_keepResult;
     int                          m_result;
-    P8PLATFORM::CCondition<bool> m_condition;
-    P8PLATFORM::CMutex           m_mutex;
+    CCondition<bool>             m_condition;
+    CMutex                       m_mutex;
     bool                         m_bSucceeded;
   };
 
-  class CCECClient : private P8PLATFORM::CThread
+  class CCECClient : private CThread
   {
     friend class CCECProcessor;
 
@@ -240,6 +240,22 @@ namespace CEC
      * @brief Reset the physical address from the configuration.
      */
     virtual void ResetPhysicalAddress(void);
+
+    /*!
+     * @brief Called when another device on the bus reported the physical address that
+     *        this client is using. Logs how the configuration can be corrected and
+     *        alerts the client. Does not change the address.
+     * @param iOtherDevice The device that reported our physical address.
+     */
+    virtual void PhysicalAddressInUse(const cec_logical_address iOtherDevice);
+
+    /*!
+     * @brief Re-derive the physical address from the configured base device and HDMI
+     *        port, after that base device reported a physical address of its own.
+     *        No-op unless iBaseDevice is the configured base device.
+     * @param iBaseDevice The device that reported its physical address.
+     */
+    virtual void RefreshPhysicalAddress(const cec_logical_address iBaseDevice);
 
     /*!
      * @return A string that describes this client.
@@ -306,6 +322,7 @@ namespace CEC
     virtual uint8_t               SystemAudioModeStatus(void);
     virtual bool                  SendKeypress(const cec_logical_address iDestination, const cec_user_control_code key, bool bWait = true);
     virtual bool                  SendKeyRelease(const cec_logical_address iDestination, bool bWait = true);
+    virtual bool                  SendPlay(const cec_logical_address iDestination, const cec_play_mode mode);
     virtual std::string           GetDeviceOSDName(const cec_logical_address iAddress);
     virtual cec_logical_address   GetActiveSource(void);
     virtual bool                  IsActiveSource(const cec_logical_address iAddress);
@@ -355,7 +372,7 @@ namespace CEC
     /*!
      * @brief Called by the processor when this client is unregistered
      */
-    virtual void OnUnregister(void) { SetRegistered(false); SetInitialised(false); }
+    virtual void OnUnregister(void) { SetRegistered(false); SetInitialised(false); ResetKeypressState(); }
 
     /*!
      * @brief Set the registered state of this client.
@@ -449,6 +466,15 @@ namespace CEC
     virtual bool AutodetectPhysicalAddress(void);
 
     /*!
+     * @brief Derive a physical address from a base device and one of its HDMI ports.
+     * @param iBaseDevice The device that this client is connected to.
+     * @param iPort The port of iBaseDevice that this client is connected to.
+     * @return The physical address, or CEC_INVALID_PHYSICAL_ADDRESS when the address
+     *         of the base device isn't known.
+     */
+    virtual uint16_t GetPhysicalAddressFromPort(const cec_logical_address iBaseDevice, const uint8_t iPort);
+
+    /*!
      * @brief Replaces all device types in m_configuration by types that are supported by the command handler of the TV
      */
     virtual void SetSupportedDeviceTypes(void);
@@ -466,12 +492,20 @@ namespace CEC
 
     uint32_t DoubleTapTimeoutMS(void);
 
+    /*!
+     * @brief Clear the button/keypress tracking state (held button, its timers and
+     *        counters, and the learned "device sends its own releases" flag). Called
+     *        when the client detaches from the device so a stale held key can't emit
+     *        a phantom release, and a re-attached device re-learns from scratch.
+     */
+    void ResetKeypressState(void);
+
     CCECProcessor *                          m_processor;                         /**< a pointer to the processor */
     libcec_configuration                     m_configuration;                     /**< the configuration of this client */
     bool                                     m_bInitialised;                      /**< true when initialised, false otherwise */
     bool                                     m_bRegistered;                       /**< true when registered in the processor, false otherwise */
-    P8PLATFORM::CMutex                       m_mutex;                             /**< mutex for changes to this instance */
-    P8PLATFORM::CMutex                       m_cbMutex;                           /**< mutex that is held when doing anything with callbacks */
+    CMutex                                   m_mutex;                             /**< mutex for changes to this instance */
+    CMutex                                   m_cbMutex;                           /**< mutex that is held when doing anything with callbacks */
     cec_user_control_code                    m_iCurrentButton;                    /**< the control code of the button that's currently held down (if any) */
     int64_t                                  m_initialButtontime;                 /**< the timestamp when the button was initially pressed (in seconds since epoch), or 0 if none was pressed. */
     int64_t                                  m_updateButtontime;                  /**< the timestamp when the button was updated (in seconds since epoch), or 0 if none was pressed. */
@@ -479,7 +513,11 @@ namespace CEC
     int64_t                                  m_releaseButtontime;                 /**< the timestamp when the button will be released (in seconds since epoch), or 0 if none was pressed. */
     int32_t                                  m_pressedButtoncount;                /**< the number of times a button released message has been seen for this press. */
     int32_t                                  m_releasedButtoncount;               /**< the number of times a button pressed message has been seen for this press. */
+    bool                                     m_bSeenButtonRelease;                /**< true once a real user control release has been seen from the device, meaning it releases its own keys. */
     int64_t                                  m_iPreventForwardingPowerOffCommand; /**< prevent forwarding standby commands until this time */
-    P8PLATFORM::SyncedBuffer<CCallbackWrap*> m_callbackCalls;
+    int64_t                                  m_iLastKeypressTime;                 /**< the timestamp of the last key press forwarded to the client */
+    int64_t                                  m_iLastKeyreleaseTime;               /**< the timestamp of the last key release forwarded to the client, reset on each forwarded press, or 0 if none was forwarded since */
+    cec_keypress                             m_lastKeypress;                      /**< the last key press forwarded to the client */
+    SyncedBuffer<CCallbackWrap*>             m_callbackCalls;
   };
 }

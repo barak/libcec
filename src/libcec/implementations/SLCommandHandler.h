@@ -33,6 +33,7 @@
  */
 
 #include "env.h"
+#include "platform/util/timeutils.h"
 #include "CECCommandHandler.h"
 
 namespace CEC
@@ -67,15 +68,22 @@ namespace CEC
     int HandleRequestActiveSource(const cec_command &command);
     int HandleFeatureAbort(const cec_command &command);
     int HandleStandby(const cec_command &command);
+    int HandleActiveSource(const cec_command &command);
+    int HandleSetStreamPath(const cec_command &command);
     bool TransmitMenuState(const cec_logical_address UNUSED(iInitiator), const cec_logical_address UNUSED(iDestination), cec_menu_state UNUSED(menuState), bool UNUSED(bIsReply)) { return true; }
+    bool TransmitPlay(const cec_logical_address iInitiator, const cec_logical_address iDestination, cec_play_mode mode);
     bool PowerOn(const cec_logical_address iInitiator, const cec_logical_address iDestination);
 
     void ResetSLState(void);
     bool SLInitialised(void);
     void SetSLInitialised(void);
 
+    void IgnoreTvRoutingChanges(void);
+    bool SuppressTvRoutingChange(const cec_command &command);
+
     bool                 m_bSLEnabled;
-    P8PLATFORM::CTimeout m_resetPowerState;
-    P8PLATFORM::CMutex   m_SLMutex;
+    CTimeout             m_resetPowerState;
+    CTimeout             m_ignoreTvRoute;
+    CMutex               m_SLMutex;
   };
 };

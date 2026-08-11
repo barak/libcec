@@ -1,3 +1,155 @@
+libcec (8.1.6.1~#DIST#) #DIST#; urgency=medium
+
+  [ Lars Op den Kamp ]
+  * added: the Node.js, .NET and Rust bindings are published to their language registries - libcec on npm, LibCecSharp on nuget.org and libcec on crates.io
+  * added: a readme, a licence expression and tags for the NuGet package, and a licence section in the npm readme; libCEC's dual licence cannot be written as an SPDX expression, so each package declares the GPL half and its readme carries the commercial alternative
+  * fixed: the npm tarball shipped an example script without the example/ directory it runs from
+
+ -- Lars Op den Kamp <lars@opdenkamp.eu>  Fri, 07 Aug 2026 16:54:19 +0200
+
+libcec (8.1.5.1~#DIST#) #DIST#; urgency=medium
+
+  [ Lars Op den Kamp ]
+  * added: a Rust binding (a dependency-free crate over the C API) with an ENABLE_RUST_LIB cmake option, a librust-libcec-dev Debian package and a rustdoc reference alongside the other four on the Pages site
+  * added: Open() without a port opens the first adapter that can be opened, walking past the adapters another process is already using, instead of failing
+  * added: SendPlay() sends <play> to a device on the bus; cec_play_mode was part of the public API but nothing could reach it. the transmit is virtual, so LG players are sent the user control code they act on rather than a <play> they ignore. available in the C, .NET, Python, Node.js and Rust bindings, and cec-client gains a play command (#727)
+  * fixed: don't reset the physical address to HDMI port 1 on the TV when another device reports the address libCEC is using; that replaced one wrong address by another and silently overrode a configured setting. the address is kept, and the log now names the device that holds it and says to configure that device as the base device when this adapter is connected behind it (#738)
+  * fixed: re-derive the physical address once the configured base device reports one, instead of keeping the eeprom or default address for good; a base device that is in standby when the client registers doesn't always answer, which left a correct base device + HDMI port setting looking as broken as a wrong one (#738)
+  * fixed: a configured physical address is used again when a base device and HDMI port are set too, instead of being silently replaced by the address derived from that device and port; the base device and port are only meant to be used when no address was configured (#740)
+  * fixed: crash in Close() when the adapter was never opened, and stop a failed open from logging 'connection opened' and marking the processor initialised
+  * fixed: the npm module and the .NET assembly shipped a stale version number; release.py now checks every file that repeats the version from CMakeLists.txt and reports all mismatches at once
+  * fixed: compile with /Z7 rather than /Zi so concurrent MSVC builds no longer race each other over mspdbsrv, and install the linker's pdb, which the Release build shipped none of
+
+ -- Lars Op den Kamp <lars@opdenkamp.eu>  Fri, 07 Aug 2026 15:45:47 +0200
+
+libcec (8.1.4.1~#DIST#) #DIST#; urgency=medium
+
+  [ Lars Op den Kamp ]
+  * fixed: use the GNUInstallDirs layout on Windows - cec.dll, the client executables and the pdb in bin/, the import library in lib/ - instead of dropping them in the install prefix root, so consumers no longer need to patch libCEC's cmake files to build against it
+  * fixed: name the Windows static library cec-static, so it no longer overwrites the DLL's import library of the same name in the build and install trees, which left consumers linking libCEC statically or failing on unresolved __imp_libcec_* symbols
+
+ -- Lars Op den Kamp <lars@opdenkamp.eu>  Mon, 03 Aug 2026 19:45:18 +0200
+
+libcec (8.1.3.1~#DIST#) #DIST#; urgency=medium
+
+  [ Lars Op den Kamp ]
+  * fixed: the Linux tarball shipped fewer backends than the Debian packages built beside it; it now carries the Linux kernel CEC framework, Exynos and AOCEC backends too (#732)
+  * fixed: the x86 Windows installers offered no Node.js binding and nothing said so; the component is now x64-only by construction and the limitation is documented (#733)
+  * fixed: memset() over cec_command and ICECCallbacks in the Node.js addon, neither of which is trivially copyable, and declare cec_command's copy constructor so copying one no longer warns under -Wdeprecated-copy (#730)
+  * fixed: cmake deprecation warning for SWIG_LINK_LIBRARIES when configuring the Python wrapper (#729)
+  * fixed: dpkg-gencontrol warning about the undefined ${shlibs:Depends} in the libcec meta package, which ships no binaries (#731)
+  * fixed: don't let an unrelated stale local tag stop a release
+
+ -- Lars Op den Kamp <lars@opdenkamp.eu>  Fri, 31 Jul 2026 17:35:00 +0200
+
+libcec (8.1.2.1~#DIST#) #DIST#; urgency=medium
+
+  [ Lars Op den Kamp ]
+  * added: a sony command handler: ask a set that woke up without announcing it for its power status, report standby for a source that the set treats as switched off, and announce the sources again when it wakes
+  * added: read the connected display's model year from its EDID where one can be read, and use it to decide which vendor quirks apply; an unreadable EDID counts as a recent set
+  * fixed: LG - report standby for the devices that are not the active source, instead of telling the TV that every source it can list is powered on
+  * fixed: LG - keep the source that was being watched when the TV announces a routing change to itself while powering on, rather than landing on input 1
+  * fixed: LG - stop blocking the processor thread for two seconds when the TV powers a source on, which left the bus unserved and never claimed the source afterwards
+  * fixed: LG - only let the active source report LG's own deck status code, and report 'stop' for the others
+  * fixed: philips - keep the active source when the TV settles on a different address under the same HDMI port while powering up, which left the source looking dead
+  * fixed: samsung - follow the TV's power state on the active source, so the source list agrees with what the set is showing (model year 2016 and newer)
+  * fixed: samsung - don't answer the broadcast powered-up vendor command from logical address 0xf, and take the sender's power status from it
+  * fixed: panasonic - send the capabilities blob on <give physical address> and on <give device vendor id> while the TV is still settling after it powered up
+  * changed: philips - announce the philips vendor id on the bus, as the LG and panasonic handlers announce theirs
+  * changed: LG - report CEC version 1.4 rather than 1.3a, matching the version libCEC claims everywhere else
+  * changed: LG - say in the log that a TV repeatedly asking for the power status is most likely not getting a signal, and log the physical address to check, instead of reporting that the TV bugged out
+  * changed: removed the deck status update on activate source, which has been switched off for every vendor since 2012
+  * fixed: build the Python wrapper against SWIG 4.5, which removed the Python 2 compatibility macros its typemaps relied on (#726)
+
+ -- Lars Op den Kamp <lars@opdenkamp.eu>  Fri, 31 Jul 2026 15:14:03 +0200
+
+libcec (8.1.1.1~#DIST#) #DIST#; urgency=medium
+
+  [ Lars Op den Kamp ]
+  * fixed: never return a 0 keypress poll delay, which could stall the processor thread until the next incoming frame instead of servicing the next keypress deadline
+  * changed: make double-tap dedup opt-in by defaulting iDoubleTapTimeoutMs to 0, restoring 7.1.1 keypress behaviour for clients on the defaults (Kodi); set it >0 to enable. Panasonic (VL) still turns it on automatically (#722)
+  * fixed: revert sending a user control power on keypress alongside image view on to Panasonic Viera sets (#511); the box sprayed power-on keypresses at an already-on set on every active-source retry after a standby/wake, and the TV then stopped routing the remote to it (#722)
+
+ -- Lars Op den Kamp <lars@opdenkamp.eu>  Mon, 27 Jul 2026 20:42:54 +0200
+
+libcec (8.1.0.1~#DIST#) #DIST#; urgency=medium
+
+  [ Lars Op den Kamp ]
+  * changed: replace the Windows-only C++/CLI LibCecSharp and LibCecSharpCore wrappers with a single cross-platform pure-C# LibCecSharp binding (P/Invoke over the C API), targeting net8.0 (#721)
+  * changed: port cec-tray to net8.0-windows and drop the .NET Framework build; the installer now checks for and installs the .NET 8 Desktop Runtime
+  * added: a libcec-dotnet Debian package shipping the cross-platform LibCecSharp .NET binding and its NuGet package, built via the ENABLE_DOTNET_LIB cmake option
+  * added: a Node.js binding (native N-API addon over the C API) with an ENABLE_NODE_LIB cmake option and a node-libcec Debian package
+  * added: libcec_get_stats to the C API so the managed binding can expose adapter statistics
+  * changed: rename the libcec4 Debian package to libcec8 to match the library SONAME; libcec8 and libcec8-dev supersede the libcec4-libcec7 names
+  * changed: modernize the Debian packaging - debhelper compat 13, Standards-Version 4.6.2, Rules-Requires-Root, python3/dh-python and libncurses-dev build deps, github Vcs urls, and reproducible-build flags
+  * added: build the Debian package with the Linux kernel CEC framework, Exynos and AOCEC backends enabled
+  * fixed: ship the CMake package config, the static library and cecc-client in the Debian packages, and match the flat python3 module layout in python-libcec
+  * added: per-binding API reference (Doxygen for C/C++, DocFX for .NET, TypeDoc for Node.js, Sphinx for Python) published to GitHub Pages at https://pulse-eight.github.io/libcec/
+  * changed: vendor the Windows build-support tree (driver installers, libusb0.dll, cmake flag overrides) directly into the tree instead of a submodule
+  * fixed: don't cut long-presses short on devices that release their own keys - once the device is seen to send its own releases, stretch the synthesized release to a stuck-key backstop instead of the 500ms timeout (#704)
+  * fixed: clear held-button state when a client is unregistered, so a reconnect can't emit a phantom release for a key pressed before the disconnect
+  * fixed: drop a duplicate key release when the press was collapsed as a double tap (#723)
+  * fixed: don't synthesize a release for a key the device is repeating, restoring 7.x behaviour for repeating directional keys (#724)
+
+ -- Lars Op den Kamp <lars@opdenkamp.eu>  Fri, 24 Jul 2026 13:59:47 +0200
+
+libcec (8.0.0.1~#DIST#) #DIST#; urgency=medium
+
+  [ Lars Op den Kamp ]
+  * changed: bump to 8.0.0 and gate bAutonomousMode behind CEC_LIB_VERSION_MAJOR >= 8
+  * changed: drop p8-platform and implement threading, time and IO directly on std::
+  * changed: use cmake's GNUInstallDirs instead of a copy of UseMultiArch.cmake
+  * changed: enable -Wall -Wextra for every target, not just libCEC itself (#715)
+  * changed: replace the Windows build batch files with a python build orchestrator
+  * added: DISABLE_CLIENT, DISABLE_BUILDINFO and DISABLE_STATIC cmake build options
+  * added: install a CMake package config and keep the library install at LIB_DESTINATION
+  * removed: the msvc stdint.h shim, which nothing resolves against
+  * added: configurable adapter autonomous mode and an interactive 'am' command in cec-client
+  * added: flush deferred EEPROM writes on close so settings changed within the write interval aren't lost
+  * added: a per-adapter display name to the adapter descriptor
+  * added: enumerate every /dev/cec* node so multi-HDMI boards can select a CEC port by path. closes #538. closes #631
+  * added: Panasonic - send user control power on with image view on so Viera still wakes (#511)
+  * added: configurable device vendor id, wired through SWIG, the C API and the LibCecSharp wrapper (#714)
+  * fixed: suppress double taps and split the auto-repeat delay into a configurable iButtonRepeatDelayMs (#326)
+  * fixed: emit key release when a held key times out (#704)
+  * fixed: don't announce active source while the TV is off so an AVR isn't woken up (#403)
+  * fixed: don't power on the TV when the options to power on were disabled
+  * fixed: serialise CLibCEC::Open against Close, and stop the cec-client reconnect thread racing teardown (#701)
+  * fixed: reuse the owning client shared_ptr when re-registering, fixing a monitor-mode toggle crash
+  * fixed: harden Windows adapter detection against concurrent enumeration
+  * fixed: numerous buffer-overflow and bounds fixes in EDID physical-address parsing, the C API string helpers, OSD name and menu-language handling
+  * fixed: bound received-frame parsing across the RPi, TDA995x, Exynos, AOCEC, Linux, IMX and Tegra backends (#719)
+  * fixed: honour the connect timeout in the SoC backends instead of ignoring it
+  * fixed: Linux CEC backend detects node removal and reconnects (#668)
+  * fixed: RPi - drop TV service callbacks and CEC callbacks that race connection teardown (#184, #476)
+  * fixed: only enable the RPi backend when all VideoCore libs are found, and don't call bcm_host_init() on a non-Pi (#572, #625, #626)
+  * fixed: Tegra - track the open state and break the frame on a failed read instead of parsing stale data (#719)
+  * fixed: don't probe the build host for libdir/python layout when cross-compiling (#387, #530)
+  * fixed: gcc-16 -Wstringop-truncation and -Wformat-truncation warnings (#715)
+  * fixed: release the Python callback argument tuple when no callback is registered for the slot (#686)
+  * fixed: Python strDeviceLanguage accepts 3-char ISO codes, libcec_mute_audio matches C++ MuteAudio() (#663)
+  * changed: document all cec-client command line options in --help; exit on stdin EOF instead of spinning
+  * fixed: cec-tray - device type selection persists and no longer shows a spurious 'device type changed' dialog (#523, #620, #671, #698)
+  * fixed: cec-tray - crashes on Kodi start, on resume from standby, and when saving a cleared button mapping
+  * added: cec-tray - away-mode support, working 'sleep' button mapping, and power on the TV when the PC is no longer idle
+
+  [ Andy1210 ]
+  * added: configurable device vendor id via libcec_configuration.iDeviceVendorId + cec-client --vendor-id (#714)
+
+  [ Andrew Haigh ]
+  * added: -c/--command and -H/--help-command options to cec-client
+
+  [ Albert Vaca Cintora ]
+  * fixed: RPi - report user control release on button release (#717)
+
+  [ Jordan May ]
+  * fixed: OnRegister clears baseDevice when the physical address is already resolved
+
+  [ Fabian Wolter ]
+  * fixed: initialise cec_adapter_descriptor when detecting adapters
+
+ -- Lars Op den Kamp <lars@opdenkamp.eu>  Wed, 22 Jul 2026 16:30:26 +0200
+
 libcec (7.1.1.1~#DIST#) #DIST#; urgency=low
 
   [ Lars Op den Kamp ]

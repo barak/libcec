@@ -2,12 +2,11 @@
 
 ### Prerequisites
 libCEC needs the following dependencies in order to work correctly:
-* [p8-platform](https://github.com/Pulse-Eight/platform) 2.0 or later
 * udev v151 or later
 * cdc-acm support compiled into the kernel or available as module
 
 To compile libCEC on Linux, you'll need the following dependencies:
-* [cmake 2.6 or better](http://www.cmake.org/)
+* [cmake 3.12.0 or better](https://www.cmake.org/)
 * a supported C++ 11 compiler
 
 The following dependencies are recommended. Without them, the adapter can not
@@ -20,7 +19,7 @@ be (fully) auto-detected.
 To compile libCEC on a new Debian/Ubuntu installation, follow these instructions:
 ```
 apt-get update
-apt-get install cmake libudev-dev libxrandr-dev python3-dev swig
+apt-get install git cmake build-essential libudev-dev libxrandr-dev python3-dev swig
 git clone https://github.com/Pulse-Eight/libcec.git
 mkdir libcec/build
 cd libcec/build
@@ -29,6 +28,17 @@ make -j4
 sudo make install
 sudo ldconfig
 ```
+
+### Managed .NET binding (optional)
+The pure-C# `LibCecSharp` binding builds on Linux/macOS too. Install the
+[.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) and pass
+`-DENABLE_DOTNET_LIB=1`:
+```
+cmake -DENABLE_DOTNET_LIB=1 ..
+make -j4
+```
+This produces `LibCecSharp.dll` (net8.0) under `build/<Configuration>/<Platform>/net8.0/`.
+The .NET apps (`ENABLE_DOTNET_APPS`) are Windows-only (cec-tray is WinForms).
 
 ### Raspberry Pi
 See [docs/README.raspberrypi.md](README.raspberrypi.md).

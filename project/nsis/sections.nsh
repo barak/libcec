@@ -1,3 +1,13 @@
+; The Node.js binding is x64 only: Node dropped its 32-bit Windows builds in v23,
+; so there is no ia32 addon to ship. create-installer.py only defines NSISNODEJS
+; when the addon was actually staged; the architecture check is the second half of
+; that guarantee, so an x86 installer can never offer a component with no payload.
+!ifdef NSISNODEJS
+	!ifndef NSIS_X86
+		!define NODEJS_SECTION
+	!endif
+!endif
+
 Section "USB-CEC driver" SecDriver
 	SectionIn RO
 	SectionIn 1 2 3
@@ -15,6 +25,22 @@ Section "libCEC" SecLibCec
 	SectionIn 1 2
 	SectionIn RO
 
+	; Remove the old-style managed wrappers and their apps from previous installs,
+	; so upgrading never leaves a mix of old (C++/CLI, .NET Framework) and new
+	; (unified pure C# net8.0) assemblies side by side.
+	RMDir /r "$INSTDIR\netfx"
+	Delete "$INSTDIR\net8.0\LibCecSharpCore.dll"
+	Delete "$INSTDIR\net8.0\LibCecSharpCore.deps.json"
+	Delete "$INSTDIR\net8.0\LibCecSharpCore.runtimeconfig.json"
+	Delete "$INSTDIR\net8.0\LibCecSharpCore.xml"
+	Delete "$INSTDIR\net8.0\LibCecSharpCore.pdb"
+	Delete "$INSTDIR\net8.0\Ijwhost.dll"
+	Delete "$INSTDIR\net8.0\CecSharpCoreTester.exe"
+	Delete "$INSTDIR\net8.0\CecSharpCoreTester.dll"
+	Delete "$INSTDIR\net8.0\CecSharpCoreTester.deps.json"
+	Delete "$INSTDIR\net8.0\CecSharpCoreTester.runtimeconfig.json"
+	Delete "$INSTDIR\net8.0\CecSharpCoreTester.pdb"
+
 	; Copy binaries and support files
 	SetOutPath "$INSTDIR"
 	File "..\ChangeLog"
@@ -25,7 +51,8 @@ Section "libCEC" SecLibCec
 	File "..\docs\README.windows.md"
 	File "..\support\windows\tv_on.cmd"
 	File "..\support\windows\tv_off.cmd"
-	File "${BINARY_SOURCE_DIR}\cec.dll"
+	File "${BINARY_SOURCE_DIR}\bin\cec.dll"
+	File "/oname=p8-logo.ico" "favicon.ico"
 
 	; Copy the headers
 	SetOutPath "$INSTDIR\include"
@@ -37,7 +64,9 @@ Section "libCEC" SecLibCec
 	; Package uninstaller
 	!ifndef INNER
 		SetOutPath $INSTDIR
-		File $%TEMP%\uninstall_libcec.exe
+		; staged under a per-build name; /oname is what the uninstaller is
+		; installed and registered as
+		File "/oname=uninstall_libcec.exe" "${UNINST_STAGE}.uninstall.exe"
 	!endif
 
 	!insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -45,7 +74,7 @@ Section "libCEC" SecLibCec
 
 	CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
 	CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall ${BASE_REGKEY}.lnk" "$INSTDIR\uninstall_libcec.exe" \
-		"" "$INSTDIR\uninstall.exe" 0 SW_SHOWNORMAL \
+		"" "$INSTDIR\uninstall_libcec.exe" 0 SW_SHOWNORMAL \
 		"" "Uninstall ${BASE_REGKEY}."
 
 	WriteINIStr "$SMPROGRAMS\$StartMenuFolder\Visit Pulse-Eight.url" "InternetShortcut" "URL" "https://www.pulse-eight.com/"
@@ -79,7 +108,7 @@ Section "libCEC for Python" SecPythonCec
 	; Copy binaries
 	SetOutPath "$INSTDIR\python\cec"
 	
-	File "${BINARY_SOURCE_DIR}\cec.dll"
+	File "${BINARY_SOURCE_DIR}\bin\cec.dll"
 	File "${BINARY_SOURCE_DIR}\python\cec\_pycec.pyd"
 	File "${BINARY_SOURCE_DIR}\python\cec\cec.py"
 	!ifdef NSIS_X86
@@ -93,33 +122,24 @@ SectionEnd
 Section "libCEC for .Net" SecDotNetCore
 	SectionIn 1 2
 
-	; Copy binaries
+	; Copy binaries (pure C# LibCecSharp; no Ijwhost.dll / runtimeconfig for the library)
 	SetOutPath "$INSTDIR\net8.0"
-	File "${BINARY_SOURCE_DIR}\cec.dll"
-	File "${BINARY_SOURCE_DIR}\net8.0\LibCecSharpCore.deps.json"
-	File "${BINARY_SOURCE_DIR}\net8.0\LibCecSharpCore.dll"
-	File "${BINARY_SOURCE_DIR}\net8.0\LibCecSharpCore.runtimeconfig.json"
-	File "${BINARY_SOURCE_DIR}\net8.0\LibCecSharpCore.xml"
-	File /nonfatal "${BINARY_SOURCE_DIR}\net8.0\CecSharpCoreTester.exe"
-	File /nonfatal "${BINARY_SOURCE_DIR}\net8.0\CecSharpCoreTester.deps.json"
-	File /nonfatal "${BINARY_SOURCE_DIR}\net8.0\CecSharpCoreTester.dll"
-	File /nonfatal "${BINARY_SOURCE_DIR}\net8.0\CecSharpCoreTester.runtimeconfig.json"
-	File /nonfatal "${BINARY_SOURCE_DIR}\net8.0\Ijwhost.dll"
-SectionEnd
-
-Section "libCEC for .Net Framework" SecDotNet
-	SectionIn 1 2
-
-	; Copy binaries
-	SetOutPath "$INSTDIR\netfx"
-	File "${BINARY_SOURCE_DIR}\cec.dll"
-	File "${BINARY_SOURCE_DIR}\LibCecSharp.dll"
-	File "${BINARY_SOURCE_DIR}\LibCecSharp.xml"
-	File /nonfatal "${BINARY_SOURCE_DIR}\CecSharpTester.exe"
+	File "${BINARY_SOURCE_DIR}\bin\cec.dll"
+	File "${BINARY_SOURCE_DIR}\net8.0\LibCecSharp.deps.json"
+	File "${BINARY_SOURCE_DIR}\net8.0\LibCecSharp.dll"
+	File "${BINARY_SOURCE_DIR}\net8.0\LibCecSharp.xml"
+	File /nonfatal "${BINARY_SOURCE_DIR}\net8.0\CecSharpTester.exe"
+	File /nonfatal "${BINARY_SOURCE_DIR}\net8.0\CecSharpTester.deps.json"
+	File /nonfatal "${BINARY_SOURCE_DIR}\net8.0\CecSharpTester.dll"
+	File /nonfatal "${BINARY_SOURCE_DIR}\net8.0\CecSharpTester.runtimeconfig.json"
 SectionEnd
 
 !ifdef NSISDOTNETAPPS
 !include "nsis\cec-tray.nsh"
+!endif
+
+!ifdef NODEJS_SECTION
+!include "nsis\nodejs.nsh"
 !endif
 
 Section "libCEC client (cec-client)" SecCecClient
@@ -127,15 +147,15 @@ Section "libCEC client (cec-client)" SecCecClient
 
 	; Copy binaries
 	SetOutPath "$INSTDIR"
-	File "${BINARY_SOURCE_DIR}\cec-client.exe"
-	File "${BINARY_SOURCE_DIR}\cecc-client.exe"
+	File "${BINARY_SOURCE_DIR}\bin\cec-client.exe"
+	File "${BINARY_SOURCE_DIR}\bin\cecc-client.exe"
 
 	; Start menu item
 	!insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 	SetShellVarContext all
 	CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
     CreateShortCut "$SMPROGRAMS\$StartMenuFolder\CEC Test client.lnk" "$INSTDIR\cec-client.exe" \
-		"" "$INSTDIR\cec-client.exe" 0 SW_SHOWNORMAL \
+		"" "$INSTDIR\p8-logo.ico" 0 SW_SHOWNORMAL \
 		"" "Start the CEC Test client."
 	!insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
@@ -155,7 +175,7 @@ Section "Adapter Firmware" SecFwUpgrade
 
 	SetShellVarContext all
 	CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Firmware Upgrade.lnk" "$INSTDIR\cec-firmware-latest.exe" \
-		"" "$INSTDIR\cec-firmware-latest.exe" 0 SW_SHOWNORMAL \
+		"" "$INSTDIR\p8-logo.ico" 0 SW_SHOWNORMAL \
 		"" "Upgrade the firmware of the CEC adapter to the latest version."
 SectionEnd
 
@@ -168,16 +188,18 @@ Function .onSelChange
 	!ifdef NSISDOTNETAPPS
 	${If} ${SectionIsSelected} ${SecTray}
 		!define /math MYSECTIONFLAGS ${SF_SELECTED} | ${SF_RO}
-		!insertmacro SetSectionFlag ${SecDotNet} ${MYSECTIONFLAGS} 
+		!insertmacro SetSectionFlag ${SecDotNetCore} ${MYSECTIONFLAGS}
 		!undef MYSECTIONFLAGS
 	${Else}
-		!insertmacro ClearSectionFlag ${SecDotNet} ${SF_RO}
+		!insertmacro ClearSectionFlag ${SecDotNetCore} ${SF_RO}
 	${EndIf}
 	!endif
 
 	${If} ${SectionIsSelected} ${SecCecClient}
-	${OrIf} ${SectionIsSelected} ${SecDotNet}
 	${OrIf} ${SectionIsSelected} ${SecDotNetCore}
+	!ifdef NODEJS_SECTION
+	${OrIf} ${SectionIsSelected} ${SecNodeJs}
+	!endif
 	!ifndef NSISINCLUDEPDB
 	${OrIf} ${SectionIsSelected} ${SecPythonCec}
 	!endif

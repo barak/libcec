@@ -32,6 +32,7 @@
  */
 
 #include "env.h"
+#include "platform/util/timeutils.h"
 #include "VLCommandHandler.h"
 
 #include "devices/CECBusDevice.h"
@@ -47,13 +48,15 @@
 #define VL_UNKNOWN1     0x06
 
 using namespace CEC;
-using namespace P8PLATFORM;
 
 #define LIB_CEC     m_busDevice->GetProcessor()->GetLib()
 #define ToString(p) LIB_CEC->ToString(p)
 
 // wait this amount of ms before trying to switch sources after receiving the message from the TV that it's powered on
 #define SOURCE_SWITCH_DELAY_MS 3000
+
+/* how long after it powered up the TV keeps re-probing what is connected to it */
+#define TV_POWERING_UP_TIME_MS 15000
 
 CVLCommandHandler::CVLCommandHandler(CCECBusDevice *busDevice,
                                      int32_t iTransmitTimeout /* = CEC_DEFAULT_TRANSMIT_TIMEOUT */,
@@ -210,6 +213,50 @@ bool CVLCommandHandler::PowerUpEventReceived(void)
   }
 
   return bPowerUpEventReceived;
+}
+
+bool CVLCommandHandler::TvRecentlyPoweredUp(void)
+{
+  CLockObject lock(m_mutex);
+  return m_iPowerUpEventReceived > 0 &&
+         GetTimeMs() - m_iPowerUpEventReceived <= TV_POWERING_UP_TIME_MS;
+}
+
+int CVLCommandHandler::HandleGivePhysicalAddress(const cec_command &command)
+{
+  int iHandled = CCECCommandHandler::HandleGivePhysicalAddress(command);
+
+  /* a TV that is still settling probes what is connected to it, and wants the capabilities
+     along with the answer */
+  if (command.initiator == CECDEVICE_TV && TvRecentlyPoweredUp())
+  {
+    bool bSend(false);
+    {
+      CLockObject lock(m_mutex);
+      bSend = !m_bCapabilitiesSent;
+    }
+    if (bSend)
+      SendVendorCommandCapabilities(command.destination, command.initiator);
+  }
+
+  return iHandled;
+}
+
+int CVLCommandHandler::HandleGiveDeviceVendorId(const cec_command &command)
+{
+  int iHandled = CCECCommandHandler::HandleGiveDeviceVendorId(command);
+
+  if (command.initiator == CECDEVICE_TV && TvRecentlyPoweredUp())
+  {
+    /* the TV asks again once it is up, and keeps whichever blob answers that one */
+    {
+      CLockObject lock(m_mutex);
+      m_bCapabilitiesSent = false;
+    }
+    SendVendorCommandCapabilities(command.destination, command.initiator);
+  }
+
+  return iHandled;
 }
 
 int CVLCommandHandler::HandleStandby(const cec_command &command)

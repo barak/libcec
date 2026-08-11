@@ -41,15 +41,14 @@
 #include "devices/CECBusDevice.h"
 #include "devices/CECPlaybackDevice.h"
 #include "devices/CECTV.h"
-#include "p8-platform/util/timeutils.h"
-#include "p8-platform/util/util.h"
+#include "platform/util/timeutils.h"
+#include "platform/util/util.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "CECClient.h"
 
 using namespace CEC;
-using namespace P8PLATFORM;
 
 CLibCEC::CLibCEC(void) :
     m_iStartTime(GetTimeMs()),
@@ -67,7 +66,7 @@ CLibCEC::~CLibCEC(void)
   m_clients.clear();
 
   // delete the adapter connection
-  SAFE_DELETE(m_cec);
+  SafeDelete(m_cec);
 
   // delete active client
   m_client.reset();
@@ -75,9 +74,60 @@ CLibCEC::~CLibCEC(void)
 
 bool CLibCEC::Open(const char *strPort, uint32_t iTimeoutMs /* = CEC_DEFAULT_CONNECT_TIMEOUT */)
 {
-  if (!m_cec || !strPort)
+  if (!m_cec)
     return false;
 
+  CLockObject lock(m_mutex);
+
+  // no port given: open the first adapter that can be opened. an adapter that
+  // another process is using cannot be opened a second time - the serial port is
+  // claimed exclusively - so this walks past the ones that are in use instead of
+  // failing on the first one detected
+  return (!strPort || !*strPort) ?
+      OpenFirstAdapter(iTimeoutMs) :
+      OpenPort(strPort, iTimeoutMs);
+}
+
+bool CLibCEC::OpenFirstAdapter(uint32_t iTimeoutMs)
+{
+  // quick scan: the port names are all that's needed here, and a full scan opens
+  // every adapter in turn to read its firmware details - slow, and doomed for
+  // exactly the in-use adapters this is here to skip past
+  const uint8_t iMaxAdapters(10);
+  cec_adapter_descriptor devices[iMaxAdapters];
+  int8_t iAdaptersFound = DetectAdapters(devices, iMaxAdapters, nullptr, true);
+  if (iAdaptersFound <= 0)
+  {
+    AddLog(CEC_LOG_ERROR, "no CEC adapter found");
+    return false;
+  }
+
+  CTimeout timeout(iTimeoutMs);
+  for (int8_t iPtr = 0; iPtr < iAdaptersFound; iPtr++)
+  {
+    // OpenPort() spends its entire timeout retrying the one port, so give each
+    // adapter an equal share of what's left of the caller's. the timeout stays
+    // the timeout for the call as a whole, however many adapters are tried
+    uint32_t iAdapterTimeoutMs(0);
+    if (iTimeoutMs > 0)
+    {
+      uint32_t iTimeLeft = timeout.TimeLeft();
+      if (iTimeLeft == 0)
+        break;
+      iAdapterTimeoutMs = iTimeLeft / (uint32_t)(iAdaptersFound - iPtr);
+    }
+
+    AddLog(CEC_LOG_DEBUG, "trying to open '%s' on '%s'", devices[iPtr].strDeviceName, devices[iPtr].strComName);
+    if (OpenPort(devices[iPtr].strComName, iAdapterTimeoutMs))
+      return true;
+  }
+
+  AddLog(CEC_LOG_ERROR, "no CEC adapter could be opened");
+  return false;
+}
+
+bool CLibCEC::OpenPort(const char *strPort, uint32_t iTimeoutMs)
+{
   // open a new connection
   if (!m_cec->Start(strPort, CEC_SERIAL_DEFAULT_BAUDRATE, iTimeoutMs))
   {
@@ -91,6 +141,9 @@ bool CLibCEC::Open(const char *strPort, uint32_t iTimeoutMs /* = CEC_DEFAULT_CON
     if (!m_cec->RegisterClient(*it))
     {
       AddLog(CEC_LOG_ERROR, "failed to register a CEC client");
+      // don't leave a connection open that the caller is being told it doesn't
+      // have, and that the next adapter to be tried would have to close first
+      m_cec->Close();
       return false;
     }
   }
@@ -102,6 +155,8 @@ void CLibCEC::Close(void)
 {
   if (!m_cec)
     return;
+
+  CLockObject lock(m_mutex);
 
   // unregister all clients
   m_cec->UnregisterClients();
@@ -327,6 +382,11 @@ bool CLibCEC::SendKeyRelease(cec_logical_address iDestination, bool bWait /* = t
   return m_client ? m_client->SendKeyRelease(iDestination, bWait) : false;
 }
 
+bool CLibCEC::SendPlay(cec_logical_address iDestination, cec_play_mode mode)
+{
+  return m_client ? m_client->SendPlay(iDestination, mode) : false;
+}
+
 std::string CLibCEC::GetDeviceOSDName(cec_logical_address iAddress)
 {
   return !!m_client ?
@@ -500,7 +560,7 @@ bool CECStartBootloader(void)
           (bReturn = comm->Open(timeout.TimeLeft() / CEC_CONNECT_TRIES, true)) == false)
       {
         comm->Close();
-        CEvent::Sleep(500);
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
       }
       if (comm->IsOpen())
         bReturn = comm->StartBootloader();
@@ -514,7 +574,7 @@ bool CECStartBootloader(void)
 
 void CECDestroy(CEC::ICECAdapter *instance)
 {
-  SAFE_DELETE(instance);
+  SafeDelete(instance);
 }
 
 bool CLibCEC::GetDeviceInformation(const char *strPort, libcec_configuration *config, uint32_t iTimeoutMs /* = CEC_DEFAULT_CONNECT_TIMEOUT */)
@@ -625,15 +685,19 @@ inline bool HexStrToInt(const std::string& data, uint8_t& value)
 
 cec_command CLibCEC::CommandFromString(const char* strCommand)
 {
-  std::vector<std::string> splitCommand = StringUtils::Split(strCommand, ":");
   cec_command retval;
-  unsigned long tmpVal;
+  const std::string command(strCommand);
+  if (command.empty())
+    return retval;
 
-  for (std::vector<std::string>::const_iterator it = splitCommand.begin(); it != splitCommand.end(); ++it)
+  for (size_t pos = 0; pos != std::string::npos; )
   {
-    tmpVal = strtoul((*it).c_str(), nullptr, 16);
-    if (tmpVal <= 0xFF)
-      retval.PushBack((uint8_t)tmpVal);
+    const size_t next = command.find(':', pos);
+    const std::string token = command.substr(pos, next == std::string::npos ? std::string::npos : next - pos);
+    const unsigned long value = strtoul(token.c_str(), nullptr, 16);
+    if (value <= 0xFF)
+      retval.PushBack((uint8_t)value);
+    pos = (next == std::string::npos) ? std::string::npos : next + 1;
   }
 
   return retval;

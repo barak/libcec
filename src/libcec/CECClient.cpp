@@ -32,6 +32,7 @@
  */
 
 #include "env.h"
+#include "platform/util/timeutils.h"
 #include "CECClient.h"
 
 #include "CECProcessor.h"
@@ -44,7 +45,6 @@
 #include <stdio.h>
 
 using namespace CEC;
-using namespace P8PLATFORM;
 
 #define LIB_CEC     m_processor->GetLib()
 #define ToString(x) CCECTypeUtils::ToString(x)
@@ -60,8 +60,13 @@ CCECClient::CCECClient(CCECProcessor *processor, const libcec_configuration &con
     m_releaseButtontime(0),
     m_pressedButtoncount(0),
     m_releasedButtoncount(0),
-    m_iPreventForwardingPowerOffCommand(0)
+    m_bSeenButtonRelease(false),
+    m_iPreventForwardingPowerOffCommand(0),
+    m_iLastKeypressTime(0),
+    m_iLastKeyreleaseTime(0)
 {
+  m_lastKeypress.keycode = CEC_USER_CONTROL_CODE_UNKNOWN;
+  m_lastKeypress.duration = 0;
   m_configuration.Clear();
   // set the initial configuration
   SetConfiguration(configuration);
@@ -136,8 +141,10 @@ bool CCECClient::OnRegister(void)
     (*it)->SetMenuLanguage(std::string(m_configuration.strDeviceLanguage, 3));
   }
 
-  // set the physical address
-  SetPhysicalAddress(m_configuration);
+  // set the physical address, unless already resolved (e.g. via SetHDMIPort during RegisterClient)
+  if (!CLibCEC::IsValidPhysicalAddress(m_configuration.iPhysicalAddress) ||
+      m_configuration.iPhysicalAddress == CEC_PHYSICAL_ADDRESS_TV)
+    SetPhysicalAddress(m_configuration);
 
   // make the primary device the active source if the option is set
   if (m_configuration.bActivateSource == 1)
@@ -148,14 +155,37 @@ bool CCECClient::OnRegister(void)
   return true;
 }
 
+uint16_t CCECClient::GetPhysicalAddressFromPort(const cec_logical_address iBaseDevice, const uint8_t iPort)
+{
+  // get the PA of the base device
+  uint16_t iPhysicalAddress(CEC_INVALID_PHYSICAL_ADDRESS);
+  CCECBusDevice *baseDevice = m_processor->GetDevice(iBaseDevice);
+  if (baseDevice)
+    iPhysicalAddress = baseDevice->GetPhysicalAddress(GetPrimaryLogicalAddress());
+
+  // the address of the base device isn't known (yet)
+  if (iPhysicalAddress > CEC_MAX_PHYSICAL_ADDRESS)
+    return CEC_INVALID_PHYSICAL_ADDRESS;
+
+  // add our port number
+  if (iPhysicalAddress == 0)
+    iPhysicalAddress += 0x1000 * iPort;
+  else if (iPhysicalAddress % 0x1000 == 0)
+    iPhysicalAddress += 0x100 * iPort;
+  else if (iPhysicalAddress % 0x100 == 0)
+    iPhysicalAddress += 0x10 * iPort;
+  else if (iPhysicalAddress % 0x10 == 0)
+    iPhysicalAddress += iPort;
+
+  return iPhysicalAddress;
+}
+
 bool CCECClient::SetHDMIPort(const cec_logical_address iBaseDevice, const uint8_t iPort, bool bForce /* = false */)
 {
-  bool bReturn(false);
-
   // limit the HDMI port range to 1-15
   if (iPort < CEC_MIN_HDMI_PORTNUMBER ||
       iPort > CEC_MAX_HDMI_PORTNUMBER)
-    return bReturn;
+    return false;
 
   // update the configuration
   {
@@ -176,36 +206,17 @@ bool CCECClient::SetHDMIPort(const cec_logical_address iBaseDevice, const uint8_
   if (!m_processor->CECInitialised() && !bForce)
     return true;
 
-  // get the PA of the base device
-  uint16_t iPhysicalAddress(CEC_INVALID_PHYSICAL_ADDRESS);
-  CCECBusDevice *baseDevice = m_processor->GetDevice(iBaseDevice);
-  if (baseDevice)
-    iPhysicalAddress = baseDevice->GetPhysicalAddress(GetPrimaryLogicalAddress());
+  uint16_t iPhysicalAddress = GetPhysicalAddressFromPort(iBaseDevice, iPort);
 
-  // add our port number
-  if (iPhysicalAddress <= CEC_MAX_PHYSICAL_ADDRESS)
-  {
-    if (iPhysicalAddress == 0)
-      iPhysicalAddress += 0x1000 * iPort;
-    else if (iPhysicalAddress % 0x1000 == 0)
-      iPhysicalAddress += 0x100 * iPort;
-    else if (iPhysicalAddress % 0x100 == 0)
-      iPhysicalAddress += 0x10 * iPort;
-    else if (iPhysicalAddress % 0x10 == 0)
-      iPhysicalAddress += iPort;
-
-    bReturn = true;
-  }
-
-  // set the default address when something went wrong
-  if (!bReturn)
+  // set the default address when something went wrong. RefreshPhysicalAddress()
+  // corrects this once the base device does report its physical address.
+  if (!CLibCEC::IsValidPhysicalAddress(iPhysicalAddress))
   {
     uint16_t iEepromAddress = m_processor->GetPhysicalAddressFromEeprom();
     if (CLibCEC::IsValidPhysicalAddress(iEepromAddress))
     {
       LIB_CEC->AddLog(CEC_LOG_WARNING, "failed to set the physical address to %04X, setting it to the value that was saved in the eeprom: %04X", iPhysicalAddress, iEepromAddress);
       iPhysicalAddress = iEepromAddress;
-      bReturn = true;
     }
     else
     {
@@ -223,6 +234,71 @@ void CCECClient::ResetPhysicalAddress(void)
   SetHDMIPort(CECDEVICE_TV, CEC_DEFAULT_HDMI_PORT);
 }
 
+void CCECClient::PhysicalAddressInUse(const cec_logical_address iOtherDevice)
+{
+  cec_logical_address baseDevice;
+  uint8_t             iPort;
+  uint16_t            iPhysicalAddress;
+  {
+    CLockObject lock(m_mutex);
+    baseDevice       = m_configuration.baseDevice;
+    iPort            = m_configuration.iHDMIPort;
+    iPhysicalAddress = m_configuration.iPhysicalAddress;
+  }
+
+  LIB_CEC->AddLog(CEC_LOG_WARNING, "physical address %04X is in use by %s (%X) too", iPhysicalAddress, ToString(iOtherDevice), iOtherDevice);
+
+  // this address was derived from a base device and one of its HDMI ports, so the
+  // device that already uses it is the device that is connected to that port, and
+  // this adapter is connected behind it rather than to the base device itself.
+  if ((baseDevice != CECDEVICE_UNKNOWN) &&
+      (iOtherDevice != baseDevice) &&
+      (iPort >= CEC_MIN_HDMI_PORTNUMBER) &&
+      (iPort <= CEC_MAX_HDMI_PORTNUMBER))
+    LIB_CEC->AddLog(CEC_LOG_WARNING, "HDMI port %d of %s (%X) is used by %s (%X): if this adapter is connected to that device, configure it as the base device and set the HDMI port to the input that this adapter is connected to",
+        iPort, ToString(baseDevice), baseDevice, ToString(iOtherDevice), iOtherDevice);
+
+  // don't change the address here. we have no way of telling which of the two is
+  // correct, and falling back to the default HDMI port is just as likely to collide
+  // with whatever is plugged into that port: it only replaces one wrong address by
+  // another, and silently overrides an address that was configured.
+  libcec_parameter param;
+  param.paramType = CEC_PARAMETER_TYPE_STRING;
+  param.paramData = (void*)"Physical address in use by another device. Please verify your settings";
+  Alert(CEC_ALERT_PHYSICAL_ADDRESS_ERROR, param);
+}
+
+void CCECClient::RefreshPhysicalAddress(const cec_logical_address iBaseDevice)
+{
+  cec_logical_address configuredBase;
+  uint8_t             iPort;
+  uint16_t            iCurrentAddress;
+  {
+    CLockObject lock(m_mutex);
+    configuredBase  = m_configuration.baseDevice;
+    iPort           = m_configuration.iHDMIPort;
+    iCurrentAddress = m_configuration.iPhysicalAddress;
+  }
+
+  // we only derive our address from this device when it's the configured base device
+  if (configuredBase != iBaseDevice ||
+      iPort < CEC_MIN_HDMI_PORTNUMBER ||
+      iPort > CEC_MAX_HDMI_PORTNUMBER)
+    return;
+
+  // a base device that is in standby when the client is registered doesn't always
+  // report its physical address, and SetHDMIPort() then falls back to the eeprom or
+  // default address. re-derive the address now that the base device did report one.
+  uint16_t iPhysicalAddress = GetPhysicalAddressFromPort(iBaseDevice, iPort);
+  if (!CLibCEC::IsValidPhysicalAddress(iPhysicalAddress) ||
+      iPhysicalAddress == iCurrentAddress)
+    return;
+
+  LIB_CEC->AddLog(CEC_LOG_NOTICE, "%s (%X) reported its physical address: changing our physical address to %04X (HDMI port %d)",
+      ToString(iBaseDevice), iBaseDevice, iPhysicalAddress, iPort);
+  SetPhysicalAddress(iPhysicalAddress);
+}
+
 bool CCECClient::SetPhysicalAddress(const libcec_configuration &configuration)
 {
   // override the physical address from configuration.iPhysicalAddress if it's set
@@ -230,26 +306,29 @@ bool CCECClient::SetPhysicalAddress(const libcec_configuration &configuration)
     (configuration.iPhysicalAddress != CEC_PHYSICAL_ADDRESS_TV) &&
     SetPhysicalAddress(configuration.iPhysicalAddress))
   {
-    if (m_configuration.bAutodetectAddress == 0)
-      LIB_CEC->AddLog(CEC_LOG_DEBUG, "using provided physical address %04X", configuration.iPhysicalAddress);
+    LIB_CEC->AddLog(CEC_LOG_DEBUG, "using provided physical address %04X", configuration.iPhysicalAddress);
     CLockObject lock(m_mutex);
-    m_configuration.baseDevice       = CECDEVICE_UNKNOWN;
-    m_configuration.iHDMIPort        = CEC_HDMI_PORTNUMBER_NONE;
-    m_configuration.iPhysicalAddress = configuration.iPhysicalAddress;
+    m_configuration.baseDevice         = CECDEVICE_UNKNOWN;
+    m_configuration.iHDMIPort          = CEC_HDMI_PORTNUMBER_NONE;
+    m_configuration.iPhysicalAddress   = configuration.iPhysicalAddress;
+    // the address was configured, not detected
+    m_configuration.bAutodetectAddress = 0;
     return true;
   }
 
   // try to autodetect the address
   if (AutodetectPhysicalAddress())
   {
-    LIB_CEC->AddLog(CEC_LOG_DEBUG, "using auto-detected physical address %04X", m_configuration.iPhysicalAddress);
+    // AutodetectPhysicalAddress() stored the detected address and cleared the base
+    // device and port. don't copy configuration.iPhysicalAddress back over it: we
+    // only get here when it doesn't hold a usable address
+    uint16_t iDetected;
     {
       CLockObject lock(m_mutex);
-      m_configuration.baseDevice       = CECDEVICE_UNKNOWN;
-      m_configuration.iHDMIPort        = CEC_HDMI_PORTNUMBER_NONE;
-      m_configuration.iPhysicalAddress = configuration.iPhysicalAddress;
+      iDetected = m_configuration.iPhysicalAddress;
     }
-    SetDevicePhysicalAddress(m_configuration.iPhysicalAddress);
+    LIB_CEC->AddLog(CEC_LOG_DEBUG, "using auto-detected physical address %04X", iDetected);
+    SetDevicePhysicalAddress(iDetected);
     return true;
   }
 
@@ -850,6 +929,15 @@ bool CCECClient::SendKeyRelease(const cec_logical_address iDestination, bool bWa
       false;
 }
 
+bool CCECClient::SendPlay(const cec_logical_address iDestination, const cec_play_mode mode)
+{
+  CCECBusDevice *dest = m_processor->GetDevice(iDestination);
+
+  return dest ?
+      dest->TransmitPlay(GetPrimaryLogicalAddress(), mode) :
+      false;
+}
+
 bool CCECClient::GetCurrentConfiguration(libcec_configuration &configuration)
 {
   CLockObject lock(m_mutex);
@@ -868,7 +956,7 @@ bool CCECClient::GetCurrentConfiguration(libcec_configuration &configuration)
   configuration.powerOffDevices           = m_configuration.powerOffDevices;
   configuration.logicalAddresses          = m_configuration.logicalAddresses;
   configuration.iFirmwareVersion          = m_configuration.iFirmwareVersion;
-  memcpy(configuration.strDeviceLanguage,  m_configuration.strDeviceLanguage, 3);
+  memmove(configuration.strDeviceLanguage,  m_configuration.strDeviceLanguage, 3);
   configuration.iFirmwareBuildDate        = m_configuration.iFirmwareBuildDate;
   configuration.bMonitorOnly              = m_configuration.bMonitorOnly;
   configuration.cecVersion                = m_configuration.cecVersion;
@@ -879,6 +967,11 @@ bool CCECClient::GetCurrentConfiguration(libcec_configuration &configuration)
   configuration.bAutoWakeAVR              = m_configuration.bAutoWakeAVR;
 #if CEC_LIB_VERSION_MAJOR >= 5
   configuration.bAutoPowerOn              = m_configuration.bAutoPowerOn;
+#endif
+#if CEC_LIB_VERSION_MAJOR >= 8
+  configuration.bAutonomousMode           = m_configuration.bAutonomousMode;
+  configuration.iButtonRepeatDelayMs      = m_configuration.iButtonRepeatDelayMs;
+  configuration.iDeviceVendorId           = m_configuration.iDeviceVendorId;
 #endif
 
   return true;
@@ -916,7 +1009,7 @@ bool CCECClient::SetConfiguration(const libcec_configuration &configuration)
     m_configuration.bGetSettingsFromROM        = configuration.bGetSettingsFromROM;
     m_configuration.wakeDevices                = configuration.wakeDevices;
     m_configuration.powerOffDevices            = configuration.powerOffDevices;
-    memcpy(m_configuration.strDeviceLanguage,   configuration.strDeviceLanguage, 3);
+    memmove(m_configuration.strDeviceLanguage,   configuration.strDeviceLanguage, 3);
     m_configuration.bMonitorOnly               = configuration.bMonitorOnly;
     m_configuration.cecVersion                 = configuration.cecVersion;
     m_configuration.adapterType                = configuration.adapterType;
@@ -930,6 +1023,12 @@ bool CCECClient::SetConfiguration(const libcec_configuration &configuration)
 #if CEC_LIB_VERSION_MAJOR >= 5
     if ((configuration.bAutoPowerOn == 0) || (configuration.bAutoPowerOn == 1))
       m_configuration.bAutoPowerOn             = configuration.bAutoPowerOn;
+#endif
+#if CEC_LIB_VERSION_MAJOR >= 8
+    if ((configuration.bAutonomousMode == 0) || (configuration.bAutonomousMode == 1))
+      m_configuration.bAutonomousMode          = configuration.bAutonomousMode;
+    m_configuration.iButtonRepeatDelayMs       = configuration.iButtonRepeatDelayMs;
+    m_configuration.iDeviceVendorId            = configuration.iDeviceVendorId;
 #endif
 
     if (activeSourceChanged)
@@ -968,6 +1067,13 @@ bool CCECClient::SetConfiguration(const libcec_configuration &configuration)
       m_configuration.iHDMIPort        = configuration.iHDMIPort;
       bNeedReinit = true;
     }
+  }
+  else if (CLibCEC::IsValidPhysicalAddress(configuration.iPhysicalAddress) &&
+    configuration.iPhysicalAddress != CEC_PHYSICAL_ADDRESS_TV)
+  {
+    // a configured physical address takes precedence over the base device + port,
+    // which are only used when no address was configured
+    SetPhysicalAddress(configuration);
   }
   else if (
     configuration.baseDevice != CECDEVICE_UNKNOWN &&
@@ -1034,6 +1140,11 @@ void CCECClient::AddKey(bool bSendComboKey /* = false */, bool bButtonRelease /*
 
   {
     CLockObject lock(m_mutex);
+    // the device sends its own release messages, so we can relax the synthesized
+    // release into a stuck-key backstop and stop cutting long-presses short
+    if (bButtonRelease)
+      m_bSeenButtonRelease = true;
+
     if (m_iCurrentButton != CEC_USER_CONTROL_CODE_UNKNOWN)
     {
       unsigned int duration = (unsigned int) (GetTimeMs() - m_updateButtontime);
@@ -1105,15 +1216,28 @@ void CCECClient::AddKey(const cec_keypress &key)
 
     LIB_CEC->AddLog(CEC_LOG_DEBUG, "key pressed: %s (%1x) current(%lx) duration(%d)", ToString(transmitKey.keycode), transmitKey.keycode, m_iCurrentButton, key.duration);
 
+    // the delay after which we synthesize a release for a held key. only relevant
+    // when not auto-repeating: in repeat mode a real release clears the held state
+    // right away and the duration is carried on the repeats. once the device has
+    // proven it sends its own releases, stretch this to a stuck-key backstop so a
+    // long-press isn't cut short by a fake release beating the real one.
+    int64_t iReleaseDelayMs = m_configuration.iButtonReleaseDelayMs ? m_configuration.iButtonReleaseDelayMs : CEC_BUTTON_TIMEOUT;
+    if (m_bSeenButtonRelease && !m_configuration.iButtonRepeatRateMs)
+      iReleaseDelayMs = std::max(iReleaseDelayMs, (int64_t)CEC_BUTTON_RELEASE_BACKSTOP_MS);
+
     if (m_iCurrentButton == key.keycode)
     {
       m_updateButtontime = GetTimeMs();
-      m_releaseButtontime = m_updateButtontime + (m_configuration.iButtonReleaseDelayMs ? m_configuration.iButtonReleaseDelayMs : CEC_BUTTON_TIMEOUT);
+      m_releaseButtontime = m_updateButtontime + iReleaseDelayMs;
       // want to have seen some updated before considering a repeat
       if (m_configuration.iButtonRepeatRateMs)
       {
         if (!m_repeatButtontime && m_pressedButtoncount > 1)
-          m_repeatButtontime = m_initialButtontime + DoubleTapTimeoutMS();
+#if CEC_LIB_VERSION_MAJOR >= 8
+          m_repeatButtontime = m_initialButtontime + m_configuration.iButtonRepeatDelayMs;
+#else
+          m_repeatButtontime = m_initialButtontime + CEC_BUTTON_REPEAT_DELAY_MS;
+#endif
         isrepeat = true;
       }
       m_pressedButtoncount++;
@@ -1142,7 +1266,7 @@ void CCECClient::AddKey(const cec_keypress &key)
           m_initialButtontime = GetTimeMs();
           m_updateButtontime = m_initialButtontime;
           m_repeatButtontime = 0; // set this on next update
-          m_releaseButtontime = m_initialButtontime + (m_configuration.iButtonReleaseDelayMs ? m_configuration.iButtonReleaseDelayMs : CEC_BUTTON_TIMEOUT);
+          m_releaseButtontime = m_initialButtontime + iReleaseDelayMs;
           m_pressedButtoncount = 1;
           m_releasedButtoncount = 0;
         }
@@ -1200,8 +1324,15 @@ uint16_t CCECClient::CheckKeypressTimeout(void)
     }
     else if (m_iCurrentButton != comboKey && m_releaseButtontime && iNow >= (uint64_t)m_releaseButtontime)
     {
+      // the release delay expired without a release command. only synthesize a
+      // release for a key the device isn't repeating: a device that re-sends the
+      // pressed command (m_pressedButtoncount > 1) sends its own release too, so
+      // emitting one here would surface as intermediate key-up events between
+      // repeats (#724). a key that was pressed once still gets the synthesized
+      // release so it isn't stuck pressed (#704).
       key.duration = (unsigned int) (iNow - m_initialButtontime);
-      key.keycode = CEC_USER_CONTROL_CODE_UNKNOWN;
+      if (m_pressedButtoncount <= 1)
+        key.keycode = m_iCurrentButton;
 
       m_iCurrentButton = CEC_USER_CONTROL_CODE_UNKNOWN;
       m_initialButtontime = 0;
@@ -1239,7 +1370,26 @@ uint16_t CCECClient::CheckKeypressTimeout(void)
   if (key.keycode != CEC_USER_CONTROL_CODE_UNKNOWN)
     QueueAddKey(key);
 
-  return (uint16_t)timeout;
+  // never return 0. this is the delay after which the processor thread should
+  // poll us again, and it hands it straight to CCECInputBuffer::Pop(), where 0
+  // means "wait forever" -- the opposite of SyncedBuffer::Pop(), where 0 means
+  // "return immediately". a 0 slipping out of the arithmetic above would park
+  // the processor on the input queue until the next incoming frame instead of
+  // servicing the next keypress deadline, so clamp to a 1ms poll.
+  return (uint16_t)std::max<uint64_t>(timeout, 1);
+}
+
+void CCECClient::ResetKeypressState(void)
+{
+  CLockObject lock(m_mutex);
+  m_iCurrentButton      = CEC_USER_CONTROL_CODE_UNKNOWN;
+  m_initialButtontime   = 0;
+  m_updateButtontime    = 0;
+  m_repeatButtontime    = 0;
+  m_releaseButtontime   = 0;
+  m_pressedButtoncount  = 0;
+  m_releasedButtoncount = 0;
+  m_bSeenButtonRelease  = false;
 }
 
 bool CCECClient::EnableCallbacks(void *cbParam, ICECCallbacks *callbacks)
@@ -1328,7 +1478,8 @@ void CCECClient::SetOSDName(const std::string &strDeviceName)
     strncpy(buf, strDeviceName.c_str(), LIBCEC_OSD_NAME_SIZE);
     if (!strncmp(m_configuration.strDeviceName, buf, LIBCEC_OSD_NAME_SIZE))
       return;
-    strncpy(m_configuration.strDeviceName, buf, LIBCEC_OSD_NAME_SIZE);
+    strncpy(m_configuration.strDeviceName, buf, LIBCEC_OSD_NAME_SIZE - 1);
+    m_configuration.strDeviceName[LIBCEC_OSD_NAME_SIZE - 1] = 0;
     LIB_CEC->AddLog(CEC_LOG_DEBUG, "%s - using OSD name '%s'", __FUNCTION__, buf);
   }
 
@@ -1738,6 +1889,30 @@ void CCECClient::CallbackAddKey(const cec_keypress &key)
   if (!!m_configuration.callbacks &&
       !!m_configuration.callbacks->keyPress)
   {
+    int64_t now = GetTimeMs();
+    // drop a repeated press of the same key within the double tap timeout, so a
+    // single physical press reported twice by the device isn't delivered twice
+    if (key.duration == 0 && m_configuration.iDoubleTapTimeoutMs &&
+        m_lastKeypress.keycode == key.keycode &&
+        now - m_iLastKeypressTime < DoubleTapTimeoutMS())
+      return;
+    // a device that double-reports a press also double-reports its release, so
+    // drop the extra release too. only the second release in a burst is dropped:
+    // a forwarded press resets m_iLastKeyreleaseTime, so the first release after
+    // any press always gets through and no press is left without a release.
+    if (key.duration != 0 && m_configuration.iDoubleTapTimeoutMs &&
+        m_lastKeypress.keycode == key.keycode &&
+        m_iLastKeyreleaseTime != 0 &&
+        now - m_iLastKeyreleaseTime < DoubleTapTimeoutMS())
+      return;
+    if (key.duration == 0)
+    {
+      m_iLastKeypressTime = now;
+      m_iLastKeyreleaseTime = 0;
+    }
+    else
+      m_iLastKeyreleaseTime = now;
+    m_lastKeypress = key;
     m_configuration.callbacks->keyPress(m_configuration.callbackParam, &key);
   }
 }

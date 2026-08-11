@@ -93,6 +93,7 @@ extern DECLSPEC int libcec_mute_audio(libcec_connection_t connection, int bSendR
 #endif
 extern DECLSPEC int libcec_send_keypress(libcec_connection_t connection, CEC_NAMESPACE cec_logical_address iDestination, CEC_NAMESPACE cec_user_control_code key, int bWait);
 extern DECLSPEC int libcec_send_key_release(libcec_connection_t connection, CEC_NAMESPACE cec_logical_address iDestination, int bWait);
+extern DECLSPEC int libcec_send_play(libcec_connection_t connection, CEC_NAMESPACE cec_logical_address iDestination, CEC_NAMESPACE cec_play_mode mode);
 extern DECLSPEC int libcec_get_device_osd_name(libcec_connection_t connection, CEC_NAMESPACE cec_logical_address iAddress, CEC_NAMESPACE cec_osd_name name);
 extern DECLSPEC int libcec_set_stream_path_logical(libcec_connection_t connection, CEC_NAMESPACE cec_logical_address iAddress);
 extern DECLSPEC int libcec_set_stream_path_physical(libcec_connection_t connection, uint16_t iPhysicalAddress);
@@ -119,6 +120,9 @@ extern DECLSPEC uint8_t libcec_audio_get_status(libcec_connection_t connection);
 extern DECLSPEC int libcec_system_audio_mode(libcec_connection_t connection, int bEnable);
 extern DECLSPEC uint8_t libcec_system_audio_mode_get_status(libcec_connection_t connection);
 extern DECLSPEC int8_t libcec_detect_adapters(libcec_connection_t connection, CEC_NAMESPACE cec_adapter_descriptor* deviceList, uint8_t iBufSize, const char* strDevicePath, int bQuickScan);
+#if CEC_LIB_VERSION_MAJOR >= 5
+extern DECLSPEC int libcec_get_stats(libcec_connection_t connection, struct CEC_NAMESPACE cec_adapter_stats* stats);
+#endif
 #ifdef SWIG
 %cstring_bounded_output(char* buf, 50);
 #endif
