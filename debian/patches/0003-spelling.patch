@@ -7,10 +7,10 @@ Subject: spelling
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/libcec/CECClient.cpp b/src/libcec/CECClient.cpp
-index b38fab3..85982a4 100644
+index 1138090..08bf526 100644
 --- a/src/libcec/CECClient.cpp
 +++ b/src/libcec/CECClient.cpp
-@@ -1709,7 +1709,7 @@ void* CCECClient::Process(void)
+@@ -1865,7 +1865,7 @@ void* CCECClient::Process(void)
          case CCallbackWrap::CEC_CB_COMMAND_HANDLER:
            keepResult = cb->Report(CallbackCommandHandler(cb->m_command));
            if (!keepResult)

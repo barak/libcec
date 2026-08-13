@@ -6,5 +6,8 @@
 /debhelper-build-stamp
 /files
 /libcec-dev/
-/libcec7/
+/libcec8/
+/librust-libcec-dev/
+/node-libcec/
+/python3-libcec/
 /tmp/

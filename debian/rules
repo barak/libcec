@@ -5,19 +5,32 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 include /usr/share/dpkg/architecture.mk
 # for DEB_HOST_MULTIARCH
 
+# The Rust and Node.js bindings are each built unless their build profile is
+# requested, so a bootstrap (or an architecture without one of the toolchains)
+# can drop them with -Ppkg.libcec.norust and/or -Ppkg.libcec.nonodejs.
+BUILD_RUST = $(if $(filter pkg.libcec.norust,$(DEB_BUILD_PROFILES)),,yes)
+BUILD_NODE = $(if $(filter pkg.libcec.nonodejs,$(DEB_BUILD_PROFILES)),,yes)
+
+# where Debian's node looks for arch-specific (native) modules
+NODE_MODULE_DIR = usr/lib/$(DEB_HOST_MULTIARCH)/nodejs/libcec
+
 %:
 	dh $@ --with python3
 
 override_dh_auto_configure:
-	dh_auto_configure -- -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=/usr/lib/$(DEB_HOST_MULTIARCH) \
-		-DCMAKE_BUILD_RPATH_USE_ORIGIN=ON \
+	dh_auto_configure -- \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DBUILD_SHARED_LIBS=1 \
+		-DCMAKE_INSTALL_LIBDIR=/usr/lib/$(DEB_HOST_MULTIARCH) \
 		-DDISABLE_BUILDINFO=ON \
+		$(if $(BUILD_RUST),-DENABLE_RUST_LIB=1) \
 		-DHAVE_EXYNOS_API=1 \
 		-DHAVE_AOCEC_API=1 \
 		-DHAVE_LINUX_API=1
 
-# upstream derives the python module directory from CMAKE_INSTALL_LIBDIR, so it
-# lands under the multiarch triplet, which is not on Debian's sys.path
+# upstream derives the python module directory from
+# CMAKE_INSTALL_LIBDIR, yielding a multiarch triplet, which is not on
+# Debian's sys.path
 PY3_DIST = usr/lib/$(DEB_HOST_MULTIARCH)/python3.*/dist-packages
 
 execute_after_dh_auto_install:
@@ -26,6 +39,45 @@ execute_after_dh_auto_install:
 	mkdir -p debian/tmp/usr/lib/python3/dist-packages
 	mv debian/tmp/$(PY3_DIST)/* debian/tmp/usr/lib/python3/dist-packages/
 	rmdir debian/tmp/$(PY3_DIST) debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/python3.*
+ifneq (,$(BUILD_NODE))
+	# node-gyp builds the addon, not cmake's ENABLE_NODE_LIB, which drives npm
+	# and would want the network. PKG_CONFIG_SYSROOT_DIR makes pkg-config
+	# resolve the headers and library just staged in debian/tmp; the addon
+	# links the SONAME so the staging path is not included in the built binaries
+	cd src/nodejs && \
+		HOME=$(CURDIR)/debian/nodejs-home \
+		PKG_CONFIG_SYSROOT_DIR=$(CURDIR)/debian/tmp \
+		PKG_CONFIG_PATH=$(CURDIR)/debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/pkgconfig \
+		node-gyp rebuild --nodedir=/usr/include/nodejs
+	# stage the module tree where Debian's node resolves it
+	mkdir -p debian/tmp/$(NODE_MODULE_DIR)/lib \
+	         debian/tmp/$(NODE_MODULE_DIR)/build/Release
+	cp -a src/nodejs/lib/*.js     debian/tmp/$(NODE_MODULE_DIR)/lib/
+	cp -a src/nodejs/index.d.ts   debian/tmp/$(NODE_MODULE_DIR)/
+	cp -a src/nodejs/package.json debian/tmp/$(NODE_MODULE_DIR)/
+	cp -a src/nodejs/build/Release/cec_native.node \
+	                              debian/tmp/$(NODE_MODULE_DIR)/build/Release/
+endif
 
 override_dh_installchangelogs:
 	dh_installchangelogs debian/changelog.in
+
+# dh_strip never strips libcec.a. It only considers a static library if
+# perl's -B calls the file binary, and -B calls a file text when the first
+# block is valid UTF-8 containing non-ASCII bytes. libcec.a's ar symbol table
+# is a run of big-endian member offsets that happens to decode cleanly as
+# UTF-8, so -B says text, the library is skipped, and it ships with full debug
+# info (22MB rather than 2.3MB; lintian: unstripped-static-library). Do it by
+# hand with the exact flags dh_strip would have used.
+STATIC_LIB = debian/libcec-dev/usr/lib/$(DEB_HOST_MULTIARCH)/libcec.a
+
+ifeq (,$(filter nostrip,$(DEB_BUILD_OPTIONS)))
+execute_after_dh_strip:
+	[ ! -f $(STATIC_LIB) ] || \
+	$(DEB_HOST_GNU_TYPE)-strip --strip-debug \
+		--remove-section=.comment --remove-section=.note \
+		--enable-deterministic-archives \
+		-R '.gnu.lto_*' -R '.gnu.debuglto_*' \
+		-N __gnu_lto_slim -N __gnu_lto_v1 \
+		$(STATIC_LIB)
+endif

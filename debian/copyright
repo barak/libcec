@@ -28,10 +28,53 @@ Copyright: 2014, Valentin Manea
   2011-2015, Pulse-Eight Limited.
 License: GPL-2+
 
+Files: src/libcec/adapter/AOCEC/*
+Copyright: 2016, Gerald Dachs
+  2014, Valentin Manea
+  2011-2015, Pulse-Eight Limited.
+License: GPL-2+
+
+Files: src/libcec/adapter/IMX/*
+Copyright: 2013, Stephan Rafin
+  2011-2013, Pulse-Eight Limited.
+License: GPL-2+
+
+Files: src/libcec/adapter/Linux/*
+Copyright: 2017-2019, Jonas Karlman
+  2016, Gerald Dachs
+  2014, Valentin Manea
+  2011-2015, Pulse-Eight Limited.
+License: GPL-2+
+
+Files: src/EventGhost/egplugin_sources/PulseEight/*
+Copyright: 2005-2016, EventGhost Project <http://www.eventghost.org/>
+  2011-2015, Pulse-Eight Limited.
+License: GPL-2+
+
 Files: src/libcec/platform/adl/adl-edid.cpp
   src/libcec/platform/adl/adl-edid.h
 Copyright: 2011-2015, Pulse-Eight Limited.
 License: GPL-2+
+
+Files: src/libcec/platform/adl/adl_defines.h
+  src/libcec/platform/adl/adl_sdk.h
+  src/libcec/platform/adl/adl_structures.h
+Copyright: 2008-2012, Advanced Micro Devices, Inc.
+License: AMD-ADL-SDK
+
+License: AMD-ADL-SDK
+ THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+ EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
+Comment: These are headers from AMD's Display Library (ADL) SDK, vendored by
+ upstream. They declare the types and entry points that adl-edid.cpp resolves
+ with dlopen() to read an EDID from an AMD driver at run time; nothing links
+ against ADL at build time.
+ .
+ The notice reproduced above is the entire copyright notice the files carry:
+ it disclaims warranty but grants no permission to use, copy, modify or
+ redistribute. The terms of the AMD ADL SDK licence agreement under which
+ upstream obtained them are not reproduced in the source.
 
 License: GPL-2+
  This program is free software; you can redistribute it and/or modify

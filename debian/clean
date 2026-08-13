@@ -3,3 +3,10 @@ src/cec-client/env.h
 src/cecc-client/env.h
 src/libcec/env.h
 src/libcec/libcec.pc
+src/rust/Cargo.lock
+
+# node-gyp build tree, its cache, and the HOME we point it at. Directories
+# have to carry the trailing slash; dh_clean errors out without it.
+src/nodejs/build/
+src/nodejs/node_modules/
+debian/nodejs-home/

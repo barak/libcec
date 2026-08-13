@@ -1,9 +1,8 @@
 Source: libcec
 Maintainer: Barak A. Pearlmutter <bap@debian.org>
 Section: libs
-Build-Depends: debhelper-compat (= 13),
+Build-Depends: debhelper-compat (= 14),
                pkgconf,
-               pkg-kde-tools,
                libudev-dev [linux-any],
                cmake,
                swig,
@@ -11,7 +10,13 @@ Build-Depends: debhelper-compat (= 13),
                dh-python,
                libxrandr-dev,
                x11proto-core-dev,
-               libncurses-dev
+               libncurses-dev,
+               cargo <!pkg.libcec.norust>,
+               rustc <!pkg.libcec.norust>,
+               nodejs <!pkg.libcec.nonodejs>,
+               libnode-dev <!pkg.libcec.nonodejs>,
+               node-gyp <!pkg.libcec.nonodejs>,
+               node-addon-api <!pkg.libcec.nonodejs>
 Standards-Version: 4.7.4
 Vcs-Browser: https://salsa.debian.org/debian/libcec
 Vcs-Git: https://salsa.debian.org/debian/libcec.git
@@ -64,6 +69,36 @@ Depends: libcec8 (= ${binary:Version}),
          ${misc:Depends},
          ${python3:Depends}
 Description: Python bindings for libCEC
- This library provides Python bindings for libCEC.
+ This library provides support for the Pulse-Eight USB-CEC adapter and
+ other CEC capable hardware, like the Raspberry Pi.
  .
  This package provides Python bindings for libCEC.
+
+Package: node-libcec
+Architecture: any
+Section: javascript
+Build-Profiles: <!pkg.libcec.nonodejs>
+Pre-Depends: ${misc:Pre-Depends}
+Depends: nodejs,
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: Node.js bindings for libCEC
+ This library provides support for the Pulse-Eight USB-CEC adapter and
+ other CEC capable hardware, like the Raspberry Pi.
+ .
+ This package provides a native Node.js (N-API) addon that binds libCEC
+ over its C API, exposing an EventEmitter-based CecAdapter to JavaScript.
+
+Package: librust-libcec-dev
+Architecture: all
+Section: rust
+Build-Profiles: <!pkg.libcec.norust>
+Depends: libcec-dev (>= ${source:Version}),
+         ${misc:Depends}
+Description: Rust bindings for libCEC
+ This library provides support for the Pulse-Eight USB-CEC adapter and
+ other CEC capable hardware, like the Raspberry Pi.
+ .
+ This package provides the Rust binding for libCEC, which wraps its C
+ API and links the shared library. As is usual, this package contains
+ the crate source.

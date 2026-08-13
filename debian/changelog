@@ -1,20 +1,40 @@
 libcec (8.1.6+dfsg-1) unstable; urgency=medium
 
+  * Bump standards version
   * New upstream version 8.1.6
-  * Repack to drop prebuilt Windows binaries shipped without source
-    (support/windows/*.exe, support/windows/libusb0.dll); Files-Excluded
-    added to debian/copyright, hence the +dfsg suffix
-  * SONAME bump: rename libcec7 to libcec8
-  * Upstream no longer uses p8-platform: drop the libp8-platform-dev
-    build dependency and the include/platform symlink
-  * Drop 03_reproducible_build.patch, superseded by upstream's
-    DISABLE_BUILDINFO option, which is now passed from debian/rules
-  * Drop 04_fix_pkgconfig_libdir.patch, fixed upstream
-  * Install the cmake package config files, new upstream
-  * Build with dh_python3 so the python module is installed where the
-    interpreter can find it, and ship the _pycec extension module
-    alongside cec.py; without either, python3-libcec was unusable
-  * bump policy
+  * Repack to drop prebuilt Windows binaries (support/windows/*.exe,
+    support/windows/libusb0.dll); debian/copyright Files-Excluded and
+    +dfsg suffix
+  * SONAME bump, rename libcec7 to libcec8
+  * Upstream no longer uses p8-platform: drop libp8-platform-dev
+    build dep and the include/platform symlink
+  * Drop 03_reproducible_build.patch: superseded by upstream
+    DISABLE_BUILDINFO option, now passed by debian/rules
+  * Drop 04_fix_pkgconfig_libdir.patch: fixed upstream
+  * Install new cmake package config files
+  * Build with dh_python3 so python module is installed where interpreter
+    can find it; ship the _pycec extension module alongside cec.py;
+    without either, python3-libcec was unusable (closes: #1134169)
+  * New binary package librust-libcec-dev, the upstream Rust binding,
+    shipping the crate source under /usr/share/cargo/registry. Skipped
+    with build profile pkg.libcec.norust
+  * New binary package node-libcec, the upstream Node.js N-API addon,
+    built with node-gyp rather than cmake's ENABLE_NODE_LIB which would
+    need network access. Skipped with build profile pkg.libcec.nonodejs
+  * The .NET binding is not packaged
+  * debian/copyright: document AOCEC, IMX, Linux and EventGhost copyright
+    holders, and the vendored AMD ADL SDK headers
+  * Drop pkg-kde-tools build dependency, unused since d/symbols was
+    replaced by d/shlibs
+  * Bump debhelper compat to 14
+    - dh_dwz is no longer in the default sequence, which only grows
+      the -dbgsym packages
+    - cmake is automatically passed -DCMAKE_BUILD_RPATH_USE_ORIGIN=ON
+  * Strip libcec.a from debian/rules: dh_strip has a bug which makes it
+    think this static library is a text file and not strip it (NOTE:
+    remove this stanza when https://bugs.debian.org/875780 is fixed.)
+  * Move debian/ man pages to debian/man/, write one for pyCecClient, and
+    remove cec-config.1 which was unused.
 
  -- Barak A. Pearlmutter <bap@debian.org>  Wed, 12 Aug 2026 08:53:51 +0100
 

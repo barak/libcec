@@ -1,0 +1,3 @@
+# The crate's README is named by the readme key in its Cargo.toml, so it has to
+# sit beside the manifest in the registry directory rather than in /usr/share/doc.
+package-contains-documentation-outside-usr-share-doc [usr/share/cargo/registry/*/README.md]
