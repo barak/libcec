@@ -4,3 +4,4 @@ Template: Github
 Owner: Pulse-Eight
 Project: @PACKAGE@
 Repacksuffix: +dfsg
+Dversionmangle: auto

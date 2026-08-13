@@ -6,21 +6,26 @@ include /usr/share/dpkg/architecture.mk
 # for DEB_HOST_MULTIARCH
 
 %:
-	dh $@
-
-execute_before_dh_auto_configure:
-	ln -s /usr/include/cec-platform include/platform
+	dh $@ --with python3
 
 override_dh_auto_configure:
 	dh_auto_configure -- -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_LIBDIR=/usr/lib/$(DEB_HOST_MULTIARCH) \
 		-DCMAKE_BUILD_RPATH_USE_ORIGIN=ON \
+		-DDISABLE_BUILDINFO=ON \
 		-DHAVE_EXYNOS_API=1 \
 		-DHAVE_AOCEC_API=1 \
 		-DHAVE_LINUX_API=1
 
+# upstream derives the python module directory from CMAKE_INSTALL_LIBDIR, so it
+# lands under the multiarch triplet, which is not on Debian's sys.path
+PY3_DIST = usr/lib/$(DEB_HOST_MULTIARCH)/python3.*/dist-packages
+
 execute_after_dh_auto_install:
 	rm debian/tmp/usr/bin/cec-client
 	mv debian/tmp/usr/bin/cec-client-* debian/tmp/usr/bin/cec-client
+	mkdir -p debian/tmp/usr/lib/python3/dist-packages
+	mv debian/tmp/$(PY3_DIST)/* debian/tmp/usr/lib/python3/dist-packages/
+	rmdir debian/tmp/$(PY3_DIST) debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/python3.*
 
 override_dh_installchangelogs:
 	dh_installchangelogs debian/changelog.in

@@ -1,4 +1,3 @@
-include/platform
 include/version.h
 src/cec-client/env.h
 src/cecc-client/env.h

@@ -1,3 +1,2 @@
 /usr/bin/cecc-client
 /usr/bin/cecc-client-*
-/usr/lib/*/python3.*/dist-packages/_*.so
