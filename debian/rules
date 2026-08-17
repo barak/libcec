@@ -33,9 +33,13 @@ override_dh_auto_configure:
 # Debian's sys.path
 PY3_DIST = usr/lib/$(DEB_HOST_MULTIARCH)/python3.*/dist-packages
 
+# cmake sets VERSION on both client targets, so each installs as
+# <name>-$(version) plus an unversioned symlink to it. Ship just the binary
+# under the plain name; nobody types the version.
 execute_after_dh_auto_install:
-	rm debian/tmp/usr/bin/cec-client
+	rm debian/tmp/usr/bin/cec-client debian/tmp/usr/bin/cecc-client
 	mv debian/tmp/usr/bin/cec-client-* debian/tmp/usr/bin/cec-client
+	mv debian/tmp/usr/bin/cecc-client-* debian/tmp/usr/bin/cecc-client
 	mkdir -p debian/tmp/usr/lib/python3/dist-packages
 	mv debian/tmp/$(PY3_DIST)/* debian/tmp/usr/lib/python3/dist-packages/
 	rmdir debian/tmp/$(PY3_DIST) debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/python3.*
