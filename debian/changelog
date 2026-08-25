@@ -18,7 +18,7 @@ libcec (8.1.6+dfsg2-1) UNRELEASED; urgency=medium
 libcec (8.1.6+dfsg-1) unstable; urgency=medium
 
   * Bump standards version
-  * New upstream version 8.1.6
+  * New upstream version 8.1.6 (closes: #1145451)
   * Repack to drop prebuilt Windows binaries (support/windows/*.exe,
     support/windows/libusb0.dll); debian/copyright Files-Excluded and
     +dfsg suffix
