@@ -1,21 +1,4 @@
-libcec (8.1.6+dfsg2-1) UNRELEASED; urgency=medium
-
-  * Ship cecc-client in cec-utils, as upstream's own packaging does, with
-    a man page. It reaches libcec through dlopen and the C API rather than
-    linking it, so it exercises the ABI the other bindings use.
-  * New patches 0004 and 0005 implement cecc-client's --help and
-    --list-devices, both of which were stubs that silently printed nothing
-  * Repack again to drop three vendored AMD Display Library headers
-    (src/libcec/platform/adl/adl_{defines,sdk,structures}.h). Their entire
-    copyright notice disclaims warranty and grants no permission to use,
-    copy, modify or redistribute.
-  * Replace above headers with more recent version of the same headers,
-    which AMD republished under the MIT licence.
-  * Tiny patch to make the newer adl_*.h headers work.
-
- -- Barak A. Pearlmutter <bap@debian.org>  Mon, 17 Aug 2026 10:49:10 +0100
-
-libcec (8.1.6+dfsg-1) unstable; urgency=medium
+libcec (8.1.6+dfsg2-1) unstable; urgency=medium
 
   * Bump standards version
   * New upstream version 8.1.6 (closes: #1145451)
@@ -52,8 +35,20 @@ libcec (8.1.6+dfsg-1) unstable; urgency=medium
     remove this stanza when https://bugs.debian.org/875780 is fixed.)
   * Move debian/ man pages to debian/man/, write one for pyCecClient, and
     remove cec-config.1 which was unused.
+  * Ship cecc-client in cec-utils, as upstream's own packaging does, with
+    a man page. It uses libcec with dlopen and the C API rather than
+    linking, thus exercising the ABI the other bindings use.
+  * New patches 0004 / 0005 implement cecc-client --help / --list-devices,
+    both of which were stubs that silently printed nothing
+  * Repack to drop vendored AMD Display Library headers
+    (src/libcec/platform/adl/adl_{defines,sdk,structures}.h). Their
+    copyright notice disclaims warranty but grants no permission to use,
+    copy, modify or redistribute.
+  * Replace above headers with more recent version of the same headers,
+    which AMD republished under the MIT licence.
+  * Tiny patch to make the newer adl_*.h headers work.
 
- -- Barak A. Pearlmutter <bap@debian.org>  Wed, 12 Aug 2026 08:53:51 +0100
+ -- Barak A. Pearlmutter <bap@debian.org>  Tue, 25 Aug 2026 13:26:28 +0100
 
 libcec (7.1.1-2) unstable; urgency=medium
 
