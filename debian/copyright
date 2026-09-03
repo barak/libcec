@@ -2,26 +2,10 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: libcec
 Upstream-Contact: Lars Op den Kamp <lars.opdenkamp@pulse-eight.com>
 Source: https://github.com/Pulse-Eight/libcec
-Files-Excluded: support/windows/libusb0.dll
-  support/windows/p8-usbcec-bootloader-driver-installer.exe
-  support/windows/p8-usbcec-driver-installer.exe
-  src/libcec/platform/adl/adl_defines.h
-  src/libcec/platform/adl/adl_sdk.h
-  src/libcec/platform/adl/adl_structures.h
+Files-Excluded: support/windows/*.dll
+  support/windows/*.exe
 Comment: The support/windows files are prebuilt Windows binaries shipped
  without corresponding source.
- .
- The adl_*.h files are headers from AMD's Display Library (ADL) SDK, vendored by
- upstream.  The entire copyright notice they carry disclaims warranty but grants
- no permission to use, copy, modify or redistribute, and the terms of the AMD ADL
- SDK licence agreement under which upstream obtained them are not reproduced in
- the source, so they are not distributable.
- .
- AMD has since republished these same headers under the MIT license as
- the GPUOpen display-library SDK.
- https://github.com/GPUOpen-LibrariesAndSDKs/display-library/tree/master/include
- which have been placed in debian/src/libcec/platform/adl/adl_*.h and
- are used instead.
 
 Files: *
 Copyright: 2011-2015, Pulse-Eight Limited.
@@ -35,12 +19,12 @@ Comment: Alternatively, you can license this library under a commercial license,
  http://www.pulse-eight.net/
 
 Files: debian/*
-Copyright: 2011, Andres Mejia <amejia@debian.org>
+Copyright: 2011-2012, Andres Mejia <amejia@debian.org>
+           2014, Sjoerd Simons <sjoerd@debian.org>
+           2014-2022, Balint Reczey <balint@balintreczey.hu>
+           2022, Vagrant Cascadian <vagrant@debian.org>
+           2023-2026, Barak A. Pearlmutter <bap@debian.org>
 License: GPL-2+
-
-Files: debian/src/libcec/platform/adl/adl_*.h
-Copyright: 2016–2022 Advanced Micro Devices, Inc
-License: MIT
 
 Files: src/libcec/adapter/Exynos/*
 Copyright: 2014, Valentin Manea
