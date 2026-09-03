@@ -17,13 +17,6 @@ NODE_MODULE_DIR = usr/lib/$(DEB_HOST_MULTIARCH)/nodejs/libcec
 %:
 	dh $@ --with python3
 
-execute_before_dh_auto_configure:
-	cp --verbose \
-	   debian/src/libcec/platform/adl/adl_defines.h \
-	   debian/src/libcec/platform/adl/adl_sdk.h \
-	   debian/src/libcec/platform/adl/adl_structures.h \
-	   src/libcec/platform/adl/
-
 override_dh_auto_configure:
 	dh_auto_configure -- \
 		-DCMAKE_BUILD_TYPE=Release \
