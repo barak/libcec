@@ -4,11 +4,10 @@ Upstream-Contact: Lars Op den Kamp <lars.opdenkamp@pulse-eight.com>
 Source: https://github.com/Pulse-Eight/libcec
 Files-Excluded: support/windows/*.dll
   support/windows/*.exe
-Comment: The support/windows files are prebuilt Windows binaries shipped
- without corresponding source.
+Comment: Prebuilt Windows binaries; not actual source code
 
 Files: *
-Copyright: 2011-2015, Pulse-Eight Limited.
+Copyright: 2011-2026, Pulse-Eight Limited.
 License: GPL-2+
 Comment: Alternatively, you can license this library under a commercial license,
  please contact Pulse-Eight Licensing for more information.
@@ -27,36 +26,58 @@ Copyright: 2011-2012, Andres Mejia <amejia@debian.org>
 License: GPL-2+
 
 Files: src/libcec/adapter/Exynos/*
-Copyright: 2014, Valentin Manea
-  2011-2015, Pulse-Eight Limited.
+Copyright: 2011-2026 Pulse-Eight Limited
+           2014 Valentin Manea
+Comment: Used for the Exynos SoC backend, built only with -DHAVE_EXYNOS_API=1.
 License: GPL-2+
 
 Files: src/libcec/adapter/AOCEC/*
-Copyright: 2016, Gerald Dachs
-  2014, Valentin Manea
-  2011-2015, Pulse-Eight Limited.
-License: GPL-2+
-
-Files: src/libcec/adapter/IMX/*
-Copyright: 2013, Stephan Rafin
-  2011-2013, Pulse-Eight Limited.
+Copyright: 2011-2026 Pulse-Eight Limited
+           2016 Gerald Dachs
+           2014 Valentin Manea
+Comment: Used for the Amlogic AO-CEC backend, built only with -DHAVE_AOCEC_API=1.
+ Derived from the Exynos backend, whose copyright it carries too.
 License: GPL-2+
 
 Files: src/libcec/adapter/Linux/*
-Copyright: 2017-2019, Jonas Karlman
-  2016, Gerald Dachs
-  2014, Valentin Manea
-  2011-2015, Pulse-Eight Limited.
+Copyright: 2011-2026 Pulse-Eight Limited
+           2017-2019 Jonas Karlman
+           2016 Gerald Dachs
+           2014 Valentin Manea
+Comment: Used for the kernel CEC framework backend, built only with
+ -DHAVE_LINUX_API=1. Derived from the AOCEC and Exynos backends, whose
+ copyright it carries too.
 License: GPL-2+
 
-Files: src/EventGhost/egplugin_sources/PulseEight/*
-Copyright: 2005-2016, EventGhost Project <http://www.eventghost.org/>
-  2011-2015, Pulse-Eight Limited.
+Files: src/libcec/platform/adl/adl_defines.h
+       src/libcec/platform/adl/adl_sdk.h
+       src/libcec/platform/adl/adl_structures.h
+Copyright: 2016-2022 Advanced Micro Devices, Inc.
+Comment: Used for reading a display's EDID from an AMD graphics card. Compiled into
+ libCEC on every platform.
+License: Expat
+
+Files: src/libcec/adapter/IMX/IMXCEC.h
+       src/libcec/adapter/IMX/IMXCECAdapterCommunication.cpp
+       src/libcec/adapter/IMX/IMXCECAdapterCommunication.h
+       src/libcec/adapter/IMX/IMXCECAdapterDetection.cpp
+       src/libcec/adapter/IMX/IMXCECAdapterDetection.h
+Copyright: 2011-2026 Pulse-Eight Limited
+           2013 Stephan Rafin
+Comment: Used for the i.MX6 SoC backend, built only with -DHAVE_IMX_API=1. Ported
+ from libCEC's own TDA995x backend, and the port's author offered his part
+ under the GPL alone, so these files carry no commercial-licence option and
+ their headers say so.
 License: GPL-2+
 
-Files: src/libcec/platform/adl/adl-edid.cpp
-  src/libcec/platform/adl/adl-edid.h
-Copyright: 2011-2015, Pulse-Eight Limited.
+Files: src/EventGhost/egplugin_sources/PulseEight/__init__.py
+       src/EventGhost/egplugin_sources/PulseEight/cec_classes.py
+       src/EventGhost/egplugin_sources/PulseEight/controls.py
+Copyright: 2011-2026 Pulse-Eight Limited
+           2005-2016 EventGhost Project <http://www.eventghost.org/>
+Comment: Used for the EventGhost plugin, packaged by the Windows installer. These
+ files embed code from EventGhost itself, which is under the GPL alone, so
+ they carry no commercial-licence option.
 License: GPL-2+
 
 License: GPL-2+
@@ -68,7 +89,7 @@ License: GPL-2+
  On Debian systems, the complete text of version 2 of the GNU General
  Public License can be found in '/usr/share/common-licenses/GPL-2'.
 
-License: MIT
+License: Expat
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
